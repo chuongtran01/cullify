@@ -1,16 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { Check, Sparkles, Upload } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { featureBullets } from "@/components/landing/content";
 import { HeroMockup } from "@/components/landing/hero-mockup";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
-export function HeroSection() {
+export function HeroSection({
+  onUploadClick,
+}: {
+  onUploadClick: () => void;
+}) {
   return (
     <section className="mx-auto grid max-w-6xl gap-12 px-5 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
       <motion.div
@@ -33,16 +35,13 @@ export function HeroSection() {
           in seconds.
         </p>
         <div className="mt-8">
-          <Link
-            href="#"
-            className={cn(
-              buttonVariants(),
-              "h-10 gap-1.5 border-ink !bg-ink px-4 !text-canvas hover:!border-ink hover:!bg-ink/90 hover:!text-canvas [a]:hover:!bg-ink/90",
-            )}
+          <Button
+            className="h-10 gap-1.5 border-ink !bg-ink px-4 !text-canvas hover:!border-ink hover:!bg-ink/90 hover:!text-canvas"
+            onClick={onUploadClick}
           >
             <Upload className="size-4" />
             Upload Photos
-          </Link>
+          </Button>
         </div>
         <div className="mt-8 grid gap-3 text-sm text-body sm:grid-cols-3">
           {featureBullets.map((item) => (
