@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check, Sparkles, Upload } from "lucide-react";
+import { Check, Sparkles, Upload } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { featureBullets } from "@/components/landing/content";
@@ -28,26 +28,16 @@ export function HeroSection() {
           Remove blurry shots, group similar photos, and select the best images
           in seconds.
         </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-8">
           <Link
             href="#"
             className={cn(
               buttonVariants(),
-              "h-10 border-ink bg-ink px-4 text-canvas hover:bg-[#343229]",
+              "h-10 gap-1.5 border-ink !bg-ink px-4 !text-canvas hover:!border-ink hover:!bg-ink/90 hover:!text-canvas [a]:hover:!bg-ink/90",
             )}
           >
             <Upload className="size-4" />
             Upload Photos
-          </Link>
-          <Link
-            href="#demo"
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "h-10 border-hairline-strong bg-surface-card px-4 text-ink hover:bg-canvas-soft",
-            )}
-          >
-            View Demo
-            <ArrowRight className="size-4" />
           </Link>
         </div>
         <div className="mt-8 grid gap-3 text-sm text-body sm:grid-cols-3">
