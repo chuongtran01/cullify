@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f7f4;
+  --foreground: #26251e;
+  --canvas: #f7f7f4;
+  --canvas-soft: #fafaf7;
+  --surface-card: #ffffff;
+  --surface-strong: #e6e5e0;
+  --hairline: #e6e5e0;
+  --hairline-soft: #efeee8;
+  --hairline-strong: #cfcdc4;
+  --ink: #26251e;
+  --body: #5a5852;
+  --muted: #807d72;
+  --muted-soft: #a09c92;
+  --primary: #f54e00;
+  --primary-active: #d04200;
+  --on-primary: #ffffff;
+  --timeline-thinking: #dfa88f;
+  --timeline-grep: #9fc9a2;
+  --timeline-read: #9fbbe0;
+  --timeline-edit: #c0a8dd;
+  --timeline-done: #c08532;
+  --semantic-success: #1f8a65;
+  --semantic-error: #cf2d56;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-canvas: var(--canvas);
+  --color-canvas-soft: var(--canvas-soft);
+  --color-surface-card: var(--surface-card);
+  --color-surface-strong: var(--surface-strong);
+  --color-hairline: var(--hairline);
+  --color-hairline-soft: var(--hairline-soft);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-muted-soft: var(--muted-soft);
+  --color-primary: var(--primary);
+  --color-primary-active: var(--primary-active);
+  --color-on-primary: var(--on-primary);
+  --color-timeline-thinking: var(--timeline-thinking);
+  --color-timeline-grep: var(--timeline-grep);
+  --color-timeline-read: var(--timeline-read);
+  --color-timeline-edit: var(--timeline-edit);
+  --color-timeline-done: var(--timeline-done);
+  --color-semantic-success: var(--semantic-success);
+  --color-semantic-error: var(--semantic-error);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
 }

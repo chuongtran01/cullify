@@ -1,0 +1,28 @@
+import { useCases } from "@/components/landing/content";
+import { SectionHeader } from "@/components/landing/section-header";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+export function UseCasesSection() {
+  return (
+    <section className="border-y border-hairline bg-surface-card">
+      <div className="mx-auto max-w-[1200px] px-5 py-20">
+        <SectionHeader
+          eyebrow="Use cases"
+          title="Built for anyone buried in near-identical photos."
+        />
+        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+          {useCases.map((useCase) => (
+            <Card key={useCase.title} className="bg-canvas">
+              <CardHeader className="p-5">
+                <CardTitle>{useCase.title}</CardTitle>
+                <CardDescription className="mt-3">
+                  {useCase.description}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
