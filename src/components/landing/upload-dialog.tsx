@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { ImagePlus, Sparkles, Upload, X } from "lucide-react";
+import { useDropzone } from "react-dropzone";
 
 import {
   Dialog,
@@ -19,46 +20,39 @@ type UploadDialogProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-function isImageFile(file: File) {
-  return file.type.startsWith("image/");
+function mergeImageFiles(current: File[], nextFiles: File[]) {
+  const seen = new Set(current.map((file) => `${file.name}-${file.size}`));
+  const merged = [...current];
+
+  for (const file of nextFiles) {
+    const key = `${file.name}-${file.size}`;
+
+    if (!seen.has(key)) {
+      seen.add(key);
+      merged.push(file);
+    }
+  }
+
+  return merged;
 }
 
 export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
-  const inputRef = React.useRef<HTMLInputElement>(null);
   const [files, setFiles] = React.useState<File[]>([]);
-  const [isDragging, setIsDragging] = React.useState(false);
 
-  function appendFiles(nextFiles: File[]) {
-    const imageFiles = nextFiles.filter(isImageFile);
+  const onDrop = React.useCallback((acceptedFiles: File[]) => {
+    setFiles((current) => mergeImageFiles(current, acceptedFiles));
+  }, []);
 
-    setFiles((current) => {
-      const seen = new Set(current.map((file) => `${file.name}-${file.size}`));
-      const merged = [...current];
-
-      for (const file of imageFiles) {
-        const key = `${file.name}-${file.size}`;
-
-        if (!seen.has(key)) {
-          seen.add(key);
-          merged.push(file);
-        }
-      }
-
-      return merged;
+  const { getRootProps, getInputProps, isDragActive, open: openFilePicker } =
+    useDropzone({
+      accept: {
+        "image/*": [],
+      },
+      multiple: true,
+      noClick: true,
+      noKeyboard: false,
+      onDrop,
     });
-  }
-
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const nextFiles = Array.from(event.target.files ?? []);
-    appendFiles(nextFiles);
-    event.target.value = "";
-  }
-
-  function handleDrop(event: React.DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-    setIsDragging(false);
-    appendFiles(Array.from(event.dataTransfer.files));
-  }
 
   function removeFile(fileToRemove: File) {
     setFiles((current) => current.filter((file) => file !== fileToRemove));
@@ -73,7 +67,7 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
     onOpenChange(nextOpen);
 
     if (!nextOpen) {
-      setIsDragging(false);
+      setFiles([]);
     }
   }
 
@@ -98,43 +92,34 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
         </DialogHeader>
 
         <div className="space-y-6 px-8 py-8">
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={handleInputChange}
-          />
-
           <div
-            onDragOver={(event) => {
-              event.preventDefault();
-              setIsDragging(true);
-            }}
-            onDragLeave={() => setIsDragging(false)}
-            onDrop={handleDrop}
+            {...getRootProps()}
             className={cn(
-              "rounded-2xl border border-dashed bg-canvas-soft p-8 transition-colors",
-              isDragging
+              "rounded-2xl border border-dashed bg-canvas-soft p-8 transition-colors outline-none",
+              isDragActive
                 ? "border-primary bg-primary/5"
                 : "border-hairline-strong",
             )}
           >
+            <input {...getInputProps()} />
+
             <div className="flex flex-col items-center text-center">
               <div className="grid size-14 place-items-center rounded-full border border-hairline bg-surface-card">
                 <ImagePlus className="size-6 text-primary" />
               </div>
               <h3 className="mt-4 text-lg font-medium text-ink">
-                Drag and drop your photos here
+                {isDragActive
+                  ? "Drop your photos here"
+                  : "Drag and drop your photos here"}
               </h3>
               <p className="mt-2 max-w-prose text-sm leading-6 text-body">
                 JPG, PNG, and other standard image formats are accepted. Large
                 batches stay grouped into one review project.
               </p>
               <Button
+                type="button"
                 className="mt-6 h-10 cursor-pointer border-ink !bg-ink px-4 !text-canvas hover:!border-ink hover:!bg-ink/90 hover:!text-canvas"
-                onClick={() => inputRef.current?.click()}
+                onClick={openFilePicker}
               >
                 <Upload className="size-4" />
                 Choose Files
@@ -195,7 +180,11 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
             review project.
           </p>
           <div className="flex flex-col-reverse gap-2 sm:flex-row">
-            <Button variant="outline" className="h-10 px-4 cursor-pointer" onClick={() => onOpenChange(false)}>
+            <Button
+              variant="outline"
+              className="h-10 cursor-pointer px-4"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button
