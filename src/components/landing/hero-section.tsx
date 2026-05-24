@@ -36,7 +36,7 @@ export function HeroSection({
         </p>
         <div className="mt-8">
           <Button
-            className="h-10 gap-1.5 border-ink !bg-ink px-4 !text-canvas hover:!border-ink hover:!bg-ink/90 hover:!text-canvas"
+            className="h-10 gap-1.5 border-ink !bg-ink px-4 !text-canvas hover:!border-ink hover:!bg-ink/90 hover:!text-canvas cursor-pointer"
             onClick={onUploadClick}
           >
             <Upload className="size-4" />

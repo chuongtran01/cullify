@@ -133,7 +133,7 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
                 batches stay grouped into one review project.
               </p>
               <Button
-                className="mt-6 h-10 px-4 cursor-pointer"
+                className="mt-6 h-10 cursor-pointer border-ink !bg-ink px-4 !text-canvas hover:!border-ink hover:!bg-ink/90 hover:!text-canvas"
                 onClick={() => inputRef.current?.click()}
               >
                 <Upload className="size-4" />
@@ -199,7 +199,7 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
               Cancel
             </Button>
             <Button
-              className="h-10 px-4cursor-pointer"
+              className="h-10 cursor-pointer px-4"
               onClick={handleContinue}
               disabled={files.length === 0}
             >
