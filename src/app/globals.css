@@ -127,11 +127,6 @@
   --radius-4xl: 32px;
 }
 
-::selection {
-  background: color-mix(in srgb, var(--primary) 16%, transparent);
-  color: var(--ink);
-}
-
 button,
 a {
   -webkit-tap-highlight-color: transparent;
