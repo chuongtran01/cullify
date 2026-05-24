@@ -2,6 +2,10 @@ import { randomUUID } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
+import {
+  createUploadSessionRecords,
+  deleteUploadSession,
+} from "@/lib/db/upload-session";
 import { R2ConfigError } from "@/lib/r2/env";
 import {
   createPresignedUpload,
@@ -28,12 +32,24 @@ export async function POST(request: Request) {
 
   const sessionId = randomUUID();
 
+  let records;
+
+  try {
+    records = await createUploadSessionRecords(sessionId, validation.data.files);
+  } catch (error) {
+    console.error("Failed to persist upload session", error);
+
+    return NextResponse.json(
+      { error: "Failed to create upload session" },
+      { status: 500 },
+    );
+  }
+
   try {
     const uploads = await Promise.all(
-      validation.data.files.map(async (file) => {
-        const fileId = randomUUID();
-        return createPresignedUpload(sessionId, fileId, file);
-      }),
+      records.map((record) =>
+        createPresignedUpload(sessionId, record.fileId, record.file),
+      ),
     );
 
     const response: CreateUploadSessionResponse = {
@@ -44,6 +60,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json(response, { status: 201 });
   } catch (error) {
+    await deleteUploadSession(sessionId);
+
     if (error instanceof R2ConfigError) {
       return NextResponse.json(
         { error: "Upload storage is not configured" },

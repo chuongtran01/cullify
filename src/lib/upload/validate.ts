@@ -81,3 +81,57 @@ export function validateCreateUploadSessionRequest(
 
   return { ok: true, data: { files } };
 }
+
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export function isUuid(value: string): boolean {
+  return UUID_PATTERN.test(value);
+}
+
+export type CompleteUploadSessionRequest = {
+  fileIds: string[];
+};
+
+export type CompleteValidationResult =
+  | { ok: true; data: CompleteUploadSessionRequest }
+  | { ok: false; error: string };
+
+export function validateCompleteUploadSessionRequest(
+  body: unknown,
+): CompleteValidationResult {
+  if (!isRecord(body)) {
+    return { ok: false, error: "Request body must be a JSON object" };
+  }
+
+  const fileIdsValue = body.fileIds;
+
+  if (!Array.isArray(fileIdsValue)) {
+    return { ok: false, error: "fileIds must be an array" };
+  }
+
+  if (fileIdsValue.length === 0) {
+    return { ok: false, error: "fileIds must contain at least one item" };
+  }
+
+  if (fileIdsValue.length > MAX_FILES_PER_SESSION) {
+    return {
+      ok: false,
+      error: `fileIds must contain at most ${MAX_FILES_PER_SESSION} items`,
+    };
+  }
+
+  const fileIds: string[] = [];
+
+  for (let index = 0; index < fileIdsValue.length; index += 1) {
+    const fileId = fileIdsValue[index];
+
+    if (typeof fileId !== "string" || !isUuid(fileId)) {
+      return { ok: false, error: `fileIds[${index}] must be a valid UUID` };
+    }
+
+    fileIds.push(fileId);
+  }
+
+  return { ok: true, data: { fileIds } };
+}

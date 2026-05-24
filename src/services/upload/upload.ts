@@ -92,11 +92,38 @@ export async function uploadFilesToR2(
   );
 }
 
+async function completeUploadSession(
+  session: CreateUploadSessionResponse,
+): Promise<void> {
+  const response = await fetch(
+    `/api/upload-sessions/${session.sessionId}/complete`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fileIds: session.uploads.map((upload) => upload.fileId),
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
+
+    throw new UploadSessionError(
+      data.error ?? "Failed to complete upload session",
+      response.status,
+    );
+  }
+}
+
 export async function uploadBatch(
   files: File[],
   options?: UploadProgressOptions,
 ): Promise<CreateUploadSessionResponse> {
   const session = await createUploadSession(files);
   await uploadFilesToR2(files, session, options);
+  await completeUploadSession(session);
   return session;
 }

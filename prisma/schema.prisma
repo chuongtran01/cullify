@@ -1,0 +1,39 @@
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ImageUploadStatus {
+  PENDING
+  UPLOADED
+  FAILED
+}
+
+model Project {
+  id        String   @id @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  images    Image[]
+}
+
+model Image {
+  id         String            @id @db.Uuid
+  projectId  String            @db.Uuid
+  project    Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  fileName   String
+  mimeType   String
+  sizeBytes  Int
+  objectKey  String            @unique
+  status     ImageUploadStatus @default(PENDING)
+  createdAt  DateTime          @default(now())
+  uploadedAt DateTime?
+
+  @@index([projectId])
+  @@index([status])
+}
