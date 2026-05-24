@@ -6,6 +6,7 @@ AI-first photo culling — upload batches, detect blur and duplicates, group sim
 
 ```
 cullify-app/
+├── package.json         # Root scripts (dev, db, etc.)
 ├── docker-compose.yml   # PostgreSQL + Redis (local dev)
 ├── apps/
 │   └── web/             # Next.js app (UI, API routes, Prisma)
@@ -28,32 +29,31 @@ More product and architecture detail: [`PROJECT_PLAN.md`](PROJECT_PLAN.md), [`ap
 
 ## Quick start
 
-### 1. Start infrastructure
+Run everything from the **repo root** unless noted.
 
-From the repo root:
+### 1. Install web dependencies
 
 ```bash
-docker compose up -d
+npm run install:web
 ```
 
 ### 2. Configure the web app
 
 ```bash
-cd apps/web
-cp .env.example .env.local
-# Edit .env.local — DATABASE_URL, REDIS_URL, R2 keys as needed
+cp apps/web/.env.example apps/web/.env.local
+# Edit apps/web/.env.local — DATABASE_URL, REDIS_URL, R2 keys as needed
 ```
 
-### 3. Install dependencies and run migrations
+### 3. Start infrastructure and run migrations
 
 ```bash
-npm install
-npm run db:setup   # starts compose (if not running), migrates, generates Prisma client
+npm run db:setup
 ```
 
 Or step by step:
 
 ```bash
+npm run db:up
 npm run db:migrate:deploy
 npm run db:generate
 ```
@@ -68,24 +68,25 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Common commands
 
-**Repo root**
+**Repo root** (preferred)
 
 | Command | Description |
 |---------|-------------|
-| `docker compose up -d` | Start Postgres and Redis |
-| `docker compose down` | Stop services |
-| `docker compose logs -f` | Follow service logs |
-
-**`apps/web/`**
-
-| Command | Description |
-|---------|-------------|
+| `npm run install:web` | Install `apps/web` dependencies |
 | `npm run dev` | Next.js dev server |
 | `npm run build` | Production build |
+| `npm run start` | Production server |
 | `npm run lint` | ESLint |
-| `npm run db:setup` | Docker (compose file at repo root) + migrate + Prisma generate |
+| `npm run db:up` | Start Postgres and Redis |
+| `npm run db:down` | Stop Postgres and Redis |
+| `npm run db:logs` | Follow service logs |
+| `npm run db:setup` | `db:up` + migrate deploy + Prisma generate |
 | `npm run db:migrate` | Create/apply migrations (dev) |
+| `npm run db:migrate:deploy` | Apply migrations (deploy) |
 | `npm run db:generate` | Regenerate Prisma client |
+| `npm run db:push` | Push schema without migration |
+
+**`apps/web/`** — same scripts if you `cd` there; `db:setup` also works via compose path to repo root.
 
 ## Environment variables
 
