@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import { ImageUploadStatus } from "@/generated/prisma/client";
+import { BatchStatus, ImageUploadStatus } from "@/generated/prisma/client";
 import { buildObjectKey } from "@/lib/r2/keys";
 import { prisma } from "@/lib/prisma";
 import type { UploadFileInput } from "@/lib/upload/types";
@@ -22,9 +22,10 @@ export async function createUploadSessionRecords(
     return { fileId, file, objectKey };
   });
 
-  await prisma.project.create({
+  await prisma.batch.create({
     data: {
       id: sessionId,
+      status: BatchStatus.UPLOADING,
       images: {
         create: records.map((record) => ({
           id: record.fileId,
@@ -41,7 +42,7 @@ export async function createUploadSessionRecords(
 }
 
 export async function deleteUploadSession(sessionId: string): Promise<void> {
-  await prisma.project
+  await prisma.batch
     .delete({
       where: { id: sessionId },
     })
@@ -52,25 +53,34 @@ export async function completeUploadSession(
   sessionId: string,
   fileIds: string[],
 ): Promise<number | null> {
-  const project = await prisma.project.findUnique({
+  const batch = await prisma.batch.findUnique({
     where: { id: sessionId },
     select: { id: true },
   });
 
-  if (!project) {
+  if (!batch) {
     return null;
   }
 
-  const result = await prisma.image.updateMany({
-    where: {
-      projectId: sessionId,
-      id: { in: fileIds },
-    },
-    data: {
-      status: ImageUploadStatus.UPLOADED,
-      uploadedAt: new Date(),
-    },
+  const result = await prisma.$transaction(async (tx) => {
+    const imageUpdate = await tx.image.updateMany({
+      where: {
+        batchId: sessionId,
+        id: { in: fileIds },
+      },
+      data: {
+        status: ImageUploadStatus.UPLOADED,
+        uploadedAt: new Date(),
+      },
+    });
+
+    await tx.batch.update({
+      where: { id: sessionId },
+      data: { status: BatchStatus.PROCESSING },
+    });
+
+    return imageUpdate.count;
   });
 
-  return result.count;
+  return result;
 }

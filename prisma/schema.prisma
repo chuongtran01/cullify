@@ -9,23 +9,31 @@ datasource db {
   provider = "postgresql"
 }
 
+enum BatchStatus {
+  UPLOADING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 enum ImageUploadStatus {
   PENDING
   UPLOADED
   FAILED
 }
 
-model Project {
-  id        String   @id @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Batch {
+  id        String      @id @db.Uuid
+  status    BatchStatus @default(UPLOADING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   images    Image[]
 }
 
 model Image {
   id         String            @id @db.Uuid
-  projectId  String            @db.Uuid
-  project    Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  batchId    String            @db.Uuid
+  batch      Batch             @relation(fields: [batchId], references: [id], onDelete: Cascade)
   fileName   String
   mimeType   String
   sizeBytes  Int
@@ -34,6 +42,6 @@ model Image {
   createdAt  DateTime          @default(now())
   uploadedAt DateTime?
 
-  @@index([projectId])
+  @@index([batchId])
   @@index([status])
 }
