@@ -3,6 +3,7 @@ import { Check, Clock3, MousePointer2 } from "lucide-react";
 
 import { PhotoTile } from "@/components/landing/photo-tile";
 import { SectionHeader } from "@/components/landing/section-header";
+import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -39,9 +40,9 @@ export function ProductPreviewSection() {
               <PhotoTile className="h-44 sm:h-56" label="similar" />
             </div>
             <aside className="rounded-xl border border-hairline bg-surface-card p-5">
-              <p className="text-xs font-semibold uppercase text-muted">
+              <Badge variant="outline" className="font-semibold uppercase text-muted">
                 Compare mode
-              </p>
+              </Badge>
               <h3 className="mt-3 text-3xl font-normal leading-tight text-ink">
                 Cullify recommends frame 04 for sharpness and expression.
               </h3>

@@ -1,15 +1,16 @@
 import { CheckCircle2 } from "lucide-react";
 
 import { benefits } from "@/components/landing/content";
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
 export function BenefitsSection() {
   return (
     <section className="mx-auto grid max-w-6xl gap-10 px-5 py-20 lg:grid-cols-2 lg:items-center">
       <div>
-        <p className="text-xs font-semibold uppercase text-muted">
+        <Badge variant="outline" className="font-semibold uppercase text-muted">
           Benefits
-        </p>
+        </Badge>
         <h2 className="mt-3 text-4xl font-normal leading-[1.2] text-ink">
           Spend your attention on the final choice, not the messy first pass.
         </h2>
@@ -28,9 +29,7 @@ export function BenefitsSection() {
             <span className="font-mono text-xs uppercase text-muted">
               Review queue
             </span>
-            <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary">
-              73% complete
-            </span>
+            <Badge className="font-semibold">73% complete</Badge>
           </div>
           <div className="grid gap-3">
             {["Keepers", "Rejected blur", "Needs compare"].map(

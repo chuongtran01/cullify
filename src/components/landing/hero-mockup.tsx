@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 
 import { PhotoTile } from "@/components/landing/photo-tile";
+import { Badge } from "@/components/ui/badge";
 
 export function HeroMockup() {
   return (
@@ -22,10 +23,13 @@ export function HeroMockup() {
               284 photos grouped into 42 decisions
             </h2>
           </div>
-          <div className="hidden items-center gap-2 rounded-full border border-hairline bg-surface-card px-3 py-1.5 font-mono text-xs text-body sm:flex">
+          <Badge
+            variant="outline"
+            className="hidden h-auto gap-2 px-3 py-1.5 font-mono font-normal text-body sm:inline-flex"
+          >
             <span className="size-2 rounded-full bg-semantic-success" />
             Live analysis
-          </div>
+          </Badge>
         </div>
         <div className="grid grid-cols-6 gap-3">
           <PhotoTile
@@ -42,21 +46,21 @@ export function HeroMockup() {
         <div className="mt-4 grid gap-2 font-mono text-xs text-body">
           <div className="flex items-center justify-between rounded-lg border border-hairline bg-surface-card px-3 py-2">
             <span>Thinking</span>
-            <span className="rounded-full bg-timeline-thinking px-2 py-1 uppercase text-ink">
+            <Badge className="bg-timeline-thinking font-mono uppercase text-ink">
               blur scan
-            </span>
+            </Badge>
           </div>
           <div className="flex items-center justify-between rounded-lg border border-hairline bg-surface-card px-3 py-2">
             <span>Grouping</span>
-            <span className="rounded-full bg-timeline-grep px-2 py-1 uppercase text-ink">
+            <Badge className="bg-timeline-grep font-mono uppercase text-ink">
               12 similar
-            </span>
+            </Badge>
           </div>
           <div className="flex items-center justify-between rounded-lg border border-hairline bg-surface-card px-3 py-2">
             <span>Done</span>
-            <span className="rounded-full bg-timeline-done px-2 py-1 uppercase text-on-primary">
+            <Badge className="bg-timeline-done font-mono uppercase text-on-primary">
               best shot
-            </span>
+            </Badge>
           </div>
         </div>
       </div>

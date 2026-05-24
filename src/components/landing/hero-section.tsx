@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 
 import { featureBullets } from "@/components/landing/content";
 import { HeroMockup } from "@/components/landing/hero-mockup";
+import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -17,10 +18,13 @@ export function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
       >
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-card px-3 py-1.5 text-sm text-body">
+        <Badge
+          variant="outline"
+          className="mb-6 h-auto gap-2 px-3 py-1.5 text-sm font-normal text-body"
+        >
           <Sparkles className="size-4 text-primary" />
           AI culling for high-volume photo review
-        </div>
+        </Badge>
         <h1 className="max-w-3xl text-6xl font-normal leading-[1.06] text-ink sm:text-7xl">
           AI that picks your best photos instantly
         </h1>

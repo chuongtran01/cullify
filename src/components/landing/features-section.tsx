@@ -1,5 +1,6 @@
 import { features } from "@/components/landing/content";
 import { SectionHeader } from "@/components/landing/section-header";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardDescription,
@@ -24,9 +25,12 @@ export function FeaturesSection() {
                     <div className="grid size-10 place-items-center rounded-lg bg-surface-card">
                       <feature.icon className="size-5 text-primary" />
                     </div>
-                    <span className="rounded-full bg-surface-strong px-2.5 py-1 font-mono text-xs uppercase text-ink">
+                    <Badge
+                      variant="secondary"
+                      className="bg-surface-strong font-mono uppercase text-ink"
+                    >
                       {feature.preview}
-                    </span>
+                    </Badge>
                   </div>
                 </div>
                 <CardTitle>{feature.title}</CardTitle>

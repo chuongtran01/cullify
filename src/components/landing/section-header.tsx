@@ -1,3 +1,5 @@
+import { Badge } from "@/components/ui/badge";
+
 export function SectionHeader({
   eyebrow,
   title,
@@ -9,7 +11,9 @@ export function SectionHeader({
 }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <p className="text-xs font-semibold uppercase text-muted">{eyebrow}</p>
+      <Badge variant="outline" className="font-semibold uppercase text-muted">
+        {eyebrow}
+      </Badge>
       <h2 className="mt-3 text-4xl font-normal leading-[1.2] text-ink">
         {title}
       </h2>
