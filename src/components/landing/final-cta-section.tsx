@@ -9,16 +9,21 @@ export function FinalCtaSection() {
         <h2 className="text-[36px] font-normal leading-[1.2] text-ink">
           Stop manually sorting thousands of photos.
         </h2>
-        <p className="mt-4 max-w-xl text-base leading-7 text-body">
+        <p className="mt-4 max-w-[560px] text-base leading-7 text-body">
           Upload a batch, let Cullify find the strongest frames, and leave
           review with a clean set of keepers.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink variant="primary">
+          <ButtonLink variant="default" className="h-10 px-[18px]">
             <ImagePlus className="size-4" />
             Upload Photos
           </ButtonLink>
-          <ButtonLink variant="secondary">Try Demo</ButtonLink>
+          <ButtonLink
+            variant="outline"
+            className="h-10 border-hairline-strong bg-surface-card px-[18px] text-ink hover:bg-canvas-soft"
+          >
+            Try Demo
+          </ButtonLink>
         </div>
       </div>
     </section>

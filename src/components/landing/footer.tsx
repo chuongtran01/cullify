@@ -13,7 +13,7 @@ export function Footer() {
       <div className="grid gap-10 md:grid-cols-[1.2fr_repeat(4,1fr)]">
         <div>
           <Logo />
-          <p className="mt-4 max-w-xs text-sm leading-6 text-body">
+          <p className="mt-4 max-w-[320px] text-sm leading-6 text-body">
             AI photo culling for people who want fewer decisions and better
             final sets.
           </p>

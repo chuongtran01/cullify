@@ -21,8 +21,13 @@ export function Navbar() {
           ))}
         </div>
         <div className="hidden items-center gap-3 md:flex">
-          <ButtonLink variant="text">Sign In</ButtonLink>
-          <ButtonLink>Get Started</ButtonLink>
+          <ButtonLink
+            variant="link"
+            className="h-10 px-0 text-ink no-underline hover:text-primary hover:no-underline"
+          >
+            Sign In
+          </ButtonLink>
+          <ButtonLink className="h-10 px-[18px]">Get Started</ButtonLink>
         </div>
         <button
           className="grid size-10 place-items-center rounded-[8px] border border-hairline bg-surface-card md:hidden"

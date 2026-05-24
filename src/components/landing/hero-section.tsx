@@ -27,11 +27,17 @@ export function HeroSection() {
           in seconds.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink variant="ink">
+          <ButtonLink
+            variant="default"
+            className="h-10 border-ink bg-ink px-[18px] text-canvas hover:bg-[#343229]"
+          >
             <Upload className="size-4" />
             Upload Photos
           </ButtonLink>
-          <ButtonLink variant="secondary">
+          <ButtonLink
+            variant="outline"
+            className="h-10 border-hairline-strong bg-surface-card px-[18px] text-ink hover:bg-canvas-soft"
+          >
             View Demo
             <ArrowRight className="size-4" />
           </ButtonLink>

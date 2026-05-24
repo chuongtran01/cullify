@@ -8,7 +8,7 @@ export function SectionHeader({
   description?: string;
 }) {
   return (
-    <div className="mx-auto max-w-2xl text-center">
+    <div className="mx-auto max-w-[672px] text-center">
       <p className="text-[11px] font-semibold uppercase text-muted">{eyebrow}</p>
       <h2 className="mt-3 text-[36px] font-normal leading-[1.2] text-ink">
         {title}

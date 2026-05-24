@@ -55,7 +55,14 @@ export function PricingSection() {
                 ))}
               </ul>
               <div className="mt-8">
-                <ButtonLink variant={tier.featured ? "primary" : "secondary"}>
+                <ButtonLink
+                  variant={tier.featured ? "default" : "outline"}
+                  className={
+                    tier.featured
+                      ? "h-10 px-[18px]"
+                      : "h-10 border-hairline-strong bg-surface-card px-[18px] text-ink hover:bg-canvas-soft"
+                  }
+                >
                   Get Started
                 </ButtonLink>
               </div>
