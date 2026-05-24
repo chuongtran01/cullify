@@ -1,8 +1,10 @@
+import Link from "next/link";
 import { Menu } from "lucide-react";
 
-import { ButtonLink } from "@/components/landing/button-link";
 import { navLinks } from "@/components/landing/content";
 import { Logo } from "@/components/landing/logo";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   return (
@@ -21,13 +23,21 @@ export function Navbar() {
           ))}
         </div>
         <div className="hidden items-center gap-3 md:flex">
-          <ButtonLink
-            variant="link"
-            className="h-10 px-0 text-ink no-underline hover:text-primary hover:no-underline"
+          <Link
+            href="#"
+            className={cn(
+              buttonVariants({ variant: "link" }),
+              "h-10 px-0 text-ink no-underline hover:text-primary hover:no-underline",
+            )}
           >
             Sign In
-          </ButtonLink>
-          <ButtonLink className="h-10 px-[18px]">Get Started</ButtonLink>
+          </Link>
+          <Link
+            href="#"
+            className={cn(buttonVariants(), "h-10 px-[18px]")}
+          >
+            Get Started
+          </Link>
         </div>
         <button
           className="grid size-10 place-items-center rounded-[8px] border border-hairline bg-surface-card md:hidden"

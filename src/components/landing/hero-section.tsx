@@ -1,11 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { ArrowRight, Check, Sparkles, Upload } from "lucide-react";
 import { motion } from "framer-motion";
 
-import { ButtonLink } from "@/components/landing/button-link";
 import { featureBullets } from "@/components/landing/content";
 import { HeroMockup } from "@/components/landing/hero-mockup";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function HeroSection() {
   return (
@@ -27,20 +29,26 @@ export function HeroSection() {
           in seconds.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink
-            variant="default"
-            className="h-10 border-ink bg-ink px-[18px] text-canvas hover:bg-[#343229]"
+          <Link
+            href="#"
+            className={cn(
+              buttonVariants(),
+              "h-10 border-ink bg-ink px-[18px] text-canvas hover:bg-[#343229]",
+            )}
           >
             <Upload className="size-4" />
             Upload Photos
-          </ButtonLink>
-          <ButtonLink
-            variant="outline"
-            className="h-10 border-hairline-strong bg-surface-card px-[18px] text-ink hover:bg-canvas-soft"
+          </Link>
+          <Link
+            href="#demo"
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "h-10 border-hairline-strong bg-surface-card px-[18px] text-ink hover:bg-canvas-soft",
+            )}
           >
             View Demo
             <ArrowRight className="size-4" />
-          </ButtonLink>
+          </Link>
         </div>
         <div className="mt-8 grid gap-3 text-sm text-body sm:grid-cols-3">
           {featureBullets.map((item) => (

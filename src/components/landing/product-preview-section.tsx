@@ -1,9 +1,10 @@
+import Link from "next/link";
 import { Check, Clock3, MousePointer2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { ButtonLink } from "@/components/landing/button-link";
 import { PhotoTile } from "@/components/landing/photo-tile";
 import { SectionHeader } from "@/components/landing/section-header";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function ProductPreviewSection() {
   return (
@@ -61,14 +62,23 @@ export function ProductPreviewSection() {
                 ))}
               </div>
               <div className="mt-6 flex flex-wrap gap-2">
-                <ButtonLink>
+                <Link
+                  href="#"
+                  className={cn(buttonVariants(), "h-10 px-[18px]")}
+                >
                   <Check className="size-4" />
                   Accept Pick
-                </ButtonLink>
-                <ButtonLink variant="secondary">
+                </Link>
+                <Link
+                  href="#"
+                  className={cn(
+                    buttonVariants({ variant: "secondary" }),
+                    "h-10 px-[18px]",
+                  )}
+                >
                   <MousePointer2 className="size-4" />
                   Compare
-                </ButtonLink>
+                </Link>
               </div>
             </aside>
           </div>

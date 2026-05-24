@@ -1,8 +1,9 @@
+import Link from "next/link";
 import { Check } from "lucide-react";
 
-import { ButtonLink } from "@/components/landing/button-link";
 import { pricing } from "@/components/landing/content";
 import { SectionHeader } from "@/components/landing/section-header";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function PricingSection() {
@@ -55,16 +56,19 @@ export function PricingSection() {
                 ))}
               </ul>
               <div className="mt-8">
-                <ButtonLink
-                  variant={tier.featured ? "default" : "outline"}
-                  className={
+                <Link
+                  href="#"
+                  className={cn(
+                    buttonVariants({
+                      variant: tier.featured ? "default" : "outline",
+                    }),
                     tier.featured
                       ? "h-10 px-[18px]"
-                      : "h-10 border-hairline-strong bg-surface-card px-[18px] text-ink hover:bg-canvas-soft"
-                  }
+                      : "h-10 border-hairline-strong bg-surface-card px-[18px] text-ink hover:bg-canvas-soft",
+                  )}
                 >
                   Get Started
-                </ButtonLink>
+                </Link>
               </div>
             </article>
           ))}

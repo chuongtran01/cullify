@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { ImagePlus } from "lucide-react";
 
-import { ButtonLink } from "@/components/landing/button-link";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function FinalCtaSection() {
   return (
@@ -14,16 +16,22 @@ export function FinalCtaSection() {
           review with a clean set of keepers.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink variant="default" className="h-10 px-[18px]">
+          <Link
+            href="#"
+            className={cn(buttonVariants(), "h-10 px-[18px]")}
+          >
             <ImagePlus className="size-4" />
             Upload Photos
-          </ButtonLink>
-          <ButtonLink
-            variant="outline"
-            className="h-10 border-hairline-strong bg-surface-card px-[18px] text-ink hover:bg-canvas-soft"
+          </Link>
+          <Link
+            href="#demo"
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "h-10 border-hairline-strong bg-surface-card px-[18px] text-ink hover:bg-canvas-soft",
+            )}
           >
             Try Demo
-          </ButtonLink>
+          </Link>
         </div>
       </div>
     </section>
