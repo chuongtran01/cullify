@@ -5,12 +5,12 @@ import { Card } from "@/components/ui/card";
 
 export function BenefitsSection() {
   return (
-    <section className="mx-auto grid max-w-[1200px] gap-10 px-5 py-20 lg:grid-cols-2 lg:items-center">
+    <section className="mx-auto grid max-w-6xl gap-10 px-5 py-20 lg:grid-cols-2 lg:items-center">
       <div>
-        <p className="text-[11px] font-semibold uppercase text-muted">
+        <p className="text-xs font-semibold uppercase text-muted">
           Benefits
         </p>
-        <h2 className="mt-3 text-[36px] font-normal leading-[1.2] text-ink">
+        <h2 className="mt-3 text-4xl font-normal leading-[1.2] text-ink">
           Spend your attention on the final choice, not the messy first pass.
         </h2>
         <div className="mt-8 grid gap-4">
@@ -22,10 +22,10 @@ export function BenefitsSection() {
           ))}
         </div>
       </div>
-      <div className="rounded-[16px] border border-hairline bg-surface-card p-4">
-        <div className="rounded-[12px] bg-canvas-soft p-5">
+      <div className="rounded-2xl border border-hairline bg-surface-card p-4">
+        <div className="rounded-xl bg-canvas-soft p-5">
           <div className="mb-5 flex items-center justify-between">
-            <span className="font-mono text-[12px] uppercase text-muted">
+            <span className="font-mono text-xs uppercase text-muted">
               Review queue
             </span>
             <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary">
@@ -40,7 +40,7 @@ export function BenefitsSection() {
                     <span className="text-sm font-semibold text-ink">
                       {label}
                     </span>
-                    <span className="font-mono text-[12px] text-muted">
+                    <span className="font-mono text-xs text-muted">
                       {[128, 42, 16][index]}
                     </span>
                   </div>

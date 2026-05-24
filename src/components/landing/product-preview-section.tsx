@@ -8,14 +8,14 @@ import { cn } from "@/lib/utils";
 
 export function ProductPreviewSection() {
   return (
-    <section id="demo" className="mx-auto max-w-[1200px] px-5 py-20">
+    <section id="demo" className="mx-auto max-w-6xl px-5 py-20">
       <SectionHeader
         eyebrow="Product preview"
         title="A gallery designed around groups, not endless scrolling."
         description="Recommendations, warnings, and compare controls sit directly inside the review surface."
       />
-      <div className="mt-12 rounded-[16px] border border-hairline bg-surface-card p-3">
-        <div className="rounded-[12px] border border-hairline bg-canvas-soft p-4">
+      <div className="mt-12 rounded-2xl border border-hairline bg-surface-card p-3">
+        <div className="rounded-xl border border-hairline bg-canvas-soft p-4">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex gap-2">
               {["Grouping", "Best Shot", "Blur Detection"].map((tab) => (
@@ -24,7 +24,7 @@ export function ProductPreviewSection() {
                 </Button>
               ))}
             </div>
-            <div className="flex items-center gap-2 font-mono text-[12px] text-body">
+            <div className="flex items-center gap-2 font-mono text-xs text-body">
               <Clock3 className="size-4" />
               31 clusters left
             </div>
@@ -38,11 +38,11 @@ export function ProductPreviewSection() {
               <PhotoTile className="h-44 sm:h-56" label="similar" />
               <PhotoTile className="h-44 sm:h-56" label="similar" />
             </div>
-            <aside className="rounded-[12px] border border-hairline bg-surface-card p-5">
-              <p className="text-[11px] font-semibold uppercase text-muted">
+            <aside className="rounded-xl border border-hairline bg-surface-card p-5">
+              <p className="text-xs font-semibold uppercase text-muted">
                 Compare mode
               </p>
-              <h3 className="mt-3 text-[26px] font-normal leading-tight text-ink">
+              <h3 className="mt-3 text-3xl font-normal leading-tight text-ink">
                 Cullify recommends frame 04 for sharpness and expression.
               </h3>
               <div className="mt-6 grid gap-3">
@@ -64,7 +64,7 @@ export function ProductPreviewSection() {
               <div className="mt-6 flex flex-wrap gap-2">
                 <Link
                   href="#"
-                  className={cn(buttonVariants(), "h-10 px-[18px]")}
+                  className={cn(buttonVariants(), "h-10 px-4")}
                 >
                   <Check className="size-4" />
                   Accept Pick
@@ -73,7 +73,7 @@ export function ProductPreviewSection() {
                   href="#"
                   className={cn(
                     buttonVariants({ variant: "secondary" }),
-                    "h-10 px-[18px]",
+                    "h-10 px-4",
                   )}
                 >
                   <MousePointer2 className="size-4" />

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 export function HeroSection() {
   return (
-    <section className="mx-auto grid max-w-[1200px] gap-12 px-5 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+    <section className="mx-auto grid max-w-6xl gap-12 px-5 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -21,10 +21,10 @@ export function HeroSection() {
           <Sparkles className="size-4 text-primary" />
           AI culling for high-volume photo review
         </div>
-        <h1 className="max-w-[760px] text-[56px] font-normal leading-[1.06] text-ink sm:text-[72px] lg:text-[72px]">
+        <h1 className="max-w-3xl text-6xl font-normal leading-[1.06] text-ink sm:text-7xl">
           AI that picks your best photos instantly
         </h1>
-        <p className="mt-6 max-w-[560px] text-lg leading-8 text-body">
+        <p className="mt-6 max-w-prose text-lg leading-8 text-body">
           Remove blurry shots, group similar photos, and select the best images
           in seconds.
         </p>
@@ -33,7 +33,7 @@ export function HeroSection() {
             href="#"
             className={cn(
               buttonVariants(),
-              "h-10 border-ink bg-ink px-[18px] text-canvas hover:bg-[#343229]",
+              "h-10 border-ink bg-ink px-4 text-canvas hover:bg-[#343229]",
             )}
           >
             <Upload className="size-4" />
@@ -43,7 +43,7 @@ export function HeroSection() {
             href="#demo"
             className={cn(
               buttonVariants({ variant: "outline" }),
-              "h-10 border-hairline-strong bg-surface-card px-[18px] text-ink hover:bg-canvas-soft",
+              "h-10 border-hairline-strong bg-surface-card px-4 text-ink hover:bg-canvas-soft",
             )}
           >
             View Demo

@@ -83,22 +83,22 @@ CursorGothic is the licensed display and body family. Fallback: `system-ui, "Hel
 
 Code surfaces use JetBrains Mono.
 
-| Token | Size | Weight | Line Height | Letter Spacing | Use |
+| Token | Tailwind Utility | Weight | Line Height | Letter Spacing | Use |
 | --- | --- | --- | --- | --- | --- |
-| `typography.display-mega` | 72px | 400 | 1.1 | -2.16px | Homepage hero h1 |
-| `typography.display-lg` | 36px | 400 | 1.2 | -0.72px | Section heads |
-| `typography.display-md` | 26px | 400 | 1.25 | -0.325px | Sub-section heads |
-| `typography.display-sm` | 22px | 400 | 1.3 | -0.11px | Card group titles |
-| `typography.title-md` | 18px | 600 | 1.4 | 0 | Component titles |
-| `typography.title-sm` | 16px | 600 | 1.4 | 0 | List labels |
-| `typography.body-md` | 16px | 400 | 1.5 | 0 | Default body |
-| `typography.body-tracked` | 16px | 400 | 1.5 | 0.08px | Tracked editorial body |
-| `typography.body-sm` | 14px | 400 | 1.5 | 0 | Footer body |
-| `typography.caption` | 13px | 400 | 1.4 | 0 | Photo captions |
-| `typography.caption-uppercase` | 11px | 600 | 1.4 | 0.88px | Section labels and timeline pill labels |
-| `typography.code` | 13px | 400 | 1.5 | 0 | Code blocks in JetBrains Mono |
-| `typography.button` | 14px | 500 | 1.0 | 0 | CTA pill labels |
-| `typography.nav-link` | 14px | 500 | 1.4 | 0 | Top-nav menu |
+| `typography.display-mega` | `text-6xl sm:text-7xl` | 400 | 1.1 | -2.16px | Homepage hero h1 |
+| `typography.display-lg` | `text-4xl` | 400 | 1.2 | -0.72px | Section heads |
+| `typography.display-md` | `text-3xl` | 400 | 1.25 | -0.325px | Sub-section heads |
+| `typography.display-sm` | `text-2xl` | 400 | 1.3 | -0.11px | Card group titles |
+| `typography.title-md` | `text-lg` | 600 | 1.4 | 0 | Component titles |
+| `typography.title-sm` | `text-base` | 600 | 1.4 | 0 | List labels |
+| `typography.body-md` | `text-base` | 400 | 1.5 | 0 | Default body |
+| `typography.body-tracked` | `text-base` | 400 | 1.5 | 0.08px | Tracked editorial body |
+| `typography.body-sm` | `text-sm` | 400 | 1.5 | 0 | Footer body |
+| `typography.caption` | `text-sm` | 400 | 1.4 | 0 | Photo captions |
+| `typography.caption-uppercase` | `text-xs uppercase` | 600 | 1.4 | 0.88px | Section labels and timeline pill labels |
+| `typography.code` | `text-sm` | 400 | 1.5 | 0 | Code blocks in JetBrains Mono |
+| `typography.button` | `text-sm` | 500 | 1.0 | 0 | CTA pill labels |
+| `typography.nav-link` | `text-sm` | 500 | 1.4 | 0 | Top-nav menu |
 
 ### Typography Principles
 
@@ -112,17 +112,17 @@ Code surfaces use JetBrains Mono.
 ### Spacing
 
 - Base unit: 4px.
-- `spacing.xxs`: 4px.
-- `spacing.xs`: 8px.
-- `spacing.sm`: 12px.
-- `spacing.base`: 16px.
-- `spacing.md`: 20px.
-- `spacing.lg`: 24px.
-- `spacing.xl`: 32px.
-- `spacing.xxl`: 48px.
-- `spacing.section`: 80px.
+- `spacing.xxs`: `1`
+- `spacing.xs`: `2`
+- `spacing.sm`: `3`
+- `spacing.base`: `4`
+- `spacing.md`: `5`
+- `spacing.lg`: `6`
+- `spacing.xl`: `8`
+- `spacing.xxl`: `12`
+- `spacing.section`: `20`
 
-Section padding defaults to 80px.
+Section padding defaults to `py-20`.
 
 ### Grid And Container
 
@@ -152,14 +152,14 @@ IDE mockup cards are the only elevated-feeling element. Timeline pastel pills ad
 
 | Token | Value | Use |
 | --- | --- | --- |
-| `rounded.none` | 0px | Reserved |
-| `rounded.xs` | 4px | Inline tags |
-| `rounded.sm` | 6px | Compact rows |
-| `rounded.md` | 8px | CTA buttons and form inputs |
-| `rounded.lg` | 12px | Cards and IDE panes |
-| `rounded.xl` | 16px | Larger feature cards, rare |
-| `rounded.pill` | 9999px | Timeline pills and badges |
-| `rounded.full` | 9999px | Avatars, rare |
+| `rounded.none` | `rounded-none` | Reserved |
+| `rounded.xs` | `rounded-sm` | Inline tags |
+| `rounded.sm` | `rounded-md` | Compact rows |
+| `rounded.md` | `rounded-lg` | CTA buttons and form inputs |
+| `rounded.lg` | `rounded-xl` | Cards and IDE panes |
+| `rounded.xl` | `rounded-2xl` | Larger feature cards, rare |
+| `rounded.pill` | `rounded-full` | Timeline pills and badges |
+| `rounded.full` | `rounded-full` | Avatars, rare |
 
 ## Components
 
@@ -178,7 +178,7 @@ Primary menu items:
 
 ### Buttons
 
-`button-primary` is the signature Cursor Orange CTA. It uses `colors.primary` background, `colors.on-primary` text, `typography.button`, 10px by 18px padding, 40px height, and `rounded.md`.
+`button-primary` is the signature Cursor Orange CTA. It uses `colors.primary` background, `colors.on-primary` text, `typography.button`, roughly `px-4 py-2`, `h-10`, and `rounded.md`.
 
 `button-primary-active` uses `colors.primary-active`.
 
@@ -186,7 +186,7 @@ Primary menu items:
 
 `button-tertiary-text` is an inline ink text link.
 
-`button-download` is a larger ink-on-canvas CTA. It uses `colors.ink` background, `colors.canvas` text, 12px by 20px padding, and 44px height.
+`button-download` is a larger ink-on-canvas CTA. It uses `colors.ink` background, `colors.canvas` text, roughly `px-5 py-3`, and `h-11`.
 
 ### Hero And IDE Mockups
 
@@ -194,19 +194,19 @@ Primary menu items:
 
 `ide-mockup-card` is a white card containing a multi-pane IDE mockup: sidebar, main editor, chat panel, and terminal. It uses `colors.surface-card`, `rounded.lg`, a 1px `colors.hairline` border, and no padding so panes fill the card edge-to-edge.
 
-`ide-pane` uses `colors.canvas-soft`, `colors.body`, `typography.code`, `rounded.md`, and 16px padding.
+`ide-pane` uses `colors.canvas-soft`, `colors.body`, `typography.code`, `rounded.md`, and `p-4`.
 
 ### Cards
 
-`feature-card` uses `colors.surface-card`, `colors.ink`, `typography.title-md`, `rounded.lg`, 24px padding, and a 1px `colors.hairline` border.
+`feature-card` uses `colors.surface-card`, `colors.ink`, `typography.title-md`, `rounded.lg`, `p-6`, and a 1px `colors.hairline` border.
 
 `comparison-card` follows the same surface treatment and splits internally into two columns.
 
-`testimonial-card` uses `colors.surface-card`, `colors.body`, `rounded.lg`, and 24px padding.
+`testimonial-card` uses `colors.surface-card`, `colors.body`, `rounded.lg`, and `p-6`.
 
 ### AI Timeline
 
-`timeline-pill-thinking` uses `colors.timeline-thinking`, `colors.ink`, `typography.caption-uppercase`, `rounded.pill`, and 4px by 10px padding.
+`timeline-pill-thinking` uses `colors.timeline-thinking`, `colors.ink`, `typography.caption-uppercase`, `rounded.pill`, and roughly `px-2.5 py-1`.
 
 `timeline-pill-grep` uses `colors.timeline-grep` with the same shape and type.
 
@@ -218,25 +218,25 @@ Primary menu items:
 
 ### Code
 
-`code-block` uses `colors.surface-card`, `colors.ink`, `typography.code`, `rounded.lg`, 20px padding, and a 1px `colors.hairline` border.
+`code-block` uses `colors.surface-card`, `colors.ink`, `typography.code`, `rounded.lg`, `p-5`, and a 1px `colors.hairline` border.
 
 ### Pricing
 
-`pricing-tier-card` uses `colors.surface-card`, `rounded.lg`, 32px padding, and a 1px `colors.hairline` border.
+`pricing-tier-card` uses `colors.surface-card`, `rounded.lg`, `p-8`, and a 1px `colors.hairline` border.
 
 `pricing-tier-featured` inverts to ink: `colors.ink` background and `colors.canvas` text. This dark inversion signals emphasis without a colored ribbon.
 
 ### Forms And Tags
 
-`text-input` uses `colors.surface-card`, `colors.ink`, `rounded.md`, 12px by 16px padding, and 44px height.
+`text-input` uses `colors.surface-card`, `colors.ink`, `rounded.md`, roughly `px-4 py-3`, and `h-11`.
 
-`badge-pill` uses `colors.surface-strong`, `colors.ink`, `typography.caption-uppercase`, `rounded.pill`, and 4px by 10px padding.
+`badge-pill` uses `colors.surface-strong`, `colors.ink`, `typography.caption-uppercase`, `rounded.pill`, and roughly `px-2.5 py-1`.
 
 ### CTA And Footer
 
-`cta-band` is a pre-footer band using `colors.canvas`, a centered `typography.display-lg` headline, a single Cursor Orange CTA, and 96px vertical padding.
+`cta-band` is a pre-footer band using `colors.canvas`, a centered `typography.display-lg` headline, a single Cursor Orange CTA, and `py-24`.
 
-`footer` uses `colors.canvas`, `colors.body`, a 5-column link list, and 64px by 48px padding.
+`footer` uses `colors.canvas`, `colors.body`, a 5-column link list, and roughly `px-12 py-16`.
 
 `footer-link` uses transparent background, `colors.body`, and `typography.body-sm`.
 

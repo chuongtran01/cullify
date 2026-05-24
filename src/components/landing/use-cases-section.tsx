@@ -5,7 +5,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 export function UseCasesSection() {
   return (
     <section className="border-y border-hairline bg-surface-card">
-      <div className="mx-auto max-w-[1200px] px-5 py-20">
+      <div className="mx-auto max-w-6xl px-5 py-20">
         <SectionHeader
           eyebrow="Use cases"
           title="Built for anyone buried in near-identical photos."

@@ -9,7 +9,7 @@ import {
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="mx-auto max-w-[1200px] px-5 py-20">
+    <section id="how-it-works" className="mx-auto max-w-6xl px-5 py-20">
       <SectionHeader
         eyebrow="How it works"
         title="One upload becomes a smaller set of confident decisions."
@@ -20,10 +20,10 @@ export function HowItWorksSection() {
           <Card key={step.title}>
             <CardHeader>
               <div className="mb-8 flex items-center justify-between">
-                <span className="grid size-10 place-items-center rounded-[8px] bg-surface-strong">
+                <span className="grid size-10 place-items-center rounded-lg bg-surface-strong">
                   <step.icon className="size-5 text-ink" />
                 </span>
-                <span className="font-mono text-[12px] text-muted">
+                <span className="font-mono text-xs text-muted">
                   0{index + 1}
                 </span>
               </div>
