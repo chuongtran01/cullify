@@ -19,12 +19,6 @@ export const featureBullets = [
   "AI best-shot selection",
 ];
 
-export const stats = [
-  { value: "2M+", label: "photos processed" },
-  { value: "91%", label: "faster first pass" },
-  { value: "4.8/5", label: "review confidence" },
-];
-
 export type IconContent = {
   icon: LucideIcon;
   title: string;
