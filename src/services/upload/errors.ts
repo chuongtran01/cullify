@@ -7,3 +7,10 @@ export class UploadSessionError extends Error {
     this.status = status;
   }
 }
+
+export class UploadR2Error extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "UploadR2Error";
+  }
+}

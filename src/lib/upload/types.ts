@@ -23,3 +23,9 @@ export type CreateUploadSessionResponse = {
   expiresIn: number;
   uploads: PresignedUpload[];
 };
+
+export type UploadProgress = {
+  completed: number;
+  total: number;
+  fileName: string;
+};

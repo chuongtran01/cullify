@@ -1,6 +1,6 @@
 export const queryKeys = {
   upload: {
     all: ["upload"] as const,
-    sessions: () => [...queryKeys.upload.all, "session"] as const,
+    batch: () => [...queryKeys.upload.all, "batch"] as const,
   },
 } as const;

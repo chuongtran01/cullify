@@ -14,9 +14,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useCreateUploadSession } from "@/hooks/use-create-upload-session";
-import type { CreateUploadSessionResponse } from "@/lib/upload/types";
-import { UploadSessionError } from "@/services/upload";
+import { useUploadBatch } from "@/hooks/use-upload-batch";
+import type {
+  CreateUploadSessionResponse,
+  UploadProgress,
+} from "@/lib/upload/types";
+import { UploadR2Error, UploadSessionError } from "@/services/upload";
 
 type UploadDialogProps = {
   open: boolean;
@@ -46,12 +49,15 @@ export function UploadDialog({
   onUploadSessionCreated,
 }: UploadDialogProps) {
   const [files, setFiles] = React.useState<File[]>([]);
-  const createUploadSession = useCreateUploadSession();
-  const isSubmitting = createUploadSession.isPending;
-  const error = createUploadSession.error
-    ? createUploadSession.error instanceof UploadSessionError
-      ? createUploadSession.error.message
-      : "Upload session failed"
+  const [uploadProgress, setUploadProgress] =
+    React.useState<UploadProgress | null>(null);
+  const uploadBatch = useUploadBatch();
+  const isSubmitting = uploadBatch.isPending;
+  const error = uploadBatch.error
+    ? uploadBatch.error instanceof UploadSessionError ||
+        uploadBatch.error instanceof UploadR2Error
+      ? uploadBatch.error.message
+      : "Upload failed"
     : null;
 
   const onDrop = React.useCallback((acceptedFiles: File[]) => {
@@ -79,14 +85,26 @@ export function UploadDialog({
       return;
     }
 
-    createUploadSession.mutate(files, {
-      onSuccess: (response) => {
-        onUploadSessionCreated?.(response);
-        setFiles([]);
-        onOpenChange(false);
-        createUploadSession.reset();
+    setUploadProgress({ completed: 0, total: files.length, fileName: "" });
+
+    uploadBatch.mutate(
+      {
+        files,
+        onProgress: setUploadProgress,
       },
-    });
+      {
+        onSuccess: (response) => {
+          onUploadSessionCreated?.(response);
+          setFiles([]);
+          setUploadProgress(null);
+          onOpenChange(false);
+          uploadBatch.reset();
+        },
+        onError: () => {
+          setUploadProgress(null);
+        },
+      },
+    );
   }
 
   function handleOpenChange(nextOpen: boolean) {
@@ -98,7 +116,8 @@ export function UploadDialog({
 
     if (!nextOpen) {
       setFiles([]);
-      createUploadSession.reset();
+      setUploadProgress(null);
+      uploadBatch.reset();
     }
   }
 
@@ -206,6 +225,21 @@ export function UploadDialog({
             ) : null}
           </div>
 
+          {isSubmitting && uploadProgress && uploadProgress.total > 0 ? (
+            <p className="rounded-lg border border-hairline bg-canvas-soft px-4 py-3 text-sm text-body">
+              Uploading{" "}
+              {uploadProgress.completed > 0
+                ? `${uploadProgress.completed} of ${uploadProgress.total}`
+                : `0 of ${uploadProgress.total}`}
+              …
+              {uploadProgress.fileName ? (
+                <span className="mt-1 block truncate text-xs text-muted">
+                  {uploadProgress.fileName}
+                </span>
+              ) : null}
+            </p>
+          ) : null}
+
           {error ? (
             <p
               role="alert"
@@ -235,7 +269,11 @@ export function UploadDialog({
               onClick={handleContinue}
               disabled={files.length === 0 || isSubmitting}
             >
-              {isSubmitting ? "Starting review…" : "Start Review"}
+              {isSubmitting
+                ? uploadProgress && uploadProgress.completed > 0
+                  ? `Uploading ${uploadProgress.completed}/${uploadProgress.total}…`
+                  : "Preparing upload…"
+                : "Start Review"}
             </Button>
           </div>
         </DialogFooter>
