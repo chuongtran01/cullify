@@ -10,7 +10,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
-    "db:setup": "docker compose up -d && prisma migrate deploy && prisma generate",
+    "db:setup": "docker compose -f ../../docker-compose.yml up -d && prisma migrate deploy && prisma generate",
     "db:push": "prisma db push",
     "postinstall": "prisma generate"
   },
