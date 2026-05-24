@@ -96,6 +96,19 @@ See [`apps/web/.env.example`](apps/web/.env.example) for the full list. Minimum 
 - `REDIS_URL` — Redis for BullMQ
 - R2 variables — presigned uploads to Cloudflare R2
 
+## Redis
+
+Redis runs locally through `docker-compose.yml` and is available to the Next.js
+app through `REDIS_URL`.
+
+```bash
+npm run db:up
+curl http://localhost:3000/api/health/redis
+```
+
+Use `getRedis()` from `apps/web/src/lib/redis.ts` inside server-only code such
+as Route Handlers, Server Actions, or background-job orchestration.
+
 ## License
 
 Private — see repository settings.
