@@ -19,10 +19,10 @@ export function HeroSection() {
           <Sparkles className="size-4 text-primary" />
           AI culling for high-volume photo review
         </div>
-        <h1 className="max-w-3xl text-[56px] font-normal leading-[1.06] text-ink sm:text-[72px] lg:text-[72px]">
+        <h1 className="max-w-[760px] text-[56px] font-normal leading-[1.06] text-ink sm:text-[72px] lg:text-[72px]">
           AI that picks your best photos instantly
         </h1>
-        <p className="mt-6 max-w-xl text-lg leading-8 text-body">
+        <p className="mt-6 max-w-[560px] text-lg leading-8 text-body">
           Remove blurry shots, group similar photos, and select the best images
           in seconds.
         </p>
