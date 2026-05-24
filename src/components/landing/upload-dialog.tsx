@@ -14,10 +14,14 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCreateUploadSession } from "@/hooks/use-create-upload-session";
+import type { CreateUploadSessionResponse } from "@/lib/upload/types";
+import { UploadSessionError } from "@/services/upload";
 
 type UploadDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onUploadSessionCreated?: (response: CreateUploadSessionResponse) => void;
 };
 
 function mergeImageFiles(current: File[], nextFiles: File[]) {
@@ -36,8 +40,19 @@ function mergeImageFiles(current: File[], nextFiles: File[]) {
   return merged;
 }
 
-export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
+export function UploadDialog({
+  open,
+  onOpenChange,
+  onUploadSessionCreated,
+}: UploadDialogProps) {
   const [files, setFiles] = React.useState<File[]>([]);
+  const createUploadSession = useCreateUploadSession();
+  const isSubmitting = createUploadSession.isPending;
+  const error = createUploadSession.error
+    ? createUploadSession.error instanceof UploadSessionError
+      ? createUploadSession.error.message
+      : "Upload session failed"
+    : null;
 
   const onDrop = React.useCallback((acceptedFiles: File[]) => {
     setFiles((current) => mergeImageFiles(current, acceptedFiles));
@@ -51,6 +66,7 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
       multiple: true,
       noClick: true,
       noKeyboard: false,
+      disabled: isSubmitting,
       onDrop,
     });
 
@@ -59,15 +75,30 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
   }
 
   function handleContinue() {
-    setFiles([]);
-    onOpenChange(false);
+    if (files.length === 0 || isSubmitting) {
+      return;
+    }
+
+    createUploadSession.mutate(files, {
+      onSuccess: (response) => {
+        onUploadSessionCreated?.(response);
+        setFiles([]);
+        onOpenChange(false);
+        createUploadSession.reset();
+      },
+    });
   }
 
   function handleOpenChange(nextOpen: boolean) {
+    if (isSubmitting) {
+      return;
+    }
+
     onOpenChange(nextOpen);
 
     if (!nextOpen) {
       setFiles([]);
+      createUploadSession.reset();
     }
   }
 
@@ -118,6 +149,7 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
               </p>
               <Button
                 type="button"
+                disabled={isSubmitting}
                 className="mt-6 h-10 cursor-pointer border-ink !bg-ink px-4 !text-canvas hover:!border-ink hover:!bg-ink/90 hover:!text-canvas"
                 onClick={openFilePicker}
               >
@@ -156,7 +188,8 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
                     </div>
                     <button
                       type="button"
-                      className="grid size-8 place-items-center rounded-md text-body transition-colors hover:bg-canvas-soft hover:text-ink"
+                      disabled={isSubmitting}
+                      className="grid size-8 place-items-center rounded-md text-body transition-colors hover:bg-canvas-soft hover:text-ink disabled:pointer-events-none disabled:opacity-50"
                       onClick={() => removeFile(file)}
                       aria-label={`Remove ${file.name}`}
                     >
@@ -172,6 +205,15 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
               </div>
             ) : null}
           </div>
+
+          {error ? (
+            <p
+              role="alert"
+              className="rounded-lg border border-semantic-error/30 bg-semantic-error/10 px-4 py-3 text-sm text-semantic-error"
+            >
+              {error}
+            </p>
+          ) : null}
         </div>
 
         <DialogFooter className="rounded-b-2xl border-hairline bg-transparent px-8 py-6 sm:justify-between">
@@ -183,6 +225,7 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
             <Button
               variant="outline"
               className="h-10 cursor-pointer px-4"
+              disabled={isSubmitting}
               onClick={() => onOpenChange(false)}
             >
               Cancel
@@ -190,9 +233,9 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
             <Button
               className="h-10 cursor-pointer px-4"
               onClick={handleContinue}
-              disabled={files.length === 0}
+              disabled={files.length === 0 || isSubmitting}
             >
-              Start Review
+              {isSubmitting ? "Starting review…" : "Start Review"}
             </Button>
           </div>
         </DialogFooter>

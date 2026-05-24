@@ -13,9 +13,13 @@ import { PricingSection } from "@/components/landing/pricing-section";
 import { ProductPreviewSection } from "@/components/landing/product-preview-section";
 import { UploadDialog } from "@/components/landing/upload-dialog";
 import { UseCasesSection } from "@/components/landing/use-cases-section";
+import type { CreateUploadSessionResponse } from "@/lib/upload/types";
 
 export default function Home() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [, setUploadSession] = useState<CreateUploadSessionResponse | null>(
+    null,
+  );
 
   return (
     <main className="min-h-screen bg-canvas text-ink">
@@ -32,6 +36,7 @@ export default function Home() {
       <UploadDialog
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
+        onUploadSessionCreated={setUploadSession}
       />
     </main>
   );
