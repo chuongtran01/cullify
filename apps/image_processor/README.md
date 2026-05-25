@@ -3,9 +3,10 @@
 Placeholder Python worker for Cullify image processing.
 
 This package is intentionally light for now. It establishes the standard project
-shape for the future processing service without adding blur detection,
-thumbnailing, or embeddings. It uses the official BullMQ Python package to
-consume queue jobs and passes each job payload into the placeholder pipeline.
+shape for the future processing service with a blur score helper, while leaving
+thumbnailing and embeddings for later. It uses the official BullMQ Python
+package to consume queue jobs and passes each job payload into the placeholder
+pipeline.
 
 ## Structure
 
@@ -32,10 +33,36 @@ apps/image_processor/
 │   └── processor/
 │       ├── __init__.py
 │       ├── batch_loader.py
-│       └── pipeline.py
+│       ├── pipeline.py
+│       └── quality/
+│           └── blur.py
 └── tests/
+    ├── test_blur.py
     └── test_placeholder.py
 ```
+
+## Blur Score
+
+Use `calculate_blur_score` for a file path. It returns a score, threshold,
+dimensions, and an `is_blurry` decision:
+
+```python
+from image_processor.processor.quality import calculate_blur_score
+
+result = calculate_blur_score("/path/to/photo.jpg", threshold=100.0)
+print(result.score, result.is_blurry)
+```
+
+For images already downloaded from R2, use the bytes helper:
+
+```python
+from image_processor.processor.quality import calculate_blur_score_from_bytes
+
+result = calculate_blur_score_from_bytes(downloaded_image.data)
+```
+
+The score is the variance of the Laplacian. Higher values indicate sharper
+images; values below the threshold are treated as blurry.
 
 ## Local Setup
 

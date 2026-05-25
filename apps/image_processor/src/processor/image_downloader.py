@@ -20,11 +20,11 @@ class ImageDownloader:
     def __init__(self, storage: ObjectStorage) -> None:
         self.storage = storage
 
+    def download(self, image: Image) -> DownloadedImage:
+        return DownloadedImage(
+            image=image,
+            data=self.storage.download_bytes(image.object_key),
+        )
+
     def download_for_batch(self, context: BatchContext) -> list[DownloadedImage]:
-        return [
-            DownloadedImage(
-                image=image,
-                data=self.storage.download_bytes(image.object_key),
-            )
-            for image in context.images
-        ]
+        return [self.download(image) for image in context.images]

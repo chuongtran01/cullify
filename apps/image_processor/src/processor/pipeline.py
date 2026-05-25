@@ -4,6 +4,7 @@ from image_processor.config import WorkerSettings
 from image_processor.mq.message_types import ProcessUploadSessionJobData
 from image_processor.processor.batch_loader import BatchLoader
 from image_processor.processor.image_downloader import ImageDownloader
+from image_processor.processor.quality import calculate_blur_score_from_bytes
 from image_processor.storage.r2_client import R2Client
 
 
@@ -14,15 +15,21 @@ class ImageProcessingPipeline:
         settings: WorkerSettings,
     ) -> None:
         self.batch_loader = BatchLoader(session_factory)
-        self.image_downloader = ImageDownloader(R2Client(settings.r2_settings()))
+        self.image_downloader = ImageDownloader(
+            R2Client(settings.r2_settings()))
 
     def process(self, data: ProcessUploadSessionJobData) -> None:
-        """Placeholder for the future image-processing workflow."""
         context = self.batch_loader.load(data["sessionId"])
-        downloaded = self.image_downloader.download_for_batch(context)
 
-        print(
-            "Image processing pipeline downloaded "
-            f"{len(downloaded)} image(s) for batch {context.batch.id}.",
-            flush=True,
-        )
+        for image in context.images:
+            try:
+                downloaded = self.image_downloader.download(image)
+                blur_result = calculate_blur_score_from_bytes(downloaded.data)
+            except Exception:
+                continue
+
+            print(
+                f"image={image.id} blur_score={blur_result.score:.2f} "
+                f"is_blurry={blur_result.is_blurry}",
+                flush=True,
+            )

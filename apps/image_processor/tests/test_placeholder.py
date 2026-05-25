@@ -1,16 +1,21 @@
 import asyncio
 import unittest
+from contextlib import redirect_stdout
 from dataclasses import dataclass
 from datetime import datetime
+from io import StringIO
 from typing import Any
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from image_processor.config import WorkerSettings
 from image_processor.db import Batch, BatchStatus, Image, ImageUploadStatus
 from image_processor.mq.consumer import ImageWorker
 from image_processor.mq.message_types import PROCESS_UPLOAD_SESSION_JOB_NAME
 from image_processor.processor.batch_loader import BatchLoader, BatchNotFoundError
-from image_processor.processor.image_downloader import ImageDownloader
+from image_processor.processor.image_downloader import DownloadedImage, ImageDownloader
+from image_processor.processor.pipeline import ImageProcessingPipeline
+from image_processor.processor.quality import BlurScoreResult
+
 
 @dataclass(frozen=True)
 class FakeJob:
@@ -43,8 +48,11 @@ class MissingBatchRepository:
 
 
 class FakeImageRepository:
+    def __init__(self, images: list[Image] | None = None) -> None:
+        self._images = images
+
     def list_uploaded_for_batch(self, batch_id: str) -> list[Image]:
-        return [
+        return self._images or [
             Image(
                 id="image-1",
                 batch_id=batch_id,
@@ -59,6 +67,28 @@ class FakeImageRepository:
         ]
 
 
+class FakeBatchLoader:
+    def __init__(self, images: list[Image] | None = None) -> None:
+        self.images = images
+
+    def load(self, session_id: str):
+        return make_batch_loader(images=FakeImageRepository(self.images)).load(session_id)
+
+
+class FakeImageDownloader:
+    def __init__(self, failing_image_ids: set[str] | None = None) -> None:
+        self.failing_image_ids = failing_image_ids or set()
+
+    def download(self, image: Image):
+        if image.id in self.failing_image_ids:
+            raise RuntimeError("download failed")
+
+        return DownloadedImage(
+            image=image,
+            data=f"encoded-image-bytes:{image.id}".encode(),
+        )
+
+
 def make_batch_loader(
     batches: FakeBatchRepository | MissingBatchRepository | None = None,
     images: FakeImageRepository | None = None,
@@ -67,6 +97,20 @@ def make_batch_loader(
     loader.batches = batches or FakeBatchRepository()
     loader.images = images or FakeImageRepository()
     return loader
+
+
+def make_image(image_id: str, object_key: str | None = None) -> Image:
+    return Image(
+        id=image_id,
+        batch_id="session-1",
+        file_name=f"{image_id}.jpg",
+        mime_type="image/jpeg",
+        size_bytes=1024,
+        object_key=object_key or f"batches/session-1/{image_id}.jpg",
+        status=ImageUploadStatus.UPLOADED,
+        created_at=datetime(2026, 1, 1),
+        uploaded_at=datetime(2026, 1, 1),
+    )
 
 
 class WorkerPlaceholderTest(unittest.TestCase):
@@ -153,6 +197,60 @@ class WorkerPlaceholderTest(unittest.TestCase):
             downloaded[0].data,
             b"bytes:batches/session-1/image-1.jpg",
         )
+
+    def test_pipeline_scores_downloaded_images_for_blur(self) -> None:
+        pipeline = ImageProcessingPipeline.__new__(ImageProcessingPipeline)
+        pipeline.batch_loader = FakeBatchLoader()
+        pipeline.image_downloader = FakeImageDownloader()
+
+        with patch(
+            "image_processor.processor.pipeline.calculate_blur_score_from_bytes",
+            return_value=BlurScoreResult(
+                score=42.0,
+                threshold=100.0,
+                is_blurry=True,
+                width=10,
+                height=10,
+            ),
+        ) as score_blur:
+            with redirect_stdout(StringIO()) as output:
+                pipeline.process({"sessionId": "session-1"})
+
+        score_blur.assert_called_once_with(b"encoded-image-bytes:image-1")
+        self.assertIn("image=image-1 blur_score=42.00", output.getvalue())
+
+    def test_pipeline_continues_when_one_image_fails(self) -> None:
+        pipeline = ImageProcessingPipeline.__new__(ImageProcessingPipeline)
+        pipeline.batch_loader = FakeBatchLoader(
+            images=[
+                make_image("image-1"),
+                make_image("image-2"),
+                make_image("image-3"),
+            ]
+        )
+        pipeline.image_downloader = FakeImageDownloader(
+            failing_image_ids={"image-2"}
+        )
+
+        with patch(
+            "image_processor.processor.pipeline.calculate_blur_score_from_bytes",
+            return_value=BlurScoreResult(
+                score=42.0,
+                threshold=100.0,
+                is_blurry=True,
+                width=10,
+                height=10,
+            ),
+        ) as score_blur:
+            with redirect_stdout(StringIO()) as output:
+                pipeline.process({"sessionId": "session-1"})
+
+        self.assertEqual(score_blur.call_count, 2)
+        summary = output.getvalue()
+        self.assertIn("image=image-1 blur_score=42.00", summary)
+        self.assertIn("image=image-3 blur_score=42.00", summary)
+        self.assertNotIn("image=image-2", summary)
+
 
 if __name__ == "__main__":
     unittest.main()
