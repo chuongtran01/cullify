@@ -1,7 +1,7 @@
 import asyncio
 import signal
 from collections.abc import Callable
-from typing import Any, Protocol
+from typing import Any, Protocol, TypedDict
 
 from bullmq import Worker as BullMQWorker
 
@@ -9,8 +9,18 @@ from cullify_worker.config import WorkerSettings
 from cullify_worker.processing.pipeline import ImageProcessingPipeline
 
 
+PROCESS_UPLOAD_SESSION_JOB_NAME = "process-upload-session"
+
+
+class ImageProcessingJobData(TypedDict):
+    message: str
+    sessionId: str
+
+
 class BullMQJob(Protocol):
-    data: dict[str, Any]
+    id: str | None
+    name: str
+    data: ImageProcessingJobData
 
 
 BullMQWorkerFactory = Callable[[str, Callable[..., Any], dict[str, Any]], Any]
@@ -28,6 +38,9 @@ class ImageWorker:
         self.worker_factory = worker_factory
 
     async def process_job(self, job: BullMQJob, job_token: str) -> dict[str, bool]:
+        if job.name != PROCESS_UPLOAD_SESSION_JOB_NAME:
+            raise ValueError(f"Unsupported image-processing job type: {job.name}")
+
         self.pipeline.process(job.data)
 
         return {"ok": True}

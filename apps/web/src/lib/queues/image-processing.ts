@@ -6,6 +6,7 @@ const DEFAULT_IMAGE_PROCESSING_QUEUE_NAME = "image-processing";
 
 export const IMAGE_PROCESSING_QUEUE_NAME =
   process.env.IMAGE_WORKER_QUEUE ?? DEFAULT_IMAGE_PROCESSING_QUEUE_NAME;
+export const PROCESS_UPLOAD_SESSION_JOB_NAME = "process-upload-session";
 
 export type ImageProcessingJobData = {
   message: string;
@@ -39,7 +40,7 @@ export async function enqueueImageProcessingJob(sessionId: string) {
   const queue = getImageProcessingQueue();
 
   return queue.add(
-    "process-upload-session",
+    PROCESS_UPLOAD_SESSION_JOB_NAME,
     {
       message: `Process upload session ${sessionId}`,
       sessionId,
