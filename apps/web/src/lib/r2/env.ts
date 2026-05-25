@@ -30,9 +30,7 @@ export function getR2Config(): R2Config {
   const secretAccessKey = requireEnv("R2_SECRET_ACCESS_KEY");
   const bucketName = requireEnv("R2_BUCKET_NAME");
   const region = process.env.R2_REGION?.trim() || "auto";
-  const endpoint =
-    process.env.R2_ENDPOINT?.trim() ||
-    `https://${accountId}.r2.cloudflarestorage.com`;
+  const endpoint = `https://${accountId}.r2.cloudflarestorage.com`;
 
   return {
     accountId,
