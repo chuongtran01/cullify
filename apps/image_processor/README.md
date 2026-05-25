@@ -21,7 +21,14 @@ apps/image_processor/
 │   │   ├── consumer.py
 │   │   └── message_types.py
 │   ├── db/
-│   │   └── database.py
+│   │   ├── session.py
+│   │   ├── models/
+│   │   │   ├── batch.py
+│   │   │   ├── image.py
+│   │   │   └── image_quality_analysis.py
+│   │   └── repositories/
+│   │       ├── batch_repo.py
+│   │       └── image_repo.py
 │   └── processor/
 │       ├── __init__.py
 │       ├── batch_loader.py

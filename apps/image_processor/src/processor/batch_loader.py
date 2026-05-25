@@ -1,21 +1,21 @@
 from dataclasses import dataclass
 from typing import Protocol
 
-from image_processor.db import BatchRecord, ImageRecord
+from image_processor.db.models import Batch, Image
 
 
 class BatchLoaderDatabase(Protocol):
-    def get_batch(self, batch_id: str) -> BatchRecord | None:
+    def get_batch(self, batch_id: str) -> Batch | None:
         pass
 
-    def list_uploaded_images_for_batch(self, batch_id: str) -> list[ImageRecord]:
+    def list_uploaded_images_for_batch(self, batch_id: str) -> list[Image]:
         pass
 
 
 @dataclass(frozen=True)
 class BatchContext:
-    batch: BatchRecord
-    images: list[ImageRecord]
+    batch: Batch
+    images: list[Image]
 
 
 class BatchNotFoundError(ValueError):

@@ -312,7 +312,11 @@ apps/image_processor/src/
 │   │   ├── features.py
 │   │   └── ranking.py
 │   ├── db/
-│   │   └── database.py
+│   │   ├── session.py
+│   │   ├── models/
+│   │   └── repositories/
+│   │       ├── batch_repo.py
+│   │       └── image_repo.py
 │   └── storage.py
 ```
 

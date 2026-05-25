@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any
 
 from image_processor.config import WorkerSettings
-from image_processor.db import BatchRecord, ImageRecord
+from image_processor.db import Batch, BatchStatus, Image, ImageUploadStatus
 from image_processor.mq.consumer import ImageWorker
 from image_processor.mq.message_types import PROCESS_UPLOAD_SESSION_JOB_NAME
 from image_processor.processor.batch_loader import BatchLoader, BatchNotFoundError
@@ -28,32 +28,32 @@ class RecordingPipeline:
 
 
 class MissingBatchDatabase:
-    def get_batch(self, batch_id: str) -> BatchRecord | None:
+    def get_batch(self, batch_id: str) -> Batch | None:
         return None
 
-    def list_uploaded_images_for_batch(self, batch_id: str) -> list[ImageRecord]:
+    def list_uploaded_images_for_batch(self, batch_id: str) -> list[Image]:
         return []
 
 
 class FakeDatabase:
-    def get_batch(self, batch_id: str) -> BatchRecord | None:
-        return BatchRecord(
+    def get_batch(self, batch_id: str) -> Batch | None:
+        return Batch(
             id=batch_id,
-            status="PROCESSING",
+            status=BatchStatus.PROCESSING,
             created_at=datetime(2026, 1, 1),
             updated_at=datetime(2026, 1, 1),
         )
 
-    def list_uploaded_images_for_batch(self, batch_id: str) -> list[ImageRecord]:
+    def list_uploaded_images_for_batch(self, batch_id: str) -> list[Image]:
         return [
-            ImageRecord(
+            Image(
                 id="image-1",
                 batch_id=batch_id,
                 file_name="photo.jpg",
                 mime_type="image/jpeg",
                 size_bytes=1024,
                 object_key="batches/session-1/image-1.jpg",
-                status="UPLOADED",
+                status=ImageUploadStatus.UPLOADED,
                 created_at=datetime(2026, 1, 1),
                 uploaded_at=datetime(2026, 1, 1),
             )

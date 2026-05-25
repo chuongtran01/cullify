@@ -23,6 +23,8 @@ package-dir = { "image_processor" = "src" }
 packages = [
   "image_processor",
   "image_processor.db",
+  "image_processor.db.models",
+  "image_processor.db.repositories",
   "image_processor.mq",
   "image_processor.processor",
 ]
