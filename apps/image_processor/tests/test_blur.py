@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from image_processor.processor.quality import (
     BlurScoreResult,
+    ExposureScoreResult,
     ImageQualityAnalyzer,
     calculate_blur_score_from_pixels,
 )
@@ -68,22 +69,45 @@ class BlurScoreTest(unittest.TestCase):
     def test_analyzer_returns_quality_result_from_blur_score(self) -> None:
         analyzer = ImageQualityAnalyzer()
 
-        with patch(
-            "image_processor.processor.quality.analyzer.calculate_blur_score_from_bytes",
-            return_value=BlurScoreResult(
-                score=42.0,
-                threshold=100.0,
-                is_blurry=True,
-                width=10,
-                height=20,
-            ),
-        ) as calculate_blur:
-            result = analyzer.analyze(b"encoded-image-bytes")
+        with patch.object(
+            analyzer,
+            "_load_grayscale_pixels",
+            return_value=([128] * 200, 10, 20),
+        ) as load_pixels:
+            with patch(
+                "image_processor.processor.quality.analyzer.calculate_blur_score_from_pixels",
+                return_value=BlurScoreResult(
+                    score=42.0,
+                    threshold=100.0,
+                    is_blurry=True,
+                    width=10,
+                    height=20,
+                ),
+            ) as calculate_blur:
+                with patch(
+                    "image_processor.processor.quality.analyzer.calculate_exposure_score_from_pixels",
+                    return_value=ExposureScoreResult(
+                        score=0.8,
+                        mean_luminance=0.45,
+                        dark_pixel_ratio=0.1,
+                        bright_pixel_ratio=0.0,
+                        is_low_exposure=False,
+                        is_high_exposure=False,
+                        width=10,
+                        height=20,
+                    ),
+                ) as calculate_exposure:
+                    result = analyzer.analyze(b"encoded-image-bytes")
 
-        calculate_blur.assert_called_once_with(b"encoded-image-bytes")
+        load_pixels.assert_called_once_with(b"encoded-image-bytes")
+        calculate_blur.assert_called_once_with([128] * 200, width=10, height=20)
+        calculate_exposure.assert_called_once_with([128] * 200, width=10, height=20)
         self.assertEqual(result.blur_score, 42.0)
         self.assertEqual(result.blur_threshold, 100.0)
         self.assertTrue(result.is_blurry)
+        self.assertEqual(result.exposure_score, 0.8)
+        self.assertEqual(result.mean_luminance, 0.45)
+        self.assertFalse(result.is_low_exposure)
         self.assertEqual(result.width, 10)
         self.assertEqual(result.height, 20)
 

@@ -31,6 +31,8 @@ class ImageProcessingPipeline:
 
             print(
                 f"image={image.id} blur_score={quality_result.blur_score:.2f} "
-                f"is_blurry={quality_result.is_blurry}",
+                f"is_blurry={quality_result.is_blurry} "
+                f"exposure_score={quality_result.exposure_score:.2f} "
+                f"is_low_exposure={quality_result.is_low_exposure}",
                 flush=True,
             )

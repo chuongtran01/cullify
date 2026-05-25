@@ -41,20 +41,21 @@ apps/image_processor/
     └── test_placeholder.py
 ```
 
-## Blur Score
+## Quality Scores
 
-For images downloaded from R2, use the bytes helper. It returns a score,
-threshold, dimensions, and an `is_blurry` decision:
+For images downloaded from R2, use the quality analyzer. It decodes the image
+once, then calculates blur and exposure scores from shared grayscale pixels:
 
 ```python
-from image_processor.processor.quality import calculate_blur_score_from_bytes
+from image_processor.processor.quality import ImageQualityAnalyzer
 
-result = calculate_blur_score_from_bytes(downloaded_image.data)
-print(result.score, result.is_blurry)
+result = ImageQualityAnalyzer().analyze(downloaded_image.data)
+print(result.blur_score, result.is_blurry, result.exposure_score)
 ```
 
-The score is the variance of the Laplacian. Higher values indicate sharper
-images; values below the threshold are treated as blurry.
+The blur score is the variance of the Laplacian. Higher values indicate sharper
+images; values below the threshold are treated as blurry. The exposure score is
+normalized from 0.0 to 1.0, where higher values indicate more balanced exposure.
 
 ## Local Setup
 

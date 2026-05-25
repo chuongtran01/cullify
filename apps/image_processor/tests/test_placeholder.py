@@ -99,6 +99,12 @@ class FakeQualityAnalyzer:
             blur_score=42.0,
             blur_threshold=100.0,
             is_blurry=True,
+            exposure_score=0.8,
+            mean_luminance=0.45,
+            dark_pixel_ratio=0.1,
+            bright_pixel_ratio=0.0,
+            is_low_exposure=False,
+            is_high_exposure=False,
             width=10,
             height=10,
         )
@@ -227,6 +233,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
             [b"encoded-image-bytes:image-1"],
         )
         self.assertIn("image=image-1 blur_score=42.00", output.getvalue())
+        self.assertIn("exposure_score=0.80", output.getvalue())
 
     def test_pipeline_continues_when_one_image_fails(self) -> None:
         pipeline = ImageProcessingPipeline.__new__(ImageProcessingPipeline)
