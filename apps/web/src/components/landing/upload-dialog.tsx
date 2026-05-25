@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ImagePlus, Sparkles, Upload, X } from "lucide-react";
+import { ImagePlus, Loader2, Sparkles, Upload, X } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 
 import {
@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useUploadBatch } from "@/hooks/use-upload-batch";
 import type {
@@ -53,6 +54,10 @@ export function UploadDialog({
     React.useState<UploadProgress | null>(null);
   const uploadBatch = useUploadBatch();
   const isSubmitting = uploadBatch.isPending;
+  const uploadProgressValue =
+    uploadProgress && uploadProgress.total > 0
+      ? Math.round((uploadProgress.completed / uploadProgress.total) * 100)
+      : 0;
   const error = uploadBatch.error
     ? uploadBatch.error instanceof UploadSessionError ||
         uploadBatch.error instanceof UploadR2Error
@@ -226,18 +231,39 @@ export function UploadDialog({
           </div>
 
           {isSubmitting && uploadProgress && uploadProgress.total > 0 ? (
-            <p className="rounded-lg border border-hairline bg-canvas-soft px-4 py-3 text-sm text-body">
-              Uploading{" "}
-              {uploadProgress.completed > 0
-                ? `${uploadProgress.completed} of ${uploadProgress.total}`
-                : `0 of ${uploadProgress.total}`}
-              …
-              {uploadProgress.fileName ? (
-                <span className="mt-1 block truncate text-xs text-muted">
-                  {uploadProgress.fileName}
-                </span>
-              ) : null}
-            </p>
+            <div
+              role="status"
+              aria-live="polite"
+              className="flex gap-3 rounded-lg border border-hairline bg-canvas-soft px-4 py-3"
+            >
+              <Loader2
+                className="mt-0.5 size-4 shrink-0 animate-spin text-primary"
+                aria-hidden
+              />
+              <div className="min-w-0 flex-1 text-sm text-body">
+                <div className="flex items-center justify-between gap-4">
+                  <p>
+                    Uploading{" "}
+                    {uploadProgress.completed > 0
+                      ? `${uploadProgress.completed} of ${uploadProgress.total}`
+                      : `0 of ${uploadProgress.total}`}
+                    …
+                  </p>
+                  <p className="shrink-0 text-xs text-muted">
+                    {uploadProgressValue}%
+                  </p>
+                </div>
+                <Progress
+                  value={uploadProgressValue}
+                  className="mt-3 h-1.5 bg-hairline"
+                />
+                {uploadProgress.fileName ? (
+                  <p className="mt-1 truncate text-xs text-muted">
+                    {uploadProgress.fileName}
+                  </p>
+                ) : null}
+              </div>
+            </div>
           ) : null}
 
           {error ? (
