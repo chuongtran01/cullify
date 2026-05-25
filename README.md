@@ -8,15 +8,15 @@ AI-first photo culling — upload batches, detect blur and duplicates, group sim
 cullify-app/
 ├── package.json         # Root scripts (dev, db, etc.)
 ├── docker-compose.yml   # PostgreSQL + Redis (local dev)
-├── apps/
-│   └── web/             # Next.js app (UI, API routes, Prisma)
-└── workers/             # Background workers (planned)
+└── apps/
+    ├── web/                 # Next.js app (UI, API routes, Prisma)
+    └── image_processor/     # Python image-processing worker
 ```
 
 | Path | Description |
 |------|-------------|
 | [`apps/web/`](apps/web/) | Next.js 16 app — landing, upload flow, Prisma, R2 presigned uploads |
-| [`workers/image_processor/`](workers/image_processor/) | Python image-processing worker scaffold |
+| [`apps/image_processor/`](apps/image_processor/) | Python image-processing worker |
 | [`docker-compose.yml`](docker-compose.yml) | Local Postgres 16 and Redis 7 |
 
 More product and architecture detail: [`PROJECT_PLAN.md`](PROJECT_PLAN.md), [`IMAGE_PROCESSING_PLAN.md`](IMAGE_PROCESSING_PLAN.md), [`apps/web/DESIGN.md`](apps/web/DESIGN.md), [`ROADMAP.md`](ROADMAP.md).
@@ -88,11 +88,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 **`apps/web/`** — same scripts if you `cd` there; `db:setup` also works via compose path to repo root.
 
-**`workers/image_processor/`** — Python worker scaffold:
+**`apps/image_processor/`** — Python worker:
 
 ```bash
 npm run install:worker
-cp workers/image_processor/.env.example workers/image_processor/.env.local
+cp apps/image_processor/.env.example apps/image_processor/.env.local
 npm run worker
 ```
 

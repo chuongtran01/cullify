@@ -10,7 +10,7 @@ consume queue jobs and passes each job payload into the placeholder pipeline.
 ## Structure
 
 ```text
-workers/image_processor/
+apps/image_processor/
 ├── pyproject.toml
 ├── README.md
 ├── src/
@@ -21,6 +21,7 @@ workers/image_processor/
 │       ├── worker.py
 │       └── processing/
 │           ├── __init__.py
+│           ├── batch_loader.py
 │           └── pipeline.py
 └── tests/
     └── test_placeholder.py
@@ -28,8 +29,16 @@ workers/image_processor/
 
 ## Local Setup
 
+From the repo root:
+
 ```bash
-cd workers/image_processor
+npm run install:worker
+```
+
+Or from this directory:
+
+```bash
+cd apps/image_processor
 cp .env.example .env.local
 python3 -m venv .venv
 source .venv/bin/activate

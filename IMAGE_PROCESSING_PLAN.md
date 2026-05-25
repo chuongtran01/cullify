@@ -291,7 +291,7 @@ process_upload_session(sessionId)
 Recommended worker package shape:
 
 ```text
-workers/image_processor/src/cullify_worker/
+apps/image_processor/src/cullify_worker/
 ├── jobs.py
 ├── worker.py
 ├── processing/
