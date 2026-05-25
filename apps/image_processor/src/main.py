@@ -1,7 +1,7 @@
 import asyncio
 
 from image_processor.config import WorkerSettings
-from image_processor.worker import ImageWorker
+from image_processor.mq.consumer import ImageWorker
 
 
 def main() -> int:

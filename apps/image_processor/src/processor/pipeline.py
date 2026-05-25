@@ -1,5 +1,5 @@
 from image_processor.db import ImageProcessingDatabase
-from image_processor.jobs import ProcessUploadSessionJobData
+from image_processor.mq.message_types import ProcessUploadSessionJobData
 from image_processor.processor.batch_loader import BatchLoader
 
 

@@ -19,7 +19,12 @@ cullify-image-worker = "image_processor.main:main"
 
 [tool.setuptools]
 package-dir = { "image_processor" = "src" }
-packages = ["image_processor", "image_processor.db", "image_processor.processor"]
+packages = [
+  "image_processor",
+  "image_processor.db",
+  "image_processor.mq",
+  "image_processor.processor",
+]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

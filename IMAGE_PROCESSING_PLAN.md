@@ -292,8 +292,9 @@ Recommended worker package shape:
 
 ```text
 apps/image_processor/src/
-├── jobs.py
-├── worker.py
+├── mq/
+│   ├── consumer.py
+│   └── message_types.py
 ├── processor/
 │   ├── pipeline.py
 │   ├── quality/

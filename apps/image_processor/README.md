@@ -17,7 +17,11 @@ apps/image_processor/
 │   ├── __init__.py
 │   ├── main.py
 │   ├── config.py
-│   ├── worker.py
+│   ├── mq/
+│   │   ├── consumer.py
+│   │   └── message_types.py
+│   ├── db/
+│   │   └── database.py
 │   └── processor/
 │       ├── __init__.py
 │       ├── batch_loader.py

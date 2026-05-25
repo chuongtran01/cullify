@@ -7,7 +7,7 @@ from bullmq import Worker as BullMQWorker
 
 from image_processor.config import WorkerSettings
 from image_processor.db import ImageProcessingDatabase
-from image_processor.jobs import (
+from image_processor.mq.message_types import (
     PROCESS_UPLOAD_SESSION_JOB_NAME,
     BullMQJob,
     ProcessUploadSessionJobData,
@@ -41,7 +41,7 @@ class ImageWorker:
         return {"ok": True}
 
     async def run(self) -> None:
-        """Run the BullMQ worker until the process receives a shutdown signal."""
+        """Run the BullMQ consumer until the process receives a shutdown signal."""
         shutdown_event = asyncio.Event()
 
         def handle_shutdown(*_: object) -> None:

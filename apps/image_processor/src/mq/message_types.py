@@ -13,4 +13,3 @@ class BullMQJob(Protocol):
     id: str | None
     name: str
     data: dict[str, Any]
-

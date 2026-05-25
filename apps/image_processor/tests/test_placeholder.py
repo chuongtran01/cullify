@@ -6,10 +6,10 @@ from typing import Any
 
 from image_processor.config import WorkerSettings
 from image_processor.db import BatchRecord, ImageRecord
-from image_processor.jobs import PROCESS_UPLOAD_SESSION_JOB_NAME
+from image_processor.mq.consumer import ImageWorker
+from image_processor.mq.message_types import PROCESS_UPLOAD_SESSION_JOB_NAME
 from image_processor.processor.batch_loader import BatchLoader, BatchNotFoundError
 from image_processor.processor.pipeline import ImageProcessingPipeline
-from image_processor.worker import ImageWorker
 
 
 @dataclass(frozen=True)
