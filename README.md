@@ -88,12 +88,12 @@ Open [http://localhost:3000](http://localhost:3000).
 
 **`apps/web/`** — same scripts if you `cd` there; `db:setup` also works via compose path to repo root.
 
-**`apps/image_processor/`** — Python worker:
+**`apps/image_processor/`** — Python image processor:
 
 ```bash
-npm run install:worker
+npm run install:image_processor
 cp apps/image_processor/.env.example apps/image_processor/.env.local
-npm run worker
+npm run image_processor
 ```
 
 The web app enqueues an image-processing job after an upload session is marked

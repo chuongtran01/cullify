@@ -61,7 +61,7 @@ images; values below the threshold are treated as blurry.
 From the repo root:
 
 ```bash
-npm run install:worker
+npm run install:image_processor
 ```
 
 Or from this directory:
@@ -76,11 +76,13 @@ python -m pip install -e .
 
 ## Run
 
+From the repo root:
+
 ```bash
-image-processor
+npm run image_processor
 ```
 
-For now, the worker runs continuously, receives queued messages, and prints each
+For now, the processor runs continuously, receives queued messages, and prints each
 payload from the placeholder pipeline.
 
 ## Process A Message
@@ -88,10 +90,10 @@ payload from the placeholder pipeline.
 Start the Next.js app and complete an upload session. The completion API
 enqueues a BullMQ job with the upload session id.
 
-Run the worker:
+Run the image processor:
 
 ```bash
-image-processor
+npm run image_processor
 ```
 
 The pipeline should print the queued message. Stop the worker with `Ctrl+C`.
