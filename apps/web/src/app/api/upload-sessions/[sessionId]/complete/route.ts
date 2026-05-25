@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { completeUploadSession } from "@/lib/db/upload-session";
+import { enqueueImageProcessingJob } from "@/lib/queues/image-processing";
 import {
   isUuid,
   validateCompleteUploadSessionRequest,
@@ -41,7 +42,17 @@ export async function POST(request: Request, context: RouteContext) {
       return NextResponse.json({ error: "Session not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ sessionId, updated });
+    const processingJob = await enqueueImageProcessingJob(sessionId);
+
+    return NextResponse.json({
+      sessionId,
+      updated,
+      processingJob: {
+        id: processingJob.id,
+        name: processingJob.name,
+        queue: processingJob.queueName,
+      },
+    });
   } catch (error) {
     console.error("Failed to complete upload session", error);
 

@@ -4,7 +4,8 @@ Placeholder Python worker for Cullify image processing.
 
 This package is intentionally light for now. It establishes the standard project
 shape for the future processing service without adding blur detection,
-thumbnailing, embeddings, or queue-processing behavior yet.
+thumbnailing, or embeddings. It uses the official BullMQ Python package to
+consume queue jobs and passes each job payload into the placeholder pipeline.
 
 ## Structure
 
@@ -40,11 +41,24 @@ python -m pip install -e .
 cullify-image-worker
 ```
 
-For now, the worker only starts the placeholder app and exits cleanly.
+For now, the worker runs continuously, receives queued messages, and prints each
+payload from the placeholder pipeline.
+
+## Process A Message
+
+Start the Next.js app and complete an upload session. The completion API
+enqueues a BullMQ job with the upload session id.
+
+Run the worker:
+
+```bash
+cullify-image-worker
+```
+
+The pipeline should print the queued message. Stop the worker with `Ctrl+C`.
 
 ## Test
 
 ```bash
 python -m unittest discover -s tests
 ```
-

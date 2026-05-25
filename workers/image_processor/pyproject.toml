@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Python worker scaffold for Cullify image processing jobs."
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["bullmq>=2.25,<3"]
 
 [project.scripts]
 cullify-image-worker = "cullify_worker.__main__:main"
@@ -19,4 +19,3 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-

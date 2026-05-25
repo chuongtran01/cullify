@@ -98,6 +98,9 @@ python -m pip install -e .
 cullify-image-worker
 ```
 
+The web app enqueues an image-processing job after an upload session is marked
+complete.
+
 ## Environment variables
 
 See [`apps/web/.env.example`](apps/web/.env.example) for the full list. Minimum for local API work:

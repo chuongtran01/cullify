@@ -1,5 +1,19 @@
+import asyncio
+import signal
+from collections.abc import Callable
+from typing import Any, Protocol
+
+from bullmq import Worker as BullMQWorker
+
 from cullify_worker.config import WorkerSettings
 from cullify_worker.processing.pipeline import ImageProcessingPipeline
+
+
+class BullMQJob(Protocol):
+    data: dict[str, Any]
+
+
+BullMQWorkerFactory = Callable[[str, Callable[..., Any], dict[str, Any]], Any]
 
 
 class ImageWorker:
@@ -7,18 +21,43 @@ class ImageWorker:
         self,
         settings: WorkerSettings,
         pipeline: ImageProcessingPipeline | None = None,
+        worker_factory: BullMQWorkerFactory = BullMQWorker,
     ) -> None:
         self.settings = settings
         self.pipeline = pipeline or ImageProcessingPipeline()
+        self.worker_factory = worker_factory
 
-    def run(self) -> None:
-        """Start the worker placeholder.
+    async def process_job(self, job: BullMQJob, job_token: str) -> dict[str, bool]:
+        self.pipeline.process(job.data)
 
-        Queue consumption and image processing will be added when the job
-        contract is defined.
-        """
-        print(
-            "Cullify image worker placeholder ready "
-            f"for queue '{self.settings.queue_name}'."
+        return {"ok": True}
+
+    async def run(self) -> None:
+        """Run the BullMQ worker until the process receives a shutdown signal."""
+        shutdown_event = asyncio.Event()
+
+        def handle_shutdown(*_: object) -> None:
+            print("Signal received, shutting down image worker.", flush=True)
+            shutdown_event.set()
+
+        signal.signal(signal.SIGTERM, handle_shutdown)
+        signal.signal(signal.SIGINT, handle_shutdown)
+
+        worker = self.worker_factory(
+            self.settings.queue_name,
+            self.process_job,
+            {"connection": self.settings.redis_url},
         )
 
+        print(
+            "Cullify image worker placeholder ready "
+            f"for queue '{self.settings.queue_name}'.",
+            flush=True,
+        )
+
+        try:
+            await shutdown_event.wait()
+        finally:
+            print("Cleaning up image worker...", flush=True)
+            await worker.close()
+            print("Image worker shut down successfully.", flush=True)
