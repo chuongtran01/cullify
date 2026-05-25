@@ -51,7 +51,7 @@ python -m pip install -e .
 ## Run
 
 ```bash
-cullify-image-worker
+image-processor
 ```
 
 For now, the worker runs continuously, receives queued messages, and prints each
@@ -65,7 +65,7 @@ enqueues a BullMQ job with the upload session id.
 Run the worker:
 
 ```bash
-cullify-image-worker
+image-processor
 ```
 
 The pipeline should print the queued message. Stop the worker with `Ctrl+C`.
