@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from io import BytesIO
-from pathlib import Path
 from typing import Sequence
 
 
@@ -17,43 +16,6 @@ class BlurScoreResult:
     is_blurry: bool
     width: int
     height: int
-
-
-def calculate_blur_score(
-    image_path: str | Path,
-    *,
-    threshold: float = DEFAULT_BLUR_THRESHOLD,
-    max_dimension: int = DEFAULT_MAX_DIMENSION,
-) -> BlurScoreResult:
-    """Calculate image sharpness using variance of the Laplacian.
-
-    Higher scores mean sharper images. Scores below the threshold are treated
-    as blurry. The threshold is intentionally configurable because useful
-    cutoffs vary by source resolution and camera pipeline.
-    """
-    try:
-        from PIL import Image
-    except ImportError as exc:
-        raise RuntimeError(
-            "Pillow is required to calculate blur scores from image files. "
-            "Install the image processor dependencies first."
-        ) from exc
-
-    if max_dimension < 3:
-        raise ValueError("max_dimension must be at least 3 pixels")
-
-    with Image.open(image_path) as image:
-        grayscale = image.convert("L")
-        grayscale.thumbnail((max_dimension, max_dimension))
-        width, height = grayscale.size
-        pixels = list(grayscale.getdata())
-
-    return calculate_blur_score_from_pixels(
-        pixels,
-        width=width,
-        height=height,
-        threshold=threshold,
-    )
 
 
 def calculate_blur_score_from_bytes(

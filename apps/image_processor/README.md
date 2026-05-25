@@ -43,22 +43,14 @@ apps/image_processor/
 
 ## Blur Score
 
-Use `calculate_blur_score` for a file path. It returns a score, threshold,
-dimensions, and an `is_blurry` decision:
-
-```python
-from image_processor.processor.quality import calculate_blur_score
-
-result = calculate_blur_score("/path/to/photo.jpg", threshold=100.0)
-print(result.score, result.is_blurry)
-```
-
-For images already downloaded from R2, use the bytes helper:
+For images downloaded from R2, use the bytes helper. It returns a score,
+threshold, dimensions, and an `is_blurry` decision:
 
 ```python
 from image_processor.processor.quality import calculate_blur_score_from_bytes
 
 result = calculate_blur_score_from_bytes(downloaded_image.data)
+print(result.score, result.is_blurry)
 ```
 
 The score is the variance of the Laplacian. Higher values indicate sharper
