@@ -7,6 +7,7 @@ from typing import Any
 from cullify_worker.config import WorkerSettings
 from cullify_worker.database import BatchRecord, ImageRecord
 from cullify_worker.jobs import PROCESS_UPLOAD_SESSION_JOB_NAME
+from cullify_worker.processing.batch_loader import BatchLoader, BatchNotFoundError
 from cullify_worker.processing.pipeline import ImageProcessingPipeline
 from cullify_worker.worker import ImageWorker
 
@@ -24,6 +25,14 @@ class RecordingPipeline:
 
     def process(self, message: dict[str, str]) -> None:
         self.messages.append(message)
+
+
+class MissingBatchDatabase:
+    def get_batch(self, batch_id: str) -> BatchRecord | None:
+        return None
+
+    def list_uploaded_images_for_batch(self, batch_id: str) -> list[ImageRecord]:
+        return []
 
 
 class FakeDatabase:
@@ -107,6 +116,19 @@ class WorkerPlaceholderTest(unittest.TestCase):
                     "token",
                 )
             )
+
+    def test_batch_loader_loads_batch_and_images(self) -> None:
+        context = BatchLoader(FakeDatabase()).load("session-1")
+
+        self.assertEqual(context.batch.id, "session-1")
+        self.assertEqual(len(context.images), 1)
+        self.assertEqual(context.images[0].object_key, "batches/session-1/image-1.jpg")
+
+    def test_batch_loader_raises_when_batch_missing(self) -> None:
+        loader = BatchLoader(MissingBatchDatabase())
+
+        with self.assertRaises(BatchNotFoundError):
+            loader.load("missing-session")
 
     def test_pipeline_placeholder_prints_message(self) -> None:
         pipeline = ImageProcessingPipeline(FakeDatabase())
