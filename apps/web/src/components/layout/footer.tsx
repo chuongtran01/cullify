@@ -1,4 +1,4 @@
-import { Logo } from "@/components/landing/logo";
+import { Logo } from "@/components/layout/logo";
 
 const footerGroups = [
   ["Product", "Features", "Pricing", "Demo"],

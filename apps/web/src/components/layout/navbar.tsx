@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Menu } from "lucide-react";
 
 import { navLinks } from "@/components/landing/content";
-import { Logo } from "@/components/landing/logo";
+import { Logo } from "@/components/layout/logo";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -32,10 +32,7 @@ export function Navbar() {
           >
             Sign In
           </Link>
-          <Link
-            href="#"
-            className={cn(buttonVariants(), "h-10 px-4")}
-          >
+          <Link href="#" className={cn(buttonVariants(), "h-10 px-4")}>
             Get Started
           </Link>
         </div>
