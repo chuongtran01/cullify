@@ -16,7 +16,7 @@ cullify-app/
 | Path | Description |
 |------|-------------|
 | [`apps/web/`](apps/web/) | Next.js 16 app — landing, upload flow, Prisma, R2 presigned uploads |
-| [`workers/`](workers/) | Reserved for BullMQ / image-processing workers |
+| [`workers/image_processor/`](workers/image_processor/) | Python image-processing worker scaffold |
 | [`docker-compose.yml`](docker-compose.yml) | Local Postgres 16 and Redis 7 |
 
 More product and architecture detail: [`PROJECT_PLAN.md`](PROJECT_PLAN.md), [`apps/web/DESIGN.md`](apps/web/DESIGN.md), [`ROADMAP.md`](ROADMAP.md).
@@ -87,6 +87,16 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run db:push` | Push schema without migration |
 
 **`apps/web/`** — same scripts if you `cd` there; `db:setup` also works via compose path to repo root.
+
+**`workers/image_processor/`** — Python worker scaffold:
+
+```bash
+cd workers/image_processor
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+cullify-image-worker
+```
 
 ## Environment variables
 
