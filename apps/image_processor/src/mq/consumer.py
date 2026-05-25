@@ -6,12 +6,14 @@ from typing import Any, cast
 from bullmq import Worker as BullMQWorker
 
 from image_processor.config import WorkerSettings
-from image_processor.db import ImageProcessingDatabase
+from image_processor.db.repositories import BatchRepository, ImageRepository
+from image_processor.db.session import create_session_factory
 from image_processor.mq.message_types import (
     PROCESS_UPLOAD_SESSION_JOB_NAME,
     BullMQJob,
     ProcessUploadSessionJobData,
 )
+from image_processor.processor.batch_loader import BatchLoader
 from image_processor.processor.pipeline import ImageProcessingPipeline
 
 
@@ -26,9 +28,15 @@ class ImageWorker:
         worker_factory: BullMQWorkerFactory = BullMQWorker,
     ) -> None:
         self.settings = settings
-        self.pipeline = pipeline or ImageProcessingPipeline(
-            ImageProcessingDatabase(settings.database_url),
-        )
+        if pipeline is None:
+            session_factory = create_session_factory(settings.database_url)
+            batch_loader = BatchLoader(
+                BatchRepository(session_factory),
+                ImageRepository(session_factory),
+            )
+            pipeline = ImageProcessingPipeline(batch_loader)
+
+        self.pipeline = pipeline
         self.worker_factory = worker_factory
 
     async def process_job(self, job: BullMQJob, job_token: str) -> dict[str, bool]:

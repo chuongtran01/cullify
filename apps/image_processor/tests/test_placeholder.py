@@ -27,16 +27,8 @@ class RecordingPipeline:
         self.messages.append(message)
 
 
-class MissingBatchDatabase:
-    def get_batch(self, batch_id: str) -> Batch | None:
-        return None
-
-    def list_uploaded_images_for_batch(self, batch_id: str) -> list[Image]:
-        return []
-
-
-class FakeDatabase:
-    def get_batch(self, batch_id: str) -> Batch | None:
+class FakeBatchRepository:
+    def get_by_id(self, batch_id: str) -> Batch | None:
         return Batch(
             id=batch_id,
             status=BatchStatus.PROCESSING,
@@ -44,7 +36,14 @@ class FakeDatabase:
             updated_at=datetime(2026, 1, 1),
         )
 
-    def list_uploaded_images_for_batch(self, batch_id: str) -> list[Image]:
+
+class MissingBatchRepository:
+    def get_by_id(self, batch_id: str) -> Batch | None:
+        return None
+
+
+class FakeImageRepository:
+    def list_uploaded_for_batch(self, batch_id: str) -> list[Image]:
         return [
             Image(
                 id="image-1",
@@ -58,6 +57,21 @@ class FakeDatabase:
                 uploaded_at=datetime(2026, 1, 1),
             )
         ]
+
+
+class EmptyImageRepository:
+    def list_uploaded_for_batch(self, batch_id: str) -> list[Image]:
+        return []
+
+
+def make_fake_batch_loader(
+    batches: FakeBatchRepository | MissingBatchRepository | None = None,
+    images: FakeImageRepository | EmptyImageRepository | None = None,
+) -> BatchLoader:
+    return BatchLoader(
+        batches=batches or FakeBatchRepository(),
+        images=images or FakeImageRepository(),
+    )
 
 
 class WorkerPlaceholderTest(unittest.TestCase):
@@ -118,20 +132,20 @@ class WorkerPlaceholderTest(unittest.TestCase):
             )
 
     def test_batch_loader_loads_batch_and_images(self) -> None:
-        context = BatchLoader(FakeDatabase()).load("session-1")
+        context = make_fake_batch_loader().load("session-1")
 
         self.assertEqual(context.batch.id, "session-1")
         self.assertEqual(len(context.images), 1)
         self.assertEqual(context.images[0].object_key, "batches/session-1/image-1.jpg")
 
     def test_batch_loader_raises_when_batch_missing(self) -> None:
-        loader = BatchLoader(MissingBatchDatabase())
+        loader = make_fake_batch_loader(batches=MissingBatchRepository())
 
         with self.assertRaises(BatchNotFoundError):
             loader.load("missing-session")
 
     def test_pipeline_placeholder_prints_message(self) -> None:
-        pipeline = ImageProcessingPipeline(FakeDatabase())
+        pipeline = ImageProcessingPipeline(make_fake_batch_loader())
 
         pipeline.process({"message": "hello", "sessionId": "session-1"})
 

@@ -1,15 +1,10 @@
-from image_processor.db import ImageProcessingDatabase
 from image_processor.mq.message_types import ProcessUploadSessionJobData
 from image_processor.processor.batch_loader import BatchLoader
 
 
 class ImageProcessingPipeline:
-    def __init__(
-        self,
-        database: ImageProcessingDatabase,
-        batch_loader: BatchLoader | None = None,
-    ) -> None:
-        self.batch_loader = batch_loader or BatchLoader(database)
+    def __init__(self, batch_loader: BatchLoader) -> None:
+        self.batch_loader = batch_loader
 
     def process(self, data: ProcessUploadSessionJobData) -> None:
         """Placeholder for the future image-processing workflow."""
