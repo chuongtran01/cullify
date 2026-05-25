@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from io import StringIO
 from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from image_processor.config import WorkerSettings
 from image_processor.db import Batch, BatchStatus, Image, ImageUploadStatus
@@ -14,7 +14,7 @@ from image_processor.mq.message_types import PROCESS_UPLOAD_SESSION_JOB_NAME
 from image_processor.processor.batch_loader import BatchLoader, BatchNotFoundError
 from image_processor.processor.image_downloader import DownloadedImage, ImageDownloader
 from image_processor.processor.pipeline import ImageProcessingPipeline
-from image_processor.processor.quality import BlurScoreResult
+from image_processor.processor.quality import ImageQualityResult
 
 
 @dataclass(frozen=True)
@@ -86,6 +86,21 @@ class FakeImageDownloader:
         return DownloadedImage(
             image=image,
             data=f"encoded-image-bytes:{image.id}".encode(),
+        )
+
+
+class FakeQualityAnalyzer:
+    def __init__(self) -> None:
+        self.image_bytes: list[bytes] = []
+
+    def analyze(self, image_bytes: bytes) -> ImageQualityResult:
+        self.image_bytes.append(image_bytes)
+        return ImageQualityResult(
+            blur_score=42.0,
+            blur_threshold=100.0,
+            is_blurry=True,
+            width=10,
+            height=10,
         )
 
 
@@ -202,21 +217,15 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline = ImageProcessingPipeline.__new__(ImageProcessingPipeline)
         pipeline.batch_loader = FakeBatchLoader()
         pipeline.image_downloader = FakeImageDownloader()
+        pipeline.quality_analyzer = FakeQualityAnalyzer()
 
-        with patch(
-            "image_processor.processor.pipeline.calculate_blur_score_from_bytes",
-            return_value=BlurScoreResult(
-                score=42.0,
-                threshold=100.0,
-                is_blurry=True,
-                width=10,
-                height=10,
-            ),
-        ) as score_blur:
-            with redirect_stdout(StringIO()) as output:
-                pipeline.process({"sessionId": "session-1"})
+        with redirect_stdout(StringIO()) as output:
+            pipeline.process({"sessionId": "session-1"})
 
-        score_blur.assert_called_once_with(b"encoded-image-bytes:image-1")
+        self.assertEqual(
+            pipeline.quality_analyzer.image_bytes,
+            [b"encoded-image-bytes:image-1"],
+        )
         self.assertIn("image=image-1 blur_score=42.00", output.getvalue())
 
     def test_pipeline_continues_when_one_image_fails(self) -> None:
@@ -231,21 +240,18 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline.image_downloader = FakeImageDownloader(
             failing_image_ids={"image-2"}
         )
+        pipeline.quality_analyzer = FakeQualityAnalyzer()
 
-        with patch(
-            "image_processor.processor.pipeline.calculate_blur_score_from_bytes",
-            return_value=BlurScoreResult(
-                score=42.0,
-                threshold=100.0,
-                is_blurry=True,
-                width=10,
-                height=10,
-            ),
-        ) as score_blur:
-            with redirect_stdout(StringIO()) as output:
-                pipeline.process({"sessionId": "session-1"})
+        with redirect_stdout(StringIO()) as output:
+            pipeline.process({"sessionId": "session-1"})
 
-        self.assertEqual(score_blur.call_count, 2)
+        self.assertEqual(
+            pipeline.quality_analyzer.image_bytes,
+            [
+                b"encoded-image-bytes:image-1",
+                b"encoded-image-bytes:image-3",
+            ],
+        )
         summary = output.getvalue()
         self.assertIn("image=image-1 blur_score=42.00", summary)
         self.assertIn("image=image-3 blur_score=42.00", summary)
