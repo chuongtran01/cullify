@@ -91,11 +91,8 @@ Open [http://localhost:3000](http://localhost:3000).
 **`workers/image_processor/`** — Python worker scaffold:
 
 ```bash
-cd workers/image_processor
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e .
-cullify-image-worker
+npm run install:worker
+npm run worker
 ```
 
 The web app enqueues an image-processing job after an upload session is marked
