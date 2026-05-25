@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from cullify_worker.config import WorkerSettings
+from cullify_worker.jobs import PROCESS_UPLOAD_SESSION_JOB_NAME
 from cullify_worker.processing.pipeline import ImageProcessingPipeline
 from cullify_worker.worker import ImageWorker
 
@@ -38,7 +39,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
             worker.process_job(
                 FakeJob(
                     id="1",
-                    name="process-upload-session",
+                    name=PROCESS_UPLOAD_SESSION_JOB_NAME,
                     data={
                         "message": "hello from test",
                         "sessionId": "session-1",
