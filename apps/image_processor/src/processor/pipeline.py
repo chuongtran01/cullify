@@ -1,15 +1,16 @@
+from sqlalchemy.orm import sessionmaker
+
 from image_processor.mq.message_types import ProcessUploadSessionJobData
 from image_processor.processor.batch_loader import BatchLoader
 
 
 class ImageProcessingPipeline:
-    def __init__(self, batch_loader: BatchLoader) -> None:
-        self.batch_loader = batch_loader
+    def __init__(self, session_factory: sessionmaker) -> None:
+        self.batch_loader = BatchLoader(session_factory)
 
     def process(self, data: ProcessUploadSessionJobData) -> None:
         """Placeholder for the future image-processing workflow."""
-        session_id = data["sessionId"]
-        context = self.batch_loader.load(session_id)
+        context = self.batch_loader.load(data["sessionId"])
 
         print(
             "Image processing pipeline received "

@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from sqlalchemy.orm import sessionmaker
+
 from image_processor.db.models import Batch, Image
 from image_processor.db.repositories import BatchRepository, ImageRepository
 
@@ -15,13 +17,9 @@ class BatchNotFoundError(ValueError):
 
 
 class BatchLoader:
-    def __init__(
-        self,
-        batches: BatchRepository,
-        images: ImageRepository,
-    ) -> None:
-        self.batches = batches
-        self.images = images
+    def __init__(self, session_factory: sessionmaker) -> None:
+        self.batches = BatchRepository(session_factory)
+        self.images = ImageRepository(session_factory)
 
     def load(self, session_id: str) -> BatchContext:
         batch = self.batches.get_by_id(session_id)

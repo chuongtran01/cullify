@@ -3,6 +3,7 @@ import unittest
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
+from unittest.mock import MagicMock
 
 from image_processor.config import WorkerSettings
 from image_processor.db import Batch, BatchStatus, Image, ImageUploadStatus
@@ -59,19 +60,14 @@ class FakeImageRepository:
         ]
 
 
-class EmptyImageRepository:
-    def list_uploaded_for_batch(self, batch_id: str) -> list[Image]:
-        return []
-
-
-def make_fake_batch_loader(
+def make_batch_loader(
     batches: FakeBatchRepository | MissingBatchRepository | None = None,
-    images: FakeImageRepository | EmptyImageRepository | None = None,
+    images: FakeImageRepository | None = None,
 ) -> BatchLoader:
-    return BatchLoader(
-        batches=batches or FakeBatchRepository(),
-        images=images or FakeImageRepository(),
-    )
+    loader = BatchLoader(MagicMock())
+    loader.batches = batches or FakeBatchRepository()
+    loader.images = images or FakeImageRepository()
+    return loader
 
 
 class WorkerPlaceholderTest(unittest.TestCase):
@@ -132,20 +128,22 @@ class WorkerPlaceholderTest(unittest.TestCase):
             )
 
     def test_batch_loader_loads_batch_and_images(self) -> None:
-        context = make_fake_batch_loader().load("session-1")
+        context = make_batch_loader().load("session-1")
 
         self.assertEqual(context.batch.id, "session-1")
         self.assertEqual(len(context.images), 1)
         self.assertEqual(context.images[0].object_key, "batches/session-1/image-1.jpg")
 
     def test_batch_loader_raises_when_batch_missing(self) -> None:
-        loader = make_fake_batch_loader(batches=MissingBatchRepository())
+        loader = make_batch_loader(batches=MissingBatchRepository())
 
         with self.assertRaises(BatchNotFoundError):
             loader.load("missing-session")
 
     def test_pipeline_placeholder_prints_message(self) -> None:
-        pipeline = ImageProcessingPipeline(make_fake_batch_loader())
+        loader = make_batch_loader()
+        pipeline = ImageProcessingPipeline(MagicMock())
+        pipeline.batch_loader = loader
 
         pipeline.process({"message": "hello", "sessionId": "session-1"})
 
