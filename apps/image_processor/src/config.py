@@ -9,8 +9,8 @@ DEFAULT_IMAGE_PROCESSING_QUEUE_NAME = "image-processing"
 
 
 def load_environment() -> None:
-    worker_root = Path(__file__).resolve().parents[2]
-    repo_root = Path(__file__).resolve().parents[4]
+    worker_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[3]
     web_app_root = repo_root / "apps" / "web"
 
     for env_file in (

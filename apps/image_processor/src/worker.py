@@ -5,14 +5,14 @@ from typing import Any, cast
 
 from bullmq import Worker as BullMQWorker
 
-from cullify_worker.config import WorkerSettings
-from cullify_worker.database import ImageProcessingDatabase
-from cullify_worker.jobs import (
+from image_processor.config import WorkerSettings
+from image_processor.database import ImageProcessingDatabase
+from image_processor.jobs import (
     PROCESS_UPLOAD_SESSION_JOB_NAME,
     BullMQJob,
     ProcessUploadSessionJobData,
 )
-from cullify_worker.processing.pipeline import ImageProcessingPipeline
+from image_processor.processing.pipeline import ImageProcessingPipeline
 
 
 BullMQWorkerFactory = Callable[[str, Callable[..., Any], dict[str, Any]], Any]

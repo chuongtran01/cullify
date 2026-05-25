@@ -15,11 +15,12 @@ dependencies = [
 ]
 
 [project.scripts]
-cullify-image-worker = "cullify_worker.__main__:main"
+cullify-image-worker = "image_processor.__main__:main"
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.setuptools]
+package-dir = { "image_processor" = "src" }
+packages = ["image_processor", "image_processor.processing"]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["."]
 testpaths = ["tests"]

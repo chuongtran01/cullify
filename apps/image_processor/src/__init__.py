@@ -1,4 +1,4 @@
-"""Cullify image worker package."""
+"""Cullify image processor package."""
 
 __all__ = ["__version__"]
 

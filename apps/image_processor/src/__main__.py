@@ -1,7 +1,7 @@
 import asyncio
 
-from cullify_worker.config import WorkerSettings
-from cullify_worker.worker import ImageWorker
+from image_processor.config import WorkerSettings
+from image_processor.worker import ImageWorker
 
 
 def main() -> int:

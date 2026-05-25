@@ -14,15 +14,14 @@ apps/image_processor/
 ├── pyproject.toml
 ├── README.md
 ├── src/
-│   └── cullify_worker/
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── config.py
+│   ├── worker.py
+│   └── processing/
 │       ├── __init__.py
-│       ├── __main__.py
-│       ├── config.py
-│       ├── worker.py
-│       └── processing/
-│           ├── __init__.py
-│           ├── batch_loader.py
-│           └── pipeline.py
+│       ├── batch_loader.py
+│       └── pipeline.py
 └── tests/
     └── test_placeholder.py
 ```

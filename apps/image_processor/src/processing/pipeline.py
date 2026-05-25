@@ -1,6 +1,6 @@
-from cullify_worker.jobs import ProcessUploadSessionJobData
-from cullify_worker.database import ImageProcessingDatabase
-from cullify_worker.processing.batch_loader import BatchLoader
+from image_processor.database import ImageProcessingDatabase
+from image_processor.jobs import ProcessUploadSessionJobData
+from image_processor.processing.batch_loader import BatchLoader
 
 
 class ImageProcessingPipeline:

@@ -9,7 +9,7 @@
     "lint": "npm run lint --prefix apps/web",
     "install:web": "npm install --prefix apps/web",
     "install:worker": "python3 -m venv apps/image_processor/.venv && apps/image_processor/.venv/bin/python -m pip install -e apps/image_processor",
-    "worker": "apps/image_processor/.venv/bin/python -m cullify_worker",
+    "worker": "apps/image_processor/.venv/bin/python -m image_processor",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:logs": "docker compose logs -f",
