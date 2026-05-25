@@ -11,10 +11,7 @@ DEFAULT_MAX_DIMENSION = 1_000
 @dataclass(frozen=True)
 class BlurScoreResult:
     score: float
-    threshold: float
     is_blurry: bool
-    width: int
-    height: int
 
 
 def calculate_blur_score_from_pixels(
@@ -58,8 +55,5 @@ def calculate_blur_score_from_pixels(
 
     return BlurScoreResult(
         score=variance,
-        threshold=threshold,
         is_blurry=variance < threshold,
-        width=width,
-        height=height,
     )

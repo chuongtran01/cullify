@@ -37,6 +37,16 @@ class ExposureScoreTest(unittest.TestCase):
         self.assertFalse(result.is_low_exposure)
         self.assertTrue(result.is_high_exposure)
 
+    def test_exposure_thresholds_can_be_tuned(self) -> None:
+        result = calculate_exposure_score_from_pixels(
+            [80] * 25,
+            width=5,
+            height=5,
+            low_exposure_threshold=0.4,
+        )
+
+        self.assertTrue(result.is_low_exposure)
+
     def test_rejects_mismatched_pixel_count(self) -> None:
         with self.assertRaises(ValueError):
             calculate_exposure_score_from_pixels([0, 1, 2], width=3, height=3)

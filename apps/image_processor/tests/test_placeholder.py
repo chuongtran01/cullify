@@ -97,7 +97,6 @@ class FakeQualityAnalyzer:
         self.image_bytes.append(image_bytes)
         return ImageQualityResult(
             blur_score=42.0,
-            blur_threshold=100.0,
             is_blurry=True,
             exposure_score=0.8,
             mean_luminance=0.45,

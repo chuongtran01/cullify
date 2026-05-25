@@ -15,7 +15,6 @@ from image_processor.processor.quality.exposure import (
 @dataclass(frozen=True)
 class ImageQualityResult:
     blur_score: float
-    blur_threshold: float
     is_blurry: bool
     exposure_score: float
     mean_luminance: float
@@ -46,7 +45,12 @@ class ImageQualityAnalyzer:
             width=width,
             height=height,
         )
-        return self._to_quality_result(blur_result, exposure_result)
+        return self._to_quality_result(
+            blur_result,
+            exposure_result,
+            width=width,
+            height=height,
+        )
 
     def _load_grayscale_pixels(self, image_bytes: bytes) -> tuple[list[int], int, int]:
         try:
@@ -69,10 +73,12 @@ class ImageQualityAnalyzer:
         self,
         blur_result: BlurScoreResult,
         exposure_result: ExposureScoreResult,
+        *,
+        width: int,
+        height: int,
     ) -> ImageQualityResult:
         return ImageQualityResult(
             blur_score=blur_result.score,
-            blur_threshold=blur_result.threshold,
             is_blurry=blur_result.is_blurry,
             exposure_score=exposure_result.score,
             mean_luminance=exposure_result.mean_luminance,
@@ -80,6 +86,6 @@ class ImageQualityAnalyzer:
             bright_pixel_ratio=exposure_result.bright_pixel_ratio,
             is_low_exposure=exposure_result.is_low_exposure,
             is_high_exposure=exposure_result.is_high_exposure,
-            width=blur_result.width,
-            height=blur_result.height,
+            width=width,
+            height=height,
         )

@@ -78,10 +78,7 @@ class BlurScoreTest(unittest.TestCase):
                 "image_processor.processor.quality.analyzer.calculate_blur_score_from_pixels",
                 return_value=BlurScoreResult(
                     score=42.0,
-                    threshold=100.0,
                     is_blurry=True,
-                    width=10,
-                    height=20,
                 ),
             ) as calculate_blur:
                 with patch(
@@ -93,8 +90,6 @@ class BlurScoreTest(unittest.TestCase):
                         bright_pixel_ratio=0.0,
                         is_low_exposure=False,
                         is_high_exposure=False,
-                        width=10,
-                        height=20,
                     ),
                 ) as calculate_exposure:
                     result = analyzer.analyze(b"encoded-image-bytes")
@@ -103,7 +98,6 @@ class BlurScoreTest(unittest.TestCase):
         calculate_blur.assert_called_once_with([128] * 200, width=10, height=20)
         calculate_exposure.assert_called_once_with([128] * 200, width=10, height=20)
         self.assertEqual(result.blur_score, 42.0)
-        self.assertEqual(result.blur_threshold, 100.0)
         self.assertTrue(result.is_blurry)
         self.assertEqual(result.exposure_score, 0.8)
         self.assertEqual(result.mean_luminance, 0.45)
