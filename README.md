@@ -19,7 +19,7 @@ cullify-app/
 | [`workers/image_processor/`](workers/image_processor/) | Python image-processing worker scaffold |
 | [`docker-compose.yml`](docker-compose.yml) | Local Postgres 16 and Redis 7 |
 
-More product and architecture detail: [`PROJECT_PLAN.md`](PROJECT_PLAN.md), [`apps/web/DESIGN.md`](apps/web/DESIGN.md), [`ROADMAP.md`](ROADMAP.md).
+More product and architecture detail: [`PROJECT_PLAN.md`](PROJECT_PLAN.md), [`IMAGE_PROCESSING_PLAN.md`](IMAGE_PROCESSING_PLAN.md), [`apps/web/DESIGN.md`](apps/web/DESIGN.md), [`ROADMAP.md`](ROADMAP.md).
 
 ## Prerequisites
 

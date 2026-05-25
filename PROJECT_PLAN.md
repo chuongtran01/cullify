@@ -40,9 +40,10 @@ The ideal user flow:
 ## AI And ML Capabilities
 
 - Blur detection.
+- Out-of-focus, motion blur, exposure, eye-open, and compression artifact signals.
 - Face quality analysis.
-- Similarity detection using image embeddings.
-- Clustering of related photos.
+- Similarity detection using image embeddings and scene/person/composition features.
+- Clustering of related photos by pose, person positioning, background, expression, composition, and camera angle.
 - Aesthetic scoring.
 - Best image ranking.
 
@@ -186,6 +187,9 @@ At a high level, Cullify should use a split application and processing architect
 - Redis queue coordinates async AI jobs.
 - Python processing service performs image analysis, embeddings, clustering, and ranking.
 
+Detailed quality-filtering and similar-shot grouping data models are documented
+in `IMAGE_PROCESSING_PLAN.md`.
+
 Recommended flow:
 
 1. User creates a project and uploads images.
@@ -208,6 +212,8 @@ Initial entities:
 - `ClusterImage`: join model for image order, score, and recommendation status.
 - `ProcessingJob`: async job state and progress.
 - `Preference`: user or project-level culling settings.
+- `ImageQualityAnalysis`: per-image quality scores and flags.
+- `ImageEmbedding`: embedding/vector metadata used for similarity grouping.
 
 Important image fields:
 
@@ -217,6 +223,7 @@ Important image fields:
 - File size.
 - EXIF timestamp.
 - Blur score.
+- Focus, motion blur, exposure, eye-open, and compression artifact scores.
 - Face quality score.
 - Aesthetic score.
 - Embedding reference or vector id.
@@ -261,9 +268,19 @@ Keyboard shortcuts:
 
 Use OpenCV-based sharpness scoring as the first quality signal. Start with variance of Laplacian and tune thresholds by image size and content.
 
+### Quality Filtering
+
+Track individual quality signals for blur, out-of-focus frames, motion blur,
+closed eyes, low exposure, and compression artifacts. Use structured scores and
+flags for stable product behavior, and store model-specific raw outputs outside
+the core `Image` row.
+
 ### Similarity Detection
 
-Generate embeddings with OpenCLIP and use FAISS for similarity lookup. Combine embedding distance with metadata clues such as timestamp proximity to improve grouping.
+Generate embeddings with OpenCLIP and use FAISS for similarity lookup. Combine
+embedding distance with metadata clues such as timestamp proximity, pose,
+person positioning, background, composition, facial expression, and camera angle
+to improve grouping.
 
 ### Clustering
 

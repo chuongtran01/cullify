@@ -32,7 +32,7 @@ The MVP does not need full production infrastructure, billing, advanced account 
 - Mock or real processing progress states.
 - Smart gallery grouped by photo clusters.
 - Best-shot recommendation per group.
-- Blur or quality warning labels.
+- Blur, exposure, and quality warning labels.
 - Keep, reject, and favorite actions.
 - Cluster detail modal for focused comparison.
 - Basic settings for culling strictness.
@@ -139,6 +139,8 @@ Deliverables:
 - Image model.
 - Cluster model.
 - Processing job model.
+- Image quality analysis model.
+- Image embedding model.
 - Review status model.
 - API routes for projects, images, clusters, and review actions.
 - React Query hooks for app data.
@@ -160,6 +162,8 @@ Deliverables:
 - Processing job state machine.
 - Python FastAPI processing service.
 - OpenCV blur scoring.
+- Exposure and first-pass quality scoring.
+- Image quality result persistence.
 - Thumbnail generation.
 - Basic image metadata extraction.
 - Processing progress updates.
@@ -168,7 +172,8 @@ Deliverables:
 Acceptance Criteria:
 
 - Uploaded images are processed asynchronously.
-- Blur scores are generated for each image.
+- Blur and exposure scores are generated for each image.
+- Quality flags are persisted for review UI use.
 - Processing progress is visible in the UI.
 - Failed jobs have a retry path.
 
@@ -181,6 +186,7 @@ Deliverables:
 - OpenCLIP embedding generation.
 - FAISS similarity lookup.
 - HDBSCAN clustering.
+- Similar-shot grouping by pose, person positioning, background, composition, expression, and camera angle.
 - Cluster confidence score.
 - Single-image cluster handling.
 - Cluster ordering for review.
@@ -192,6 +198,9 @@ Acceptance Criteria:
 - Near-duplicates appear in the same cluster.
 - Unrelated images do not get forced into bad groups.
 - Smart gallery renders real clusters from processing results.
+
+See `IMAGE_PROCESSING_PLAN.md` for the proposed data model and worker pipeline
+for quality filtering and similar-shot grouping.
 
 ## Phase 6: Best-Shot Recommendation
 
@@ -304,6 +313,7 @@ This milestone validates the app workflow and data model.
 The third milestone should make AI processing useful:
 
 - Blur detection.
+- Exposure and first-pass quality flags.
 - Thumbnail generation.
 - Similarity grouping.
 - Best-shot recommendation.
