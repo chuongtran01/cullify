@@ -1,6 +1,6 @@
-from image_processor.database import ImageProcessingDatabase
+from image_processor.db import ImageProcessingDatabase
 from image_processor.jobs import ProcessUploadSessionJobData
-from image_processor.processing.batch_loader import BatchLoader
+from image_processor.processor.batch_loader import BatchLoader
 
 
 class ImageProcessingPipeline:

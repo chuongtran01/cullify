@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Protocol
 
-from image_processor.database import BatchRecord, ImageRecord
+from image_processor.db import BatchRecord, ImageRecord
 
 
 class BatchLoaderDatabase(Protocol):

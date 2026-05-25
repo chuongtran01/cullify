@@ -6,13 +6,13 @@ from typing import Any, cast
 from bullmq import Worker as BullMQWorker
 
 from image_processor.config import WorkerSettings
-from image_processor.database import ImageProcessingDatabase
+from image_processor.db import ImageProcessingDatabase
 from image_processor.jobs import (
     PROCESS_UPLOAD_SESSION_JOB_NAME,
     BullMQJob,
     ProcessUploadSessionJobData,
 )
-from image_processor.processing.pipeline import ImageProcessingPipeline
+from image_processor.processor.pipeline import ImageProcessingPipeline
 
 
 BullMQWorkerFactory = Callable[[str, Callable[..., Any], dict[str, Any]], Any]

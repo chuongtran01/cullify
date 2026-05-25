@@ -15,10 +15,10 @@ apps/image_processor/
 ├── README.md
 ├── src/
 │   ├── __init__.py
-│   ├── __main__.py
+│   ├── main.py
 │   ├── config.py
 │   ├── worker.py
-│   └── processing/
+│   └── processor/
 │       ├── __init__.py
 │       ├── batch_loader.py
 │       └── pipeline.py

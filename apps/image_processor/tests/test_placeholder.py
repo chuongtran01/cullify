@@ -5,10 +5,10 @@ from datetime import datetime
 from typing import Any
 
 from image_processor.config import WorkerSettings
-from image_processor.database import BatchRecord, ImageRecord
+from image_processor.db import BatchRecord, ImageRecord
 from image_processor.jobs import PROCESS_UPLOAD_SESSION_JOB_NAME
-from image_processor.processing.batch_loader import BatchLoader, BatchNotFoundError
-from image_processor.processing.pipeline import ImageProcessingPipeline
+from image_processor.processor.batch_loader import BatchLoader, BatchNotFoundError
+from image_processor.processor.pipeline import ImageProcessingPipeline
 from image_processor.worker import ImageWorker
 
 

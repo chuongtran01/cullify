@@ -294,7 +294,7 @@ Recommended worker package shape:
 apps/image_processor/src/
 ├── jobs.py
 ├── worker.py
-├── processing/
+├── processor/
 │   ├── pipeline.py
 │   ├── quality/
 │   │   ├── analyzer.py
@@ -310,7 +310,8 @@ apps/image_processor/src/
 │   │   ├── clustering.py
 │   │   ├── features.py
 │   │   └── ranking.py
-│   ├── database.py
+│   ├── db/
+│   │   └── database.py
 │   └── storage.py
 ```
 
