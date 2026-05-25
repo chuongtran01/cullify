@@ -9,12 +9,18 @@ DEFAULT_IMAGE_PROCESSING_QUEUE_NAME = "image-processing"
 
 
 def load_environment() -> None:
+    worker_root = Path(__file__).resolve().parents[2]
     repo_root = Path(__file__).resolve().parents[4]
     web_app_root = repo_root / "apps" / "web"
 
-    load_dotenv(web_app_root / ".env.local")
-    load_dotenv(web_app_root / ".env")
-    load_dotenv(repo_root / ".env")
+    for env_file in (
+        worker_root / ".env.local",
+        worker_root / ".env",
+        web_app_root / ".env.local",
+        web_app_root / ".env",
+        repo_root / ".env",
+    ):
+        load_dotenv(env_file)
 
 
 @dataclass(frozen=True)

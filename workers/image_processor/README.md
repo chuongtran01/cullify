@@ -30,6 +30,7 @@ workers/image_processor/
 
 ```bash
 cd workers/image_processor
+cp .env.example .env.local
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e .

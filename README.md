@@ -92,6 +92,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```bash
 npm run install:worker
+cp workers/image_processor/.env.example workers/image_processor/.env.local
 npm run worker
 ```
 
