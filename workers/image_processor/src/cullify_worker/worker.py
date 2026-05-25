@@ -6,6 +6,7 @@ from typing import Any, cast
 from bullmq import Worker as BullMQWorker
 
 from cullify_worker.config import WorkerSettings
+from cullify_worker.database import ImageProcessingDatabase
 from cullify_worker.jobs import (
     PROCESS_UPLOAD_SESSION_JOB_NAME,
     BullMQJob,
@@ -25,7 +26,9 @@ class ImageWorker:
         worker_factory: BullMQWorkerFactory = BullMQWorker,
     ) -> None:
         self.settings = settings
-        self.pipeline = pipeline or ImageProcessingPipeline()
+        self.pipeline = pipeline or ImageProcessingPipeline(
+            ImageProcessingDatabase(settings.database_url),
+        )
         self.worker_factory = worker_factory
 
     async def process_job(self, job: BullMQJob, job_token: str) -> dict[str, bool]:
