@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Annotated, Protocol
 
 from image_processor.db.models import Image
 from image_processor.processor.batch_loader import BatchContext
@@ -12,8 +12,8 @@ class ObjectStorage(Protocol):
 
 @dataclass(frozen=True)
 class DownloadedImage:
-    image: Image
-    data: bytes
+    image: Annotated[Image, "Database image record associated with the bytes."]
+    data: Annotated[bytes, "Downloaded encoded image bytes."]
 
 
 class ImageDownloader:

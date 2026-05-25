@@ -1,15 +1,15 @@
-from typing import Any, Protocol, TypedDict
+from typing import Annotated, Any, Protocol, TypedDict
 
 
 PROCESS_UPLOAD_SESSION_JOB_NAME = "process-upload-session"
 
 
 class ProcessUploadSessionJobData(TypedDict):
-    message: str
-    sessionId: str
+    message: Annotated[str, "Human-readable job message for logs/debugging."]
+    sessionId: Annotated[str, "Upload session/batch id to process."]
 
 
 class BullMQJob(Protocol):
-    id: str | None
-    name: str
-    data: dict[str, Any]
+    id: Annotated[str | None, "BullMQ job id, when provided by the queue."]
+    name: Annotated[str, "BullMQ job name."]
+    data: Annotated[dict[str, Any], "Raw BullMQ job payload."]

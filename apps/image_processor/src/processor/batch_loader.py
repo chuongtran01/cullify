@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Annotated
 
 from sqlalchemy.orm import sessionmaker
 
@@ -8,8 +9,8 @@ from image_processor.db.repositories import BatchRepository, ImageRepository
 
 @dataclass(frozen=True)
 class BatchContext:
-    batch: Batch
-    images: list[Image]
+    batch: Annotated[Batch, "Batch record loaded for the upload session."]
+    images: Annotated[list[Image], "Uploaded images belonging to the batch."]
 
 
 class BatchNotFoundError(ValueError):

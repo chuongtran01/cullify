@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import os
 from pathlib import Path
+from typing import Annotated
 
 from dotenv import load_dotenv
 
@@ -26,20 +27,23 @@ def load_environment() -> None:
 
 @dataclass(frozen=True)
 class R2Settings:
-    account_id: str
-    access_key_id: str
-    secret_access_key: str
-    bucket_name: str
-    endpoint: str
-    region: str
+    account_id: Annotated[str, "Cloudflare account id used to build the R2 endpoint."]
+    access_key_id: Annotated[str, "R2 access key id used for S3-compatible auth."]
+    secret_access_key: Annotated[
+        str,
+        "R2 secret access key used for S3-compatible auth.",
+    ]
+    bucket_name: Annotated[str, "R2 bucket that stores uploaded source images."]
+    endpoint: Annotated[str, "S3-compatible R2 endpoint URL."]
+    region: Annotated[str, "S3-compatible region value for the R2 client."]
 
 
 @dataclass(frozen=True)
 class WorkerSettings:
-    database_url: str
-    redis_url: str
-    queue_name: str
-    log_level: str
+    database_url: Annotated[str, "Database URL used by the image worker."]
+    redis_url: Annotated[str, "Redis URL used by BullMQ."]
+    queue_name: Annotated[str, "BullMQ queue name consumed by the worker."]
+    log_level: Annotated[str, "Worker log verbosity setting."]
 
     @classmethod
     def from_environment(cls) -> "WorkerSettings":

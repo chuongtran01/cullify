@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Annotated, Sequence
 
 
 DEFAULT_MAX_DIMENSION = 1_000
@@ -14,12 +14,30 @@ DEFAULT_CLIPPED_PIXEL_RATIO = 0.50
 
 @dataclass(frozen=True)
 class ExposureScoreResult:
-    score: float
-    mean_luminance: float
-    dark_pixel_ratio: float
-    bright_pixel_ratio: float
-    is_low_exposure: bool
-    is_high_exposure: bool
+    score: Annotated[
+        float,
+        "Normalized exposure quality score from 0.0 to 1.0; higher is better.",
+    ]
+    mean_luminance: Annotated[
+        float,
+        "Average grayscale luminance normalized from 0.0 to 1.0.",
+    ]
+    dark_pixel_ratio: Annotated[
+        float,
+        "Ratio of pixels at or below the configured dark pixel threshold.",
+    ]
+    bright_pixel_ratio: Annotated[
+        float,
+        "Ratio of pixels at or above the configured bright pixel threshold.",
+    ]
+    is_low_exposure: Annotated[
+        bool,
+        "True when the image is considered underexposed.",
+    ]
+    is_high_exposure: Annotated[
+        bool,
+        "True when the image is considered overexposed.",
+    ]
 
 
 def calculate_exposure_score_from_pixels(

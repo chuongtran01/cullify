@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Annotated, Sequence
 
 
 DEFAULT_BLUR_THRESHOLD = 100.0
@@ -10,8 +10,14 @@ DEFAULT_MAX_DIMENSION = 1_000
 
 @dataclass(frozen=True)
 class BlurScoreResult:
-    score: float
-    is_blurry: bool
+    score: Annotated[
+        float,
+        "Variance of the Laplacian; higher values indicate a sharper image.",
+    ]
+    is_blurry: Annotated[
+        bool,
+        "True when the blur score falls below the configured blur threshold.",
+    ]
 
 
 def calculate_blur_score_from_pixels(

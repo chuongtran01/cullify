@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from io import BytesIO
+from typing import Annotated
 
 from image_processor.processor.quality.blur import (
     DEFAULT_MAX_DIMENSION,
@@ -14,16 +15,46 @@ from image_processor.processor.quality.exposure import (
 
 @dataclass(frozen=True)
 class ImageQualityResult:
-    blur_score: float
-    is_blurry: bool
-    exposure_score: float
-    mean_luminance: float
-    dark_pixel_ratio: float
-    bright_pixel_ratio: float
-    is_low_exposure: bool
-    is_high_exposure: bool
-    width: int
-    height: int
+    blur_score: Annotated[
+        float,
+        "Variance of the Laplacian; higher values indicate a sharper image.",
+    ]
+    is_blurry: Annotated[
+        bool,
+        "True when the blur score falls below the configured blur threshold.",
+    ]
+    exposure_score: Annotated[
+        float,
+        "Normalized exposure quality score from 0.0 to 1.0; higher is better.",
+    ]
+    mean_luminance: Annotated[
+        float,
+        "Average grayscale luminance normalized from 0.0 to 1.0.",
+    ]
+    dark_pixel_ratio: Annotated[
+        float,
+        "Ratio of pixels at or below the configured dark pixel threshold.",
+    ]
+    bright_pixel_ratio: Annotated[
+        float,
+        "Ratio of pixels at or above the configured bright pixel threshold.",
+    ]
+    is_low_exposure: Annotated[
+        bool,
+        "True when the image is considered underexposed.",
+    ]
+    is_high_exposure: Annotated[
+        bool,
+        "True when the image is considered overexposed.",
+    ]
+    width: Annotated[
+        int,
+        "Width in pixels after analyzer downscaling.",
+    ]
+    height: Annotated[
+        int,
+        "Height in pixels after analyzer downscaling.",
+    ]
 
 
 class ImageQualityAnalyzer:
