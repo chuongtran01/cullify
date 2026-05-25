@@ -28,7 +28,7 @@ class ImageWorker:
         self.settings = settings
         if pipeline is None:
             session_factory = create_session_factory(settings.database_url)
-            pipeline = ImageProcessingPipeline(session_factory)
+            pipeline = ImageProcessingPipeline(session_factory, settings)
 
         self.pipeline = pipeline
         self.worker_factory = worker_factory

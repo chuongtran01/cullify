@@ -10,8 +10,7 @@ from image_processor.db import Batch, BatchStatus, Image, ImageUploadStatus
 from image_processor.mq.consumer import ImageWorker
 from image_processor.mq.message_types import PROCESS_UPLOAD_SESSION_JOB_NAME
 from image_processor.processor.batch_loader import BatchLoader, BatchNotFoundError
-from image_processor.processor.pipeline import ImageProcessingPipeline
-
+from image_processor.processor.image_downloader import ImageDownloader
 
 @dataclass(frozen=True)
 class FakeJob:
@@ -110,7 +109,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
             queue_name="image-processing",
             log_level="INFO",
         )
-        worker = ImageWorker(settings=settings)
+        worker = ImageWorker(settings=settings, pipeline=RecordingPipeline())
 
         with self.assertRaises(ValueError):
             asyncio.run(
@@ -140,13 +139,20 @@ class WorkerPlaceholderTest(unittest.TestCase):
         with self.assertRaises(BatchNotFoundError):
             loader.load("missing-session")
 
-    def test_pipeline_placeholder_prints_message(self) -> None:
-        loader = make_batch_loader()
-        pipeline = ImageProcessingPipeline(MagicMock())
-        pipeline.batch_loader = loader
+    def test_image_downloader_downloads_batch_images(self) -> None:
+        class FakeStorage:
+            def download_bytes(self, object_key: str) -> bytes:
+                return f"bytes:{object_key}".encode()
 
-        pipeline.process({"message": "hello", "sessionId": "session-1"})
+        context = make_batch_loader().load("session-1")
+        downloaded = ImageDownloader(FakeStorage()).download_for_batch(context)
 
+        self.assertEqual(len(downloaded), 1)
+        self.assertEqual(downloaded[0].image.id, "image-1")
+        self.assertEqual(
+            downloaded[0].data,
+            b"bytes:batches/session-1/image-1.jpg",
+        )
 
 if __name__ == "__main__":
     unittest.main()

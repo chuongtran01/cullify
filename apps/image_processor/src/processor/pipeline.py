@@ -1,19 +1,28 @@
 from sqlalchemy.orm import sessionmaker
 
+from image_processor.config import WorkerSettings
 from image_processor.mq.message_types import ProcessUploadSessionJobData
 from image_processor.processor.batch_loader import BatchLoader
+from image_processor.processor.image_downloader import ImageDownloader
+from image_processor.storage.r2_client import R2Client
 
 
 class ImageProcessingPipeline:
-    def __init__(self, session_factory: sessionmaker) -> None:
+    def __init__(
+        self,
+        session_factory: sessionmaker,
+        settings: WorkerSettings,
+    ) -> None:
         self.batch_loader = BatchLoader(session_factory)
+        self.image_downloader = ImageDownloader(R2Client(settings.r2_settings()))
 
     def process(self, data: ProcessUploadSessionJobData) -> None:
         """Placeholder for the future image-processing workflow."""
         context = self.batch_loader.load(data["sessionId"])
+        downloaded = self.image_downloader.download_for_batch(context)
 
         print(
-            "Image processing pipeline received "
-            f"{len(context.images)} uploaded image(s) for batch {context.batch.id}.",
+            "Image processing pipeline downloaded "
+            f"{len(downloaded)} image(s) for batch {context.batch.id}.",
             flush=True,
         )
