@@ -31,17 +31,44 @@ model Batch {
 }
 
 model Image {
-  id         String            @id @db.Uuid
-  batchId    String            @db.Uuid
-  batch      Batch             @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  fileName   String
-  mimeType   String
-  sizeBytes  Int
-  objectKey  String            @unique
-  status     ImageUploadStatus @default(PENDING)
-  createdAt  DateTime          @default(now())
-  uploadedAt DateTime?
+  id              String                @id @db.Uuid
+  batchId         String                @db.Uuid
+  batch           Batch                 @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  fileName        String
+  mimeType        String
+  sizeBytes       Int
+  objectKey       String                @unique
+  status          ImageUploadStatus     @default(PENDING)
+  createdAt       DateTime              @default(now())
+  uploadedAt      DateTime?
+  qualityAnalysis ImageQualityAnalysis?
 
   @@index([batchId])
   @@index([status])
+}
+
+model ImageQualityAnalysis {
+  id                      String   @id @default(uuid()) @db.Uuid
+  imageId                 String   @unique @db.Uuid
+  image                   Image    @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  blurScore               Float?
+  focusScore              Float?
+  motionBlurScore         Float?
+  eyeClosedScore          Float?
+  exposureScore           Float?
+  compressionScore        Float?
+  overallQualityScore     Float?
+  isBlurry                Boolean  @default(false)
+  isOutOfFocus            Boolean  @default(false)
+  hasMotionBlur           Boolean  @default(false)
+  hasEyesClosed           Boolean  @default(false)
+  isLowExposure           Boolean  @default(false)
+  hasCompressionArtifacts Boolean  @default(false)
+  flags                   Json?
+  raw                     Json?
+  analyzedAt              DateTime?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@index([analyzedAt])
 }

@@ -157,6 +157,112 @@ For the current schema, `sessionId` maps to the upload batch id. If the product
 renames upload sessions to batches or projects later, keep the cluster relation
 attached to that durable batch/project entity rather than to a transient job.
 
+## `flags` And `raw` Examples
+
+Use stable score and boolean columns for product behavior. Use `flags` for the
+UI-friendly list of quality issues. Use `raw` for detector/model details that
+are useful for debugging, tuning, and future migrations.
+
+Example `ImageQualityAnalysis` row:
+
+```json
+{
+  "blurScore": 0.82,
+  "focusScore": 0.31,
+  "motionBlurScore": 0.44,
+  "eyeClosedScore": 0.0,
+  "exposureScore": 0.28,
+  "compressionScore": 0.16,
+  "overallQualityScore": 0.42,
+  "isBlurry": true,
+  "isOutOfFocus": true,
+  "hasMotionBlur": false,
+  "hasEyesClosed": false,
+  "isLowExposure": true,
+  "hasCompressionArtifacts": false
+}
+```
+
+Example `flags` JSON:
+
+```json
+[
+  {
+    "code": "blurry",
+    "label": "Blurry",
+    "severity": "high",
+    "score": 0.82,
+    "reason": "Low sharpness across the frame"
+  },
+  {
+    "code": "out_of_focus",
+    "label": "Out of focus",
+    "severity": "medium",
+    "score": 0.69,
+    "reason": "Subject region is softer than expected"
+  },
+  {
+    "code": "low_exposure",
+    "label": "Low exposure",
+    "severity": "medium",
+    "score": 0.72,
+    "reason": "Large shadow area and low mean luminance"
+  }
+]
+```
+
+`flags` is meant for UI/API consumption. The UI can render badges from it
+without knowing model internals.
+
+Example `raw` JSON:
+
+```json
+{
+  "version": "quality-mvp-1",
+  "image": {
+    "width": 4032,
+    "height": 3024,
+    "channels": 3
+  },
+  "blur": {
+    "method": "variance_of_laplacian",
+    "laplacianVariance": 84.2,
+    "threshold": 120,
+    "normalizedScore": 0.82
+  },
+  "focus": {
+    "method": "center_weighted_sharpness",
+    "centerSharpness": 0.29,
+    "edgeSharpness": 0.34,
+    "subjectRegionSharpness": null
+  },
+  "exposure": {
+    "method": "luminance_histogram",
+    "meanLuminance": 0.28,
+    "shadowClippingRatio": 0.18,
+    "highlightClippingRatio": 0.01,
+    "threshold": 0.35
+  },
+  "faces": [
+    {
+      "box": [920, 540, 1420, 1180],
+      "confidence": 0.97,
+      "leftEyeOpenProbability": 0.94,
+      "rightEyeOpenProbability": 0.91
+    }
+  ],
+  "compression": {
+    "format": "jpeg",
+    "estimatedQuality": 87,
+    "blockinessScore": 0.12
+  }
+}
+```
+
+`raw` should not drive core UI directly. If a raw field becomes important for
+filtering, ranking, or product display, promote it into a structured column in a
+later migration.
+
 ## Worker Pipeline
 
 The Python worker should receive a BullMQ job with a `sessionId`, then load the
@@ -274,4 +380,3 @@ Similarity signals:
 - Keep recommendations explainable with simple labels.
 - Keep raw model outputs out of the main `Image` row.
 - Let the UI depend on stable cluster/ranking/flag outputs, not raw ML internals.
-
