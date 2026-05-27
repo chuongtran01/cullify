@@ -229,9 +229,4 @@ a {
   a {
     text-underline-offset: 0.18em;
   }
-
-  ::selection {
-    background: color-mix(in srgb, var(--action-blue) 18%, transparent);
-    color: var(--ink);
-  }
 }
