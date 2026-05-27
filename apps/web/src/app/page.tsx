@@ -25,11 +25,11 @@ export default function Home() {
     <main className="min-h-screen bg-canvas text-ink">
       <Navbar />
       <HeroSection onUploadClick={() => setUploadDialogOpen(true)} />
+      <ProductPreviewSection />
       <HowItWorksSection />
       <FeaturesSection />
-      <ProductPreviewSection />
-      <UseCasesSection />
       <BenefitsSection />
+      <UseCasesSection />
       <PricingSection />
       <FaqSection />
       <Footer />

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="border-y border-hairline bg-canvas-soft">
+    <section id="pricing" className="border-y border-hairline bg-canvas">
       <div className="mx-auto max-w-6xl px-5 py-20">
         <SectionHeader
           eyebrow="Pricing"
@@ -19,17 +19,19 @@ export function PricingSection() {
             <article
               key={tier.name}
               className={cn(
-                "rounded-xl border p-8",
+                "rounded-[16px] border p-8",
                 tier.featured
-                  ? "border-ink bg-ink text-canvas"
+                  ? "border-primary bg-primary text-on-primary"
                   : "border-hairline bg-surface-card text-ink",
               )}
             >
-              <h3 className="text-2xl font-normal">{tier.name}</h3>
+              <h3 className="text-2xl font-normal tracking-[-0.01em]">
+                {tier.name}
+              </h3>
               <p
                 className={cn(
                   "mt-3 text-sm leading-6",
-                  tier.featured ? "text-canvas/75" : "text-body",
+                  tier.featured ? "text-white/70" : "text-body",
                 )}
               >
                 {tier.description}
@@ -41,7 +43,7 @@ export function PricingSection() {
                 <span
                   className={cn(
                     "text-sm",
-                    tier.featured ? "text-canvas/75" : "text-muted",
+                    tier.featured ? "text-white/70" : "text-muted",
                   )}
                 >
                   / month
@@ -63,8 +65,8 @@ export function PricingSection() {
                       variant: tier.featured ? "default" : "outline",
                     }),
                     tier.featured
-                      ? "h-10 px-4"
-                      : "h-10 border-hairline-strong bg-surface-card px-4 text-ink hover:bg-canvas-soft",
+                      ? "h-11 rounded-full border-white bg-white px-5 text-primary hover:bg-white/90"
+                      : "h-11 rounded-full border-hairline bg-surface-card px-5 text-ink hover:bg-surface-stone",
                   )}
                 >
                   Get Started

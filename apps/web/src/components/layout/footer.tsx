@@ -9,23 +9,25 @@ const footerGroups = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-hairline bg-canvas">
+    <footer className="bg-primary text-white">
       <div className="mx-auto max-w-6xl px-5 py-16">
         <div className="grid gap-10 md:grid-cols-[1.2fr_repeat(4,1fr)]">
           <div>
-            <Logo />
-            <p className="mt-4 max-w-xs text-sm leading-6 text-body">
+            <div className="[&_a]:text-white [&_span:first-child]:bg-white [&_span:first-child]:text-primary">
+              <Logo />
+            </div>
+            <p className="mt-4 max-w-xs text-sm leading-6 text-white/65">
               AI photo culling for people who want fewer decisions and better
               final sets.
             </p>
           </div>
           {footerGroups.map(([heading, ...links]) => (
             <div key={heading}>
-              <h3 className="text-sm font-semibold text-ink">{heading}</h3>
-              <ul className="mt-4 grid gap-3 text-sm text-body">
+              <h3 className="text-sm font-medium text-white">{heading}</h3>
+              <ul className="mt-4 grid gap-3 text-sm text-white/60">
                 {links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="transition-colors hover:text-ink">
+                    <a href="#" className="transition-colors hover:text-white">
                       {link}
                     </a>
                   </li>
@@ -34,16 +36,16 @@ export function Footer() {
             </div>
           ))}
         </div>
-        <div className="mt-12 flex flex-col justify-between gap-4 border-t border-hairline pt-6 text-sm text-muted sm:flex-row">
+        <div className="mt-12 flex flex-col justify-between gap-4 border-t border-white/15 pt-6 text-sm text-white/50 sm:flex-row">
           <p>Copyright 2026 Cullify. All rights reserved.</p>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-ink">
+            <a href="#" className="hover:text-white">
               X
             </a>
-            <a href="#" className="hover:text-ink">
+            <a href="#" className="hover:text-white">
               LinkedIn
             </a>
-            <a href="#" className="hover:text-ink">
+            <a href="#" className="hover:text-white">
               GitHub
             </a>
           </div>
