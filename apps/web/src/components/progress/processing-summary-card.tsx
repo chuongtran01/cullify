@@ -21,41 +21,46 @@ export function ProcessingSummaryCard({
   stages,
 }: ProcessingSummaryCardProps) {
   return (
-    <section className="grid gap-4 rounded-lg bg-surface-card p-4 ring-1 ring-hairline md:p-5 lg:grid-cols-[1.4fr_0.9fr]">
-      <div className="grid gap-5 sm:grid-cols-[176px_1fr] sm:items-center">
+    <section className="grid gap-5 rounded-[22px] bg-deep-green p-3 text-white lg:grid-cols-[1.4fr_0.9fr]">
+      <div className="grid gap-5 rounded-[18px] border border-white/10 bg-surface-dark p-5 sm:grid-cols-[176px_1fr] sm:items-center">
         <ProcessingProgressDonut progress={progress} />
 
         <div className="min-w-0">
-          <div className="flex items-center gap-2 text-sm font-medium text-primary">
+          <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.02em] text-white/60">
             <Sparkles className="size-4" />
             AI processing
           </div>
-          <h2 className="mt-2 text-2xl leading-tight font-medium">
-            Analyzing your photos...
+          <h2 className="mt-3 text-3xl leading-tight font-normal tracking-[-0.02em] text-white">
+            Analyzing your photos
           </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-body">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/65">
             AI is finding the best photos, filtering low-quality shots, and
             organizing similar images so review is faster when processing
             completes.
           </p>
 
           <div className="mt-6 space-y-2">
-            <Progress value={progress} className="h-2 bg-hairline-soft" />
+            <Progress
+              value={progress}
+              className="h-2 bg-white/10 [&_[data-slot=progress-indicator]]:bg-white"
+            />
             <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-              <span className="font-medium text-ink">
+              <span className="text-white">
                 {processedPhotos} of {totalPhotos} photos processed
               </span>
-              <span className="text-muted">
+              <span className="text-white/55">
                 About {estimatedRemaining} remaining
               </span>
             </div>
           </div>
 
-          <div className="mt-4 inline-flex items-center gap-3 rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm">
-            <Clock3 className="size-4 text-primary" />
+          <div className="mt-5 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm">
+            <Clock3 className="size-4 text-white/70" />
             <div>
-              <div className="font-medium">Estimated remaining time</div>
-              <div className="text-muted">{estimatedRemaining}</div>
+              <div className="font-mono text-xs uppercase tracking-[0.02em] text-white/50">
+                Estimated remaining
+              </div>
+              <div className="text-white">{estimatedRemaining}</div>
             </div>
           </div>
         </div>

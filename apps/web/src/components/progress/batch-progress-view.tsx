@@ -9,8 +9,8 @@ import type { BatchProgressData } from "@/components/progress/types";
 
 export function BatchProgressView({ data }: { data: BatchProgressData }) {
   return (
-    <main className="min-h-screen bg-canvas text-ink">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-surface-stone text-ink">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
         <ProgressHeader
           title={data.title}
           uploadedAt={data.uploadedAt}
