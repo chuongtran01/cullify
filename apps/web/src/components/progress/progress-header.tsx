@@ -1,26 +1,27 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 type ProgressHeaderProps = {
   title: string;
   uploadedAt: string;
-  totalPhotos: number;
   batchId: string;
   status: string;
+  progress: number;
 };
 
 export function ProgressHeader({
   title,
   uploadedAt,
-  totalPhotos,
   batchId,
   status,
+  progress,
 }: ProgressHeaderProps) {
+  const isComplete = progress >= 100 || status.toLowerCase() === "complete";
+
   return (
-    <header className="flex flex-col gap-5 rounded-[22px] border border-hairline bg-canvas p-5 sm:flex-row sm:items-start sm:justify-between">
+    <header className="flex flex-col gap-5 rounded-[22px] border border-hairline bg-canvas p-5 lg:flex-row lg:items-start lg:justify-between">
       <div className="flex items-start gap-3">
         <Button
           asChild
@@ -42,14 +43,20 @@ export function ProgressHeader({
           </h1>
           <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted">
             <span>Uploaded {uploadedAt}</span>
-            <span aria-hidden="true">/</span>
-            <span>{totalPhotos} total photos</span>
           </div>
         </div>
       </div>
-      <Badge className="h-8 w-fit rounded-full bg-primary px-3 font-mono font-normal uppercase tracking-[0.02em] text-on-primary">
-        {status}
-      </Badge>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-end">
+        <div className="font-mono text-xs uppercase tracking-[0.02em] text-muted">
+          Status: {status}
+        </div>
+        <Button
+          disabled={!isComplete}
+          className="h-11 w-full rounded-full px-5 sm:w-auto"
+        >
+          Review Results
+        </Button>
+      </div>
     </header>
   );
 }

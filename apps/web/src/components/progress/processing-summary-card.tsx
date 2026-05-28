@@ -63,6 +63,10 @@ export function ProcessingSummaryCard({
               <div className="text-white">{estimatedRemaining}</div>
             </div>
           </div>
+          <p className="mt-4 max-w-xl text-sm leading-6 text-white/55">
+            You can leave this page. Processing will continue in the
+            background.
+          </p>
         </div>
       </div>
 

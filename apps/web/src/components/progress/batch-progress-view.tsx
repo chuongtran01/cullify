@@ -1,6 +1,5 @@
 import { getProgressStats } from "@/components/progress/mock-data";
 import { ProcessingSummaryCard } from "@/components/progress/processing-summary-card";
-import { ProgressFooter } from "@/components/progress/progress-footer";
 import { ProgressHeader } from "@/components/progress/progress-header";
 import { ProgressStats } from "@/components/progress/progress-stats";
 import { RecentActivityCard } from "@/components/progress/recent-activity-card";
@@ -14,9 +13,9 @@ export function BatchProgressView({ data }: { data: BatchProgressData }) {
         <ProgressHeader
           title={data.title}
           uploadedAt={data.uploadedAt}
-          totalPhotos={data.totalPhotos}
           batchId={data.batchId}
           status={data.status}
+          progress={data.progress}
         />
         <ProcessingSummaryCard
           progress={data.progress}
@@ -30,7 +29,6 @@ export function BatchProgressView({ data }: { data: BatchProgressData }) {
           <RecentActivityCard activity={data.activity} />
           <TasksCard tasks={data.tasks} />
         </section>
-        <ProgressFooter />
       </div>
     </main>
   );
