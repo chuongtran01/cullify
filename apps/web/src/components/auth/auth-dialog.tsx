@@ -70,6 +70,10 @@ const signUpSchema = z.object({
 type SignInValues = z.infer<typeof signInSchema>;
 type SignUpValues = z.infer<typeof signUpSchema>;
 
+function authFieldId(mode: AuthMode, field: string) {
+  return `${mode}-${field}`;
+}
+
 type AuthDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -158,6 +162,14 @@ export function AuthDialog({
     await completeAuth();
   }
 
+  function switchMode() {
+    const nextMode = mode === "sign-in" ? "sign-up" : "sign-in";
+    setMode(nextMode);
+    setError(null);
+    signInForm.reset();
+    signUpForm.reset();
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[calc(100%-2rem)] gap-6 rounded-[1.5rem] border border-hairline bg-canvas p-6 shadow-2xl sm:max-w-md">
@@ -171,43 +183,53 @@ export function AuthDialog({
         </DialogHeader>
 
         {mode === "sign-in" ? (
-          <form className="grid gap-4" onSubmit={signInForm.handleSubmit(handleSignIn)}>
+          <form
+            key="sign-in"
+            className="grid gap-4"
+            onSubmit={signInForm.handleSubmit(handleSignIn)}
+          >
             <Controller
               name="email"
               control={signInForm.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type="email"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="you@example.com"
-                    autoComplete="email"
-                  />
-                  {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
-                </Field>
-              )}
+              render={({ field, fieldState }) => {
+                const inputId = authFieldId("sign-in", "email");
+                return (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={inputId}>Email</FieldLabel>
+                    <Input
+                      {...field}
+                      id={inputId}
+                      type="email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="you@example.com"
+                      autoComplete="username"
+                    />
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
+                );
+              }}
             />
 
             <Controller
               name="password"
               control={signInForm.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type="password"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Password"
-                    autoComplete="current-password"
-                  />
-                  {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
-                </Field>
-              )}
+              render={({ field, fieldState }) => {
+                const inputId = authFieldId("sign-in", "password");
+                return (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={inputId}>Password</FieldLabel>
+                    <Input
+                      {...field}
+                      id={inputId}
+                      type="password"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Password"
+                      autoComplete="current-password"
+                    />
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
+                );
+              }}
             />
 
             {error ? (
@@ -224,82 +246,98 @@ export function AuthDialog({
             </Button>
           </form>
         ) : (
-          <form className="grid gap-4" onSubmit={signUpForm.handleSubmit(handleSignUp)}>
+          <form
+            key="sign-up"
+            className="grid gap-4"
+            onSubmit={signUpForm.handleSubmit(handleSignUp)}
+          >
             <div className="grid gap-4 sm:grid-cols-2">
               <Controller
                 name="firstName"
                 control={signUpForm.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>First name</FieldLabel>
-                    <Input
-                      {...field}
-                      id={field.name}
-                      aria-invalid={fieldState.invalid}
-                      placeholder="First"
-                      autoComplete="given-name"
-                    />
-                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
-                  </Field>
-                )}
+                render={({ field, fieldState }) => {
+                  const inputId = authFieldId("sign-up", "firstName");
+                  return (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={inputId}>First name</FieldLabel>
+                      <Input
+                        {...field}
+                        id={inputId}
+                        aria-invalid={fieldState.invalid}
+                        placeholder="First"
+                        autoComplete="given-name"
+                      />
+                      {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                    </Field>
+                  );
+                }}
               />
 
               <Controller
                 name="lastName"
                 control={signUpForm.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>Last name</FieldLabel>
-                    <Input
-                      {...field}
-                      id={field.name}
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Last"
-                      autoComplete="family-name"
-                    />
-                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
-                  </Field>
-                )}
+                render={({ field, fieldState }) => {
+                  const inputId = authFieldId("sign-up", "lastName");
+                  return (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={inputId}>Last name</FieldLabel>
+                      <Input
+                        {...field}
+                        id={inputId}
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Last"
+                        autoComplete="family-name"
+                      />
+                      {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                    </Field>
+                  );
+                }}
               />
             </div>
 
             <Controller
               name="email"
               control={signUpForm.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type="email"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="you@example.com"
-                    autoComplete="email"
-                  />
-                  {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
-                </Field>
-              )}
+              render={({ field, fieldState }) => {
+                const inputId = authFieldId("sign-up", "email");
+                return (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={inputId}>Email</FieldLabel>
+                    <Input
+                      {...field}
+                      id={inputId}
+                      type="email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                    />
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
+                );
+              }}
             />
 
             <Controller
               name="password"
               control={signUpForm.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type="password"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="8+ characters"
-                    autoComplete="new-password"
-                  />
-                  <FieldDescription>Uppercase, lowercase, number, symbol.</FieldDescription>
-                  {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
-                </Field>
-              )}
+              render={({ field, fieldState }) => {
+                const inputId = authFieldId("sign-up", "password");
+                return (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={inputId}>Password</FieldLabel>
+                    <Input
+                      {...field}
+                      id={inputId}
+                      type="password"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="8+ characters"
+                      autoComplete="new-password"
+                    />
+                    <FieldDescription>Uppercase, lowercase, number, symbol.</FieldDescription>
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
+                );
+              }}
             />
 
             {error ? (
@@ -319,10 +357,7 @@ export function AuthDialog({
 
         <button
           className="text-sm font-medium text-body transition-colors hover:text-action-blue"
-          onClick={() => {
-            setMode(mode === "sign-in" ? "sign-up" : "sign-in");
-            setError(null);
-          }}
+          onClick={switchMode}
           type="button"
         >
           {activeCopy.switchLabel}
