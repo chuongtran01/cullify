@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { Menu } from "lucide-react";
 
+import { AuthNavActions } from "@/components/auth/auth-nav-actions";
 import { navLinks } from "@/components/landing/content";
 import { Logo } from "@/components/layout/logo";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 export function Navbar() {
   return (
@@ -23,18 +21,7 @@ export function Navbar() {
           ))}
         </div>
         <div className="hidden items-center gap-3 md:flex">
-          <Link
-            href="#"
-            className={cn(
-              buttonVariants({ variant: "link" }),
-              "h-10 px-0 text-ink no-underline hover:text-action-blue hover:no-underline",
-            )}
-          >
-            Sign In
-          </Link>
-          <Link href="#" className={cn(buttonVariants(), "h-11 rounded-full px-5")}>
-            Get Started
-          </Link>
+          <AuthNavActions />
         </div>
         <button
           className="grid size-10 place-items-center rounded-full border border-hairline bg-surface-card md:hidden"
