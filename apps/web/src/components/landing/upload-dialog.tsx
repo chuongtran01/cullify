@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 
+import { AuthDialog } from "@/components/auth/auth-dialog";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useUploadBatch } from "@/hooks/use-upload-batch";
+import { authClient } from "@/lib/auth-client";
 import type {
   CreateUploadSessionResponse,
   UploadProgress,
@@ -72,8 +74,10 @@ export function UploadDialog({
   const [files, setFiles] = React.useState<File[]>([]);
   const [isManagingSelection, setIsManagingSelection] = React.useState(false);
   const [fileSearch, setFileSearch] = React.useState("");
+  const [authOpen, setAuthOpen] = React.useState(false);
   const [uploadProgress, setUploadProgress] =
     React.useState<UploadProgress | null>(null);
+  const { data: session, refetch: refetchSession } = authClient.useSession();
   const uploadBatch = useUploadBatch();
   const isSubmitting = uploadBatch.isPending;
   const uploadProgressValue =
@@ -142,8 +146,8 @@ export function UploadDialog({
     }
   }
 
-  function handleContinue() {
-    if (files.length === 0 || isSubmitting) {
+  function startUpload() {
+    if (files.length === 0 || uploadBatch.isPending) {
       return;
     }
 
@@ -169,6 +173,24 @@ export function UploadDialog({
     );
   }
 
+  function handleContinue() {
+    if (files.length === 0 || isSubmitting) {
+      return;
+    }
+
+    if (!session?.user) {
+      setAuthOpen(true);
+      return;
+    }
+
+    startUpload();
+  }
+
+  async function handleAuthenticatedForUpload() {
+    await refetchSession();
+    startUpload();
+  }
+
   function handleOpenChange(nextOpen: boolean) {
     if (isSubmitting) {
       return;
@@ -181,13 +203,15 @@ export function UploadDialog({
       setFileSearch("");
       setIsManagingSelection(false);
       setUploadProgress(null);
+      setAuthOpen(false);
       uploadBatch.reset();
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="flex max-h-[calc(100dvh-2rem)] !max-w-3xl flex-col overflow-hidden rounded-[22px] border border-hairline bg-surface-card p-0 text-ink shadow-none sm:!max-w-3xl">
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="flex max-h-[calc(100dvh-2rem)] !max-w-3xl flex-col overflow-hidden rounded-[22px] border border-hairline bg-surface-card p-0 text-ink shadow-none sm:!max-w-3xl">
         <DialogHeader className="gap-4 border-b border-hairline px-6 pt-7 pb-6 sm:px-8">
           <div className="flex items-start gap-4">
             <div className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-on-primary">
@@ -507,7 +531,30 @@ export function UploadDialog({
             </Button>
           </div>
         </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+
+      <AuthDialog
+        key={authOpen ? "upload-auth-open" : "upload-auth-closed"}
+        open={authOpen}
+        onOpenChange={setAuthOpen}
+        initialMode="sign-in"
+        copy={{
+          "sign-in": {
+            title: "Sign in to start review",
+            description:
+              "Your batch needs an account so the review stays private and tied to you.",
+            submit: "Sign in and start",
+          },
+          "sign-up": {
+            title: "Create an account to start review",
+            description:
+              "Your batch needs an account so the review stays private and tied to you.",
+            submit: "Create account and start",
+          },
+        }}
+        onAuthenticated={handleAuthenticatedForUpload}
+      />
+    </>
   );
 }
