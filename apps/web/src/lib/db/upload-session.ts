@@ -13,6 +13,7 @@ export type UploadFileRecord = {
 
 export async function createUploadSessionRecords(
   sessionId: string,
+  userId: string,
   files: UploadFileInput[],
 ): Promise<UploadFileRecord[]> {
   const records = files.map((file) => {
@@ -25,6 +26,7 @@ export async function createUploadSessionRecords(
   await prisma.batch.create({
     data: {
       id: sessionId,
+      userId,
       status: BatchStatus.UPLOADING,
       images: {
         create: records.map((record) => ({
@@ -41,20 +43,24 @@ export async function createUploadSessionRecords(
   return records;
 }
 
-export async function deleteUploadSession(sessionId: string): Promise<void> {
+export async function deleteUploadSession(
+  sessionId: string,
+  userId: string,
+): Promise<void> {
   await prisma.batch
-    .delete({
-      where: { id: sessionId },
+    .deleteMany({
+      where: { id: sessionId, userId },
     })
     .catch(() => undefined);
 }
 
 export async function completeUploadSession(
   sessionId: string,
+  userId: string,
   fileIds: string[],
 ): Promise<number | null> {
-  const batch = await prisma.batch.findUnique({
-    where: { id: sessionId },
+  const batch = await prisma.batch.findFirst({
+    where: { id: sessionId, userId },
     select: { id: true },
   });
 

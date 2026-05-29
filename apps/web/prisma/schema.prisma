@@ -24,10 +24,14 @@ enum ImageUploadStatus {
 
 model Batch {
   id        String      @id @db.Uuid
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   status    BatchStatus @default(UPLOADING)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   images    Image[]
+
+  @@index([userId])
 }
 
 model Image {
@@ -81,6 +85,7 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  batches       Batch[]
   sessions      Session[]
   accounts      Account[]
 

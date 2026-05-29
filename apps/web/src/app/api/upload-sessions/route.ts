@@ -6,6 +6,7 @@ import {
   createUploadSessionRecords,
   deleteUploadSession,
 } from "@/lib/db/upload-session";
+import { getRequestUserId } from "@/lib/auth-session";
 import { R2ConfigError } from "@/lib/r2/env";
 import {
   createPresignedUpload,
@@ -16,6 +17,12 @@ import { validateCreateUploadSessionRequest } from "@/lib/upload/validate";
 
 // Browser PUT uploads to presigned URLs require R2 bucket CORS configuration.
 export async function POST(request: Request) {
+  const userId = await getRequestUserId(request.headers);
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   let body: unknown;
 
   try {
@@ -35,7 +42,11 @@ export async function POST(request: Request) {
   let records;
 
   try {
-    records = await createUploadSessionRecords(sessionId, validation.data.files);
+    records = await createUploadSessionRecords(
+      sessionId,
+      userId,
+      validation.data.files,
+    );
   } catch (error) {
     console.error("Failed to persist upload session", error);
 
@@ -60,7 +71,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(response, { status: 201 });
   } catch (error) {
-    await deleteUploadSession(sessionId);
+    await deleteUploadSession(sessionId, userId);
 
     if (error instanceof R2ConfigError) {
       return NextResponse.json(

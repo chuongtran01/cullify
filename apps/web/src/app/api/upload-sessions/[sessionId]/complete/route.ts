@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { completeUploadSession } from "@/lib/db/upload-session";
+import { getRequestUserId } from "@/lib/auth-session";
 import { enqueueImageProcessingJob } from "@/lib/queues/image-processing";
 import {
   isUuid,
@@ -12,6 +13,12 @@ type RouteContext = {
 };
 
 export async function POST(request: Request, context: RouteContext) {
+  const userId = await getRequestUserId(request.headers);
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { sessionId } = await context.params;
 
   if (!isUuid(sessionId)) {
@@ -35,6 +42,7 @@ export async function POST(request: Request, context: RouteContext) {
   try {
     const updated = await completeUploadSession(
       sessionId,
+      userId,
       validation.data.fileIds,
     );
 
