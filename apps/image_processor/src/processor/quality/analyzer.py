@@ -7,6 +7,10 @@ from image_processor.processor.quality.blur import (
     BlurScoreResult,
     calculate_blur_score_from_pixels,
 )
+from image_processor.processor.quality.compression import (
+    CompressionScoreResult,
+    calculate_compression_score_from_pixels,
+)
 from image_processor.processor.quality.exposure import (
     ExposureScoreResult,
     calculate_exposure_score_from_pixels,
@@ -47,6 +51,18 @@ class ImageQualityResult:
         bool,
         "True when the image is considered overexposed.",
     ]
+    compression_score: Annotated[
+        float,
+        "Normalized compression quality score from 0.0 to 1.0; higher is better.",
+    ]
+    blockiness_score: Annotated[
+        float,
+        "Normalized excess edge strength at JPEG-style block boundaries.",
+    ]
+    has_compression_artifacts: Annotated[
+        bool,
+        "True when compression artifacts are detected.",
+    ]
     width: Annotated[
         int,
         "Width in pixels after analyzer downscaling.",
@@ -76,9 +92,15 @@ class ImageQualityAnalyzer:
             width=width,
             height=height,
         )
+        compression_result = calculate_compression_score_from_pixels(
+            pixels,
+            width=width,
+            height=height,
+        )
         return self._to_quality_result(
             blur_result,
             exposure_result,
+            compression_result,
             width=width,
             height=height,
         )
@@ -104,6 +126,7 @@ class ImageQualityAnalyzer:
         self,
         blur_result: BlurScoreResult,
         exposure_result: ExposureScoreResult,
+        compression_result: CompressionScoreResult,
         *,
         width: int,
         height: int,
@@ -117,6 +140,9 @@ class ImageQualityAnalyzer:
             bright_pixel_ratio=exposure_result.bright_pixel_ratio,
             is_low_exposure=exposure_result.is_low_exposure,
             is_high_exposure=exposure_result.is_high_exposure,
+            compression_score=compression_result.score,
+            blockiness_score=compression_result.blockiness_score,
+            has_compression_artifacts=compression_result.has_compression_artifacts,
             width=width,
             height=height,
         )

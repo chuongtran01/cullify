@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from image_processor.processor.quality import (
     BlurScoreResult,
+    CompressionScoreResult,
     ExposureScoreResult,
     ImageQualityAnalyzer,
     calculate_blur_score_from_pixels,
@@ -92,16 +93,32 @@ class BlurScoreTest(unittest.TestCase):
                         is_high_exposure=False,
                     ),
                 ) as calculate_exposure:
-                    result = analyzer.analyze(b"encoded-image-bytes")
+                    with patch(
+                        "image_processor.processor.quality.analyzer.calculate_compression_score_from_pixels",
+                        return_value=CompressionScoreResult(
+                            score=0.9,
+                            blockiness_score=0.01,
+                            has_compression_artifacts=False,
+                        ),
+                    ) as calculate_compression:
+                        result = analyzer.analyze(b"encoded-image-bytes")
 
         load_pixels.assert_called_once_with(b"encoded-image-bytes")
         calculate_blur.assert_called_once_with([128] * 200, width=10, height=20)
         calculate_exposure.assert_called_once_with([128] * 200, width=10, height=20)
+        calculate_compression.assert_called_once_with(
+            [128] * 200,
+            width=10,
+            height=20,
+        )
         self.assertEqual(result.blur_score, 42.0)
         self.assertTrue(result.is_blurry)
         self.assertEqual(result.exposure_score, 0.8)
         self.assertEqual(result.mean_luminance, 0.45)
         self.assertFalse(result.is_low_exposure)
+        self.assertEqual(result.compression_score, 0.9)
+        self.assertEqual(result.blockiness_score, 0.01)
+        self.assertFalse(result.has_compression_artifacts)
         self.assertEqual(result.width, 10)
         self.assertEqual(result.height, 20)
 

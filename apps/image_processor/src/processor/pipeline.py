@@ -33,6 +33,9 @@ class ImageProcessingPipeline:
                 f"image={image.id} blur_score={quality_result.blur_score:.2f} "
                 f"is_blurry={quality_result.is_blurry} "
                 f"exposure_score={quality_result.exposure_score:.2f} "
-                f"is_low_exposure={quality_result.is_low_exposure}",
+                f"is_low_exposure={quality_result.is_low_exposure} "
+                f"compression_score={quality_result.compression_score:.2f} "
+                f"has_compression_artifacts="
+                f"{quality_result.has_compression_artifacts}",
                 flush=True,
             )
