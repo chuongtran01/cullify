@@ -1,7 +1,10 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Loader2, LogOut, UserRound } from "lucide-react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -11,6 +14,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 
@@ -39,16 +49,54 @@ const authCopy = {
   }
 >;
 
+const signInSchema = z.object({
+  email: z.string().email("Enter a valid email."),
+  password: z.string().min(1, "Required."),
+});
+
+const strongPassword = z
+  .string()
+  .min(8, "Use 8+ characters.")
+  .regex(/[A-Z]/, "Add uppercase.")
+  .regex(/[a-z]/, "Add lowercase.")
+  .regex(/[0-9]/, "Add a number.")
+  .regex(/[^A-Za-z0-9]/, "Add a symbol.");
+
+const signUpSchema = z.object({
+  firstName: z.string().trim().min(1, "Required."),
+  lastName: z.string().trim().min(1, "Required."),
+  email: z.string().email("Enter a valid email."),
+  password: strongPassword,
+});
+
+type SignInValues = z.infer<typeof signInSchema>;
+type SignUpValues = z.infer<typeof signUpSchema>;
+
 export function AuthNavActions() {
   const { data: session, refetch } = authClient.useSession();
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<AuthMode>("sign-in");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const signInForm = useForm<SignInValues>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const signUpForm = useForm<SignUpValues>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    },
+  });
 
   const copy = authCopy[mode];
   const userLabel = session?.user.name || session?.user.email;
@@ -59,15 +107,14 @@ export function AuthNavActions() {
     setError(null);
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleSignIn(values: SignInValues) {
     setError(null);
     setIsSubmitting(true);
 
-    const result =
-      mode === "sign-in"
-        ? await authClient.signIn.email({ email, password })
-        : await authClient.signUp.email({ email, password, name });
+    const result = await authClient.signIn.email({
+      email: values.email,
+      password: values.password,
+    });
 
     setIsSubmitting(false);
 
@@ -77,7 +124,29 @@ export function AuthNavActions() {
     }
 
     setOpen(false);
-    setPassword("");
+    signInForm.reset();
+    await refetch();
+  }
+
+  async function handleSignUp(values: SignUpValues) {
+    setError(null);
+    setIsSubmitting(true);
+
+    const result = await authClient.signUp.email({
+      email: values.email,
+      password: values.password,
+      name: `${values.firstName.trim()} ${values.lastName.trim()}`,
+    });
+
+    setIsSubmitting(false);
+
+    if (result.error) {
+      setError(result.error.message || "Authentication failed. Please try again.");
+      return;
+    }
+
+    setOpen(false);
+    signUpForm.reset();
     await refetch();
   }
 
@@ -145,61 +214,152 @@ export function AuthNavActions() {
             </DialogDescription>
           </DialogHeader>
 
-          <form className="grid gap-4" onSubmit={handleSubmit}>
-            {mode === "sign-up" ? (
-              <label className="grid gap-2 text-sm font-medium text-ink">
-                Name
-                <input
-                  className="h-12 rounded-xl border border-hairline bg-surface-card px-4 text-sm text-ink outline-none transition focus:border-ink focus:ring-4 focus:ring-action-blue/10"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  placeholder="Your name"
-                  autoComplete="name"
-                  required
-                />
-              </label>
-            ) : null}
-
-            <label className="grid gap-2 text-sm font-medium text-ink">
-              Email
-              <input
-                className="h-12 rounded-xl border border-hairline bg-surface-card px-4 text-sm text-ink outline-none transition focus:border-ink focus:ring-4 focus:ring-action-blue/10"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="you@example.com"
-                autoComplete="email"
-                required
+          {mode === "sign-in" ? (
+            <form className="grid gap-4" onSubmit={signInForm.handleSubmit(handleSignIn)}>
+              <Controller
+                name="email"
+                control={signInForm.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      type="email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                    />
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
+                )}
               />
-            </label>
 
-            <label className="grid gap-2 text-sm font-medium text-ink">
-              Password
-              <input
-                className="h-12 rounded-xl border border-hairline bg-surface-card px-4 text-sm text-ink outline-none transition focus:border-ink focus:ring-4 focus:ring-action-blue/10"
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="At least 8 characters"
-                autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
-                minLength={8}
-                required
+              <Controller
+                name="password"
+                control={signInForm.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      type="password"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Password"
+                      autoComplete="current-password"
+                    />
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
+                )}
               />
-            </label>
 
-            {error ? (
-              <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                {error}
-              </p>
-            ) : null}
-
-            <Button className="h-12 rounded-full" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              {error ? (
+                <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {error}
+                </p>
               ) : null}
-              {copy.submit}
-            </Button>
-          </form>
+
+              <Button className="h-12 rounded-full" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                ) : null}
+                {copy.submit}
+              </Button>
+            </form>
+          ) : (
+            <form className="grid gap-4" onSubmit={signUpForm.handleSubmit(handleSignUp)}>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Controller
+                  name="firstName"
+                  control={signUpForm.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={field.name}>First name</FieldLabel>
+                      <Input
+                        {...field}
+                        id={field.name}
+                        aria-invalid={fieldState.invalid}
+                        placeholder="First"
+                        autoComplete="given-name"
+                      />
+                      {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="lastName"
+                  control={signUpForm.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={field.name}>Last name</FieldLabel>
+                      <Input
+                        {...field}
+                        id={field.name}
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Last"
+                        autoComplete="family-name"
+                      />
+                      {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                    </Field>
+                  )}
+                />
+              </div>
+
+              <Controller
+                name="email"
+                control={signUpForm.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      type="email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                    />
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="password"
+                control={signUpForm.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      type="password"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="8+ characters"
+                      autoComplete="new-password"
+                    />
+                    <FieldDescription>Uppercase, lowercase, number, symbol.</FieldDescription>
+                    {fieldState.invalid ? <FieldError errors={[fieldState.error]} /> : null}
+                  </Field>
+                )}
+              />
+
+              {error ? (
+                <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {error}
+                </p>
+              ) : null}
+
+              <Button className="h-12 rounded-full" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                ) : null}
+                {copy.submit}
+              </Button>
+            </form>
+          )}
 
           <button
             className="text-sm font-medium text-body transition-colors hover:text-action-blue"
