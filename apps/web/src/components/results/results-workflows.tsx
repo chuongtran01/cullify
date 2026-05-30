@@ -13,13 +13,11 @@ function WorkflowSection({
   title,
   count,
   description,
-  action,
   children,
 }: {
   title: string;
   count: string;
   description: string;
-  action: string;
   children: React.ReactNode;
 }) {
   return (
@@ -38,7 +36,7 @@ function WorkflowSection({
           variant="outline"
           className="h-10 gap-2 rounded-full border-hairline bg-surface-card px-4 hover:bg-surface-stone hover:cursor-pointer sm:shrink-0"
         >
-          {action}
+          Review
           <ArrowRight
             className="size-4 transition-transform duration-200 group-hover/button:translate-x-1"
             aria-hidden="true"
@@ -103,7 +101,6 @@ export function ResultsWorkflows({
   return (
     <div className="grid min-w-0 gap-5">
       <WorkflowSection
-        action="Review All Picks"
         count={`${data.standoutPhotos.length} picks`}
         description="Start with the photos the AI believes are the strongest moments from the batch."
         title="Review AI Picks"
@@ -112,7 +109,6 @@ export function ResultsWorkflows({
       </WorkflowSection>
 
       <WorkflowSection
-        action="Review All Groups"
         count={`${data.similarGroups.length} groups`}
         description="Compare visually similar photos and keep the best frame from each set."
         title="Review Similar Groups"
@@ -125,7 +121,6 @@ export function ResultsWorkflows({
       </WorkflowSection>
 
       <WorkflowSection
-        action="Review Rejected"
         count={`${data.rejectedPhotos.length} photos`}
         description="Check photos flagged for blur, focus issues, closed eyes, poor lighting, or duplication."
         title="Review Rejected Photos"
