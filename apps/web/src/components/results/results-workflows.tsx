@@ -23,7 +23,7 @@ function WorkflowSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-[22px] border border-hairline bg-canvas p-5">
+    <section className="min-w-0 overflow-hidden rounded-[22px] border border-hairline bg-canvas p-5">
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-3">
@@ -95,7 +95,7 @@ export function ResultsWorkflows({
   data: Pick<ReviewResultsData, "standoutPhotos" | "similarGroups" | "rejectedPhotos">;
 }) {
   return (
-    <div className="grid gap-5">
+    <div className="grid min-w-0 gap-5">
       <WorkflowSection
         action="Review All Picks"
         count={`${data.standoutPhotos.length} picks`}
