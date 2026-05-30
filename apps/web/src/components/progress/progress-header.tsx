@@ -18,7 +18,7 @@ export function ProgressHeader({
   status,
   progress,
 }: ProgressHeaderProps) {
-  const isComplete = progress >= 100 || status.toLowerCase() === "complete";
+  const isComplete = progress >= 100 || status === "COMPLETED";
 
   return (
     <header className="flex flex-col gap-5 rounded-[22px] border border-hairline bg-canvas p-5 lg:flex-row lg:items-start lg:justify-between">

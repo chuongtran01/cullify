@@ -10,6 +10,7 @@ export function getMockBatchProgress(batchId: string): BatchProgressData {
     status: "PROCESSING",
     totalPhotos: 143,
     processedPhotos: 82,
+    failedPhotos: 0,
     progress: 68,
     estimatedRemaining: "4 minutes",
     lowQualityDetected: 19,

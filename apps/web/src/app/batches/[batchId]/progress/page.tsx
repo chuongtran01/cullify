@@ -1,8 +1,10 @@
 import { BatchProgressView } from "@/components/progress/batch-progress-view";
-import { getMockBatchProgress } from "@/components/progress/mock-data";
-import { getRequestUserId } from "@/lib/auth-session";
-import { prisma } from "@/lib/prisma";
+import type { BatchProgressData } from "@/components/progress/types";
 import { isUuid } from "@/lib/upload/validate";
+import {
+  getBatchProgress,
+  ProgressServiceError,
+} from "@/services/progress";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
@@ -17,22 +19,19 @@ export default async function ProgressPage({ params }: ProgressPageProps) {
     notFound();
   }
 
-  const userId = await getRequestUserId(await headers());
+  let data: BatchProgressData;
 
-  if (!userId) {
-    notFound();
+  try {
+    data = await getBatchProgress(batchId, {
+      headers: await headers(),
+    });
+  } catch (error) {
+    if (error instanceof ProgressServiceError && error.status === 404) {
+      notFound();
+    }
+
+    throw error;
   }
-
-  const batch = await prisma.batch.findFirst({
-    where: { id: batchId, userId },
-    select: { id: true },
-  });
-
-  if (!batch) {
-    notFound();
-  }
-
-  const data = getMockBatchProgress(batchId);
 
   return <BatchProgressView data={data} />;
 }

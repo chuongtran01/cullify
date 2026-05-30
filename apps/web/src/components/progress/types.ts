@@ -20,6 +20,7 @@ export type BatchProgressData = {
   status: string;
   totalPhotos: number;
   processedPhotos: number;
+  failedPhotos: number;
   progress: number;
   estimatedRemaining: string;
   lowQualityDetected: number;

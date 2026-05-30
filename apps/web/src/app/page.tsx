@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { BenefitsSection } from "@/components/landing/benefits-section";
@@ -16,10 +17,12 @@ import { Navbar } from "@/components/layout/navbar";
 import type { CreateUploadSessionResponse } from "@/lib/upload/types";
 
 export default function Home() {
+  const router = useRouter();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [, setUploadSession] = useState<CreateUploadSessionResponse | null>(
-    null,
-  );
+
+  function handleUploadSessionCreated(response: CreateUploadSessionResponse) {
+    router.push(`/batches/${response.sessionId}/progress`);
+  }
 
   return (
     <main className="min-h-screen bg-canvas text-ink">
@@ -36,7 +39,7 @@ export default function Home() {
       <UploadDialog
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
-        onUploadSessionCreated={setUploadSession}
+        onUploadSessionCreated={handleUploadSessionCreated}
       />
     </main>
   );
