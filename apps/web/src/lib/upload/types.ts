@@ -10,7 +10,6 @@ export type CreateUploadSessionRequest = {
 
 export type PresignedUpload = {
   fileId: string;
-  key: string;
   url: string;
   method: "PUT";
   headers: {

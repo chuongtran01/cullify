@@ -18,7 +18,7 @@ export async function createUploadSessionRecords(
 ): Promise<UploadFileRecord[]> {
   const records = files.map((file) => {
     const fileId = randomUUID();
-    const objectKey = buildObjectKey(sessionId, fileId, file.name);
+    const objectKey = buildObjectKey(userId, sessionId, fileId, file.name);
 
     return { fileId, file, objectKey };
   });
@@ -72,6 +72,7 @@ export async function completeUploadSession(
     const imageUpdate = await tx.image.updateMany({
       where: {
         batchId: sessionId,
+        batch: { userId },
         id: { in: fileIds },
       },
       data: {
@@ -80,8 +81,8 @@ export async function completeUploadSession(
       },
     });
 
-    await tx.batch.update({
-      where: { id: sessionId },
+    await tx.batch.updateMany({
+      where: { id: sessionId, userId },
       data: { status: BatchStatus.PROCESSING },
     });
 

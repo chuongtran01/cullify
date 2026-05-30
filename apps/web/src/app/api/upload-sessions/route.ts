@@ -59,7 +59,7 @@ export async function POST(request: Request) {
   try {
     const uploads = await Promise.all(
       records.map((record) =>
-        createPresignedUpload(sessionId, record.fileId, record.file),
+        createPresignedUpload(record.fileId, record.objectKey, record.file),
       ),
     );
 

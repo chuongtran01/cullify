@@ -25,9 +25,10 @@ export function sanitizeFileName(name: string): string {
 }
 
 export function buildObjectKey(
+  userId: string,
   sessionId: string,
   fileId: string,
   fileName: string,
 ): string {
-  return `uploads/${sessionId}/${fileId}/${sanitizeFileName(fileName)}`;
+  return `uploads/users/${userId}/batches/${sessionId}/images/${fileId}/${sanitizeFileName(fileName)}`;
 }
