@@ -8,7 +8,7 @@ from image_processor.db.models.enums import BatchStatus
 
 
 class Batch(Base):
-    __tablename__ = "Batch"
+    __tablename__ = "batch"
 
     id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True)
     status: Mapped[BatchStatus] = mapped_column(
@@ -20,8 +20,8 @@ class Batch(Base):
         ),
         default=BatchStatus.UPLOADING,
     )
-    created_at: Mapped[datetime] = mapped_column("createdAt", DateTime(timezone=True))
-    updated_at: Mapped[datetime] = mapped_column("updatedAt", DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column("created_at", DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column("updated_at", DateTime(timezone=True))
 
     images: Mapped[list["Image"]] = relationship(
         back_populates="batch",

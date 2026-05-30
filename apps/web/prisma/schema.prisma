@@ -24,69 +24,72 @@ enum ImageUploadStatus {
 
 model Batch {
   id        String      @id @db.Uuid
-  userId    String
+  userId    String      @map("user_id")
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   status    BatchStatus @default(UPLOADING)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
   images    Image[]
 
   @@index([userId])
+  @@map("batch")
 }
 
 model Image {
   id              String                @id @db.Uuid
-  batchId         String                @db.Uuid
+  batchId         String                @db.Uuid @map("batch_id")
   batch           Batch                 @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  fileName        String
-  mimeType        String
-  sizeBytes       Int
-  objectKey       String                @unique
+  fileName        String                @map("file_name")
+  mimeType        String                @map("mime_type")
+  sizeBytes       Int                   @map("size_bytes")
+  objectKey       String                @unique @map("object_key")
   status          ImageUploadStatus     @default(PENDING)
-  createdAt       DateTime              @default(now())
-  uploadedAt      DateTime?
+  createdAt       DateTime              @default(now()) @map("created_at")
+  uploadedAt      DateTime?             @map("uploaded_at")
   qualityAnalysis ImageQualityAnalysis?
 
   @@index([batchId])
   @@index([status])
+  @@map("image")
 }
 
 model ImageQualityAnalysis {
   id                      String   @id @default(uuid()) @db.Uuid
-  imageId                 String   @unique @db.Uuid
+  imageId                 String   @unique @db.Uuid @map("image_id")
   image                   Image    @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  blurScore               Float?
-  focusScore              Float?
-  motionBlurScore         Float?
-  eyeClosedScore          Float?
-  exposureScore           Float?
-  compressionScore        Float?
-  overallQualityScore     Float?
-  isBlurry                Boolean  @default(false)
-  isOutOfFocus            Boolean  @default(false)
-  hasMotionBlur           Boolean  @default(false)
-  hasEyesClosed           Boolean  @default(false)
-  isLowExposure           Boolean  @default(false)
-  isHighExposure          Boolean  @default(false)
-  hasCompressionArtifacts Boolean  @default(false)
-  analysisError           String?
+  blurScore               Float?   @map("blur_score")
+  focusScore              Float?   @map("focus_score")
+  motionBlurScore         Float?   @map("motion_blur_score")
+  eyeClosedScore          Float?   @map("eye_closed_score")
+  exposureScore           Float?   @map("exposure_score")
+  compressionScore        Float?   @map("compression_score")
+  overallQualityScore     Float?   @map("overall_quality_score")
+  isBlurry                Boolean  @default(false) @map("is_blurry")
+  isOutOfFocus            Boolean  @default(false) @map("is_out_of_focus")
+  hasMotionBlur           Boolean  @default(false) @map("has_motion_blur")
+  hasEyesClosed           Boolean  @default(false) @map("has_eyes_closed")
+  isLowExposure           Boolean  @default(false) @map("is_low_exposure")
+  isHighExposure          Boolean  @default(false) @map("is_high_exposure")
+  hasCompressionArtifacts Boolean  @default(false) @map("has_compression_artifacts")
+  analysisError           String?  @map("analysis_error")
   flags                   Json?
   raw                     Json?
-  analyzedAt              DateTime?
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
+  analyzedAt              DateTime? @map("analyzed_at")
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
 
   @@index([analyzedAt])
+  @@map("image_quality_analysis")
 }
 
 model User {
   id            String    @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean   @default(false) @map("email_verified")
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
   batches       Batch[]
   sessions      Session[]
   accounts      Account[]
@@ -97,13 +100,13 @@ model User {
 
 model Session {
   id        String   @id
-  expiresAt DateTime
+  expiresAt DateTime @map("expires_at")
   token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  userId    String   @map("user_id")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
@@ -113,19 +116,19 @@ model Session {
 
 model Account {
   id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  userId                String    @map("user_id")
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
   scope                 String?
   password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
 
   @@index([userId])
   @@map("account")
@@ -135,9 +138,9 @@ model Verification {
   id         String   @id
   identifier String
   value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@index([identifier])
   @@map("verification")

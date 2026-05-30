@@ -13,22 +13,22 @@ if TYPE_CHECKING:
 
 
 class Image(Base):
-    __tablename__ = "Image"
+    __tablename__ = "image"
     __table_args__ = (
-        Index("Image_batchId_idx", "batchId"),
-        Index("Image_status_idx", "status"),
+        Index("image_batch_id_idx", "batch_id"),
+        Index("image_status_idx", "status"),
     )
 
     id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True)
     batch_id: Mapped[str] = mapped_column(
-        "batchId",
+        "batch_id",
         Uuid(as_uuid=False),
-        ForeignKey("Batch.id", ondelete="CASCADE"),
+        ForeignKey("batch.id", ondelete="CASCADE"),
     )
-    file_name: Mapped[str] = mapped_column("fileName", String)
-    mime_type: Mapped[str] = mapped_column("mimeType", String)
-    size_bytes: Mapped[int] = mapped_column("sizeBytes", Integer)
-    object_key: Mapped[str] = mapped_column("objectKey", String, unique=True)
+    file_name: Mapped[str] = mapped_column("file_name", String)
+    mime_type: Mapped[str] = mapped_column("mime_type", String)
+    size_bytes: Mapped[int] = mapped_column("size_bytes", Integer)
+    object_key: Mapped[str] = mapped_column("object_key", String, unique=True)
     status: Mapped[ImageUploadStatus] = mapped_column(
         Enum(
             ImageUploadStatus,
@@ -38,9 +38,9 @@ class Image(Base):
         ),
         default=ImageUploadStatus.PENDING,
     )
-    created_at: Mapped[datetime] = mapped_column("createdAt", DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column("created_at", DateTime(timezone=True))
     uploaded_at: Mapped[datetime | None] = mapped_column(
-        "uploadedAt",
+        "uploaded_at",
         DateTime(timezone=True),
         nullable=True,
     )

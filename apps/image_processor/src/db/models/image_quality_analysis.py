@@ -12,60 +12,60 @@ if TYPE_CHECKING:
 
 
 class ImageQualityAnalysis(Base):
-    __tablename__ = "ImageQualityAnalysis"
-    __table_args__ = (Index("ImageQualityAnalysis_analyzedAt_idx", "analyzedAt"),)
+    __tablename__ = "image_quality_analysis"
+    __table_args__ = (Index("image_quality_analysis_analyzed_at_idx", "analyzed_at"),)
 
     id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True)
     image_id: Mapped[str] = mapped_column(
-        "imageId",
+        "image_id",
         Uuid(as_uuid=False),
-        ForeignKey("Image.id", ondelete="CASCADE"),
+        ForeignKey("image.id", ondelete="CASCADE"),
         unique=True,
     )
-    blur_score: Mapped[float | None] = mapped_column("blurScore", Float, nullable=True)
-    focus_score: Mapped[float | None] = mapped_column("focusScore", Float, nullable=True)
+    blur_score: Mapped[float | None] = mapped_column("blur_score", Float, nullable=True)
+    focus_score: Mapped[float | None] = mapped_column("focus_score", Float, nullable=True)
     motion_blur_score: Mapped[float | None] = mapped_column(
-        "motionBlurScore",
+        "motion_blur_score",
         Float,
         nullable=True,
     )
     eye_closed_score: Mapped[float | None] = mapped_column(
-        "eyeClosedScore",
+        "eye_closed_score",
         Float,
         nullable=True,
     )
     exposure_score: Mapped[float | None] = mapped_column(
-        "exposureScore",
+        "exposure_score",
         Float,
         nullable=True,
     )
     compression_score: Mapped[float | None] = mapped_column(
-        "compressionScore",
+        "compression_score",
         Float,
         nullable=True,
     )
     overall_quality_score: Mapped[float | None] = mapped_column(
-        "overallQualityScore",
+        "overall_quality_score",
         Float,
         nullable=True,
     )
-    is_blurry: Mapped[bool] = mapped_column("isBlurry", Boolean, default=False)
-    is_out_of_focus: Mapped[bool] = mapped_column("isOutOfFocus", Boolean, default=False)
-    has_motion_blur: Mapped[bool] = mapped_column("hasMotionBlur", Boolean, default=False)
-    has_eyes_closed: Mapped[bool] = mapped_column("hasEyesClosed", Boolean, default=False)
-    is_low_exposure: Mapped[bool] = mapped_column("isLowExposure", Boolean, default=False)
+    is_blurry: Mapped[bool] = mapped_column("is_blurry", Boolean, default=False)
+    is_out_of_focus: Mapped[bool] = mapped_column("is_out_of_focus", Boolean, default=False)
+    has_motion_blur: Mapped[bool] = mapped_column("has_motion_blur", Boolean, default=False)
+    has_eyes_closed: Mapped[bool] = mapped_column("has_eyes_closed", Boolean, default=False)
+    is_low_exposure: Mapped[bool] = mapped_column("is_low_exposure", Boolean, default=False)
     is_high_exposure: Mapped[bool] = mapped_column(
-        "isHighExposure",
+        "is_high_exposure",
         Boolean,
         default=False,
     )
     has_compression_artifacts: Mapped[bool] = mapped_column(
-        "hasCompressionArtifacts",
+        "has_compression_artifacts",
         Boolean,
         default=False,
     )
     analysis_error: Mapped[str | None] = mapped_column(
-        "analysisError",
+        "analysis_error",
         String,
         nullable=True,
     )
@@ -75,11 +75,11 @@ class ImageQualityAnalysis(Base):
     )
     raw: Mapped[dict[str, Any] | list[Any] | None] = mapped_column(JSONB, nullable=True)
     analyzed_at: Mapped[datetime | None] = mapped_column(
-        "analyzedAt",
+        "analyzed_at",
         DateTime(timezone=True),
         nullable=True,
     )
-    created_at: Mapped[datetime] = mapped_column("createdAt", DateTime(timezone=True))
-    updated_at: Mapped[datetime] = mapped_column("updatedAt", DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column("created_at", DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column("updated_at", DateTime(timezone=True))
 
     image: Mapped["Image"] = relationship(back_populates="quality_analysis")
