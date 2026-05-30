@@ -1,4 +1,4 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ export function ProgressHeader({
   const isComplete = progress >= 100 || status === "COMPLETED";
 
   return (
-    <header className="flex flex-col gap-5 rounded-[22px] border border-hairline bg-canvas p-5 lg:flex-row lg:items-start lg:justify-between">
+    <header className="flex flex-col gap-5 rounded-[22px] border border-hairline bg-canvas p-5 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex items-start gap-3">
         <Button
           asChild
@@ -46,17 +46,17 @@ export function ProgressHeader({
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-end">
-        <div className="font-mono text-xs uppercase tracking-[0.02em] text-muted">
-          Status: {status}
-        </div>
-        <Button
-          disabled={!isComplete}
-          className="h-11 w-full rounded-full px-5 sm:w-auto"
-        >
-          Review Results
-        </Button>
-      </div>
+      <Button
+        variant="default"
+        disabled={!isComplete}
+        className="h-11 w-full gap-2 rounded-full px-5 sm:w-auto lg:shrink-0 hover:cursor-pointer"
+      >
+        Review Results
+        <ArrowRight
+          className="size-4 transition-transform duration-200 group-hover/button:translate-x-1"
+          aria-hidden="true"
+        />
+      </Button>
     </header>
   );
 }
