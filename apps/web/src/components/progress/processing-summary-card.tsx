@@ -1,4 +1,4 @@
-import { Clock3, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 import { ProcessingProgressDonut } from "@/components/progress/processing-progress-donut";
 import { ProcessingStages } from "@/components/progress/processing-stages";
@@ -54,15 +54,6 @@ export function ProcessingSummaryCard({
             </div>
           </div>
 
-          <div className="mt-5 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm">
-            <Clock3 className="size-4 text-white/70" />
-            <div>
-              <div className="font-mono text-xs uppercase tracking-[0.02em] text-white/50">
-                Estimated remaining
-              </div>
-              <div className="text-white">{estimatedRemaining}</div>
-            </div>
-          </div>
           <p className="mt-4 max-w-xl text-sm leading-6 text-white/55">
             You can leave this page. Processing will continue in the
             background.
