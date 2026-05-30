@@ -112,6 +112,26 @@ class FakeQualityAnalyzer:
         )
 
 
+class FakeQualityAnalysisRepository:
+    def __init__(self) -> None:
+        self.successes: list[tuple[str, ImageQualityResult]] = []
+        self.failures: list[tuple[str, str]] = []
+
+    def upsert_success(self, image_id: str, result: ImageQualityResult) -> None:
+        self.successes.append((image_id, result))
+
+    def upsert_failure(self, image_id: str, error: str) -> None:
+        self.failures.append((image_id, error))
+
+
+class FakeBatchStatusRepository:
+    def __init__(self) -> None:
+        self.statuses: list[tuple[str, BatchStatus]] = []
+
+    def update_status(self, batch_id: str, status: BatchStatus) -> None:
+        self.statuses.append((batch_id, status))
+
+
 def make_batch_loader(
     batches: FakeBatchRepository | MissingBatchRepository | None = None,
     images: FakeImageRepository | None = None,
@@ -226,6 +246,8 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline.batch_loader = FakeBatchLoader()
         pipeline.image_downloader = FakeImageDownloader()
         pipeline.quality_analyzer = FakeQualityAnalyzer()
+        pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
+        pipeline.batch_repository = FakeBatchStatusRepository()
 
         with redirect_stdout(StringIO()) as output:
             pipeline.process({"sessionId": "session-1"})
@@ -233,6 +255,16 @@ class WorkerPlaceholderTest(unittest.TestCase):
         self.assertEqual(
             pipeline.quality_analyzer.image_bytes,
             [b"encoded-image-bytes:image-1"],
+        )
+        self.assertEqual(len(pipeline.quality_analysis_repository.successes), 1)
+        self.assertEqual(
+            pipeline.quality_analysis_repository.successes[0][0],
+            "image-1",
+        )
+        self.assertEqual(pipeline.quality_analysis_repository.failures, [])
+        self.assertEqual(
+            pipeline.batch_repository.statuses,
+            [("session-1", BatchStatus.COMPLETED)],
         )
         self.assertIn("image=image-1 blur_score=42.00", output.getvalue())
         self.assertIn("exposure_score=0.80", output.getvalue())
@@ -251,6 +283,8 @@ class WorkerPlaceholderTest(unittest.TestCase):
             failing_image_ids={"image-2"}
         )
         pipeline.quality_analyzer = FakeQualityAnalyzer()
+        pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
+        pipeline.batch_repository = FakeBatchStatusRepository()
 
         with redirect_stdout(StringIO()) as output:
             pipeline.process({"sessionId": "session-1"})
@@ -261,6 +295,18 @@ class WorkerPlaceholderTest(unittest.TestCase):
                 b"encoded-image-bytes:image-1",
                 b"encoded-image-bytes:image-3",
             ],
+        )
+        self.assertEqual(
+            [image_id for image_id, _result in pipeline.quality_analysis_repository.successes],
+            ["image-1", "image-3"],
+        )
+        self.assertEqual(
+            pipeline.quality_analysis_repository.failures,
+            [("image-2", "download failed")],
+        )
+        self.assertEqual(
+            pipeline.batch_repository.statuses,
+            [("session-1", BatchStatus.FAILED)],
         )
         summary = output.getvalue()
         self.assertIn("image=image-1 blur_score=42.00", summary)

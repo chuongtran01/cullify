@@ -34,12 +34,13 @@ class ImageWorker:
         self.worker_factory = worker_factory
 
     async def process_job(self, job: BullMQJob, job_token: str) -> dict[str, bool]:
+        print(f"Processing job {job.id} with data {job.data}")
         if job.name != PROCESS_UPLOAD_SESSION_JOB_NAME:
-            raise ValueError(f"Unsupported image-processing job type: {job.name}")
+            raise ValueError(
+                f"Unsupported image-processing job type: {job.name}")
 
         data = cast(ProcessUploadSessionJobData, job.data)
         self.pipeline.process(data)
-
         return {"ok": True}
 
     async def run(self) -> None:

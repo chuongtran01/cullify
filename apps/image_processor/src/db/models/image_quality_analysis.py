@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Index, Uuid
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Index, String, Uuid
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -54,10 +54,20 @@ class ImageQualityAnalysis(Base):
     has_motion_blur: Mapped[bool] = mapped_column("hasMotionBlur", Boolean, default=False)
     has_eyes_closed: Mapped[bool] = mapped_column("hasEyesClosed", Boolean, default=False)
     is_low_exposure: Mapped[bool] = mapped_column("isLowExposure", Boolean, default=False)
+    is_high_exposure: Mapped[bool] = mapped_column(
+        "isHighExposure",
+        Boolean,
+        default=False,
+    )
     has_compression_artifacts: Mapped[bool] = mapped_column(
         "hasCompressionArtifacts",
         Boolean,
         default=False,
+    )
+    analysis_error: Mapped[str | None] = mapped_column(
+        "analysisError",
+        String,
+        nullable=True,
     )
     flags: Mapped[dict[str, Any] | list[Any] | None] = mapped_column(
         JSONB,

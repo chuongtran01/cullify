@@ -67,7 +67,9 @@ model ImageQualityAnalysis {
   hasMotionBlur           Boolean  @default(false)
   hasEyesClosed           Boolean  @default(false)
   isLowExposure           Boolean  @default(false)
+  isHighExposure          Boolean  @default(false)
   hasCompressionArtifacts Boolean  @default(false)
+  analysisError           String?
   flags                   Json?
   raw                     Json?
   analyzedAt              DateTime?
