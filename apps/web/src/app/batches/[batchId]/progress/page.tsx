@@ -1,36 +1,47 @@
+"use client";
+
+import { notFound, useParams } from "next/navigation";
+
 import { BatchProgressView } from "@/components/progress/batch-progress-view";
-import type { BatchProgressData } from "@/components/progress/types";
+import { useBatchProgress } from "@/hooks/use-batch-progress";
 import { isUuid } from "@/lib/upload/validate";
-import {
-  getBatchProgress,
-  ProgressServiceError,
-} from "@/services/progress";
-import { headers } from "next/headers";
-import { notFound } from "next/navigation";
+import { ProgressServiceError } from "@/services/progress";
 
-type ProgressPageProps = {
-  params: Promise<{ batchId: string }>;
-};
+export default function ProgressPage() {
+  const { batchId } = useParams<{ batchId: string }>();
 
-export default async function ProgressPage({ params }: ProgressPageProps) {
-  const { batchId } = await params;
-
-  if (!isUuid(batchId)) {
+  if (!batchId || !isUuid(batchId)) {
     notFound();
   }
 
-  let data: BatchProgressData;
+  const { data, error, isPending } = useBatchProgress(batchId);
 
-  try {
-    data = await getBatchProgress(batchId, {
-      headers: await headers(),
-    });
-  } catch (error) {
-    if (error instanceof ProgressServiceError && error.status === 404) {
-      notFound();
-    }
+  if (error instanceof ProgressServiceError && error.status === 404) {
+    notFound();
+  }
 
-    throw error;
+  if (isPending || !data) {
+    return (
+      <main className="min-h-screen bg-surface-stone text-ink">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
+          <p className="text-muted">Loading batch progress...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-surface-stone text-ink">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
+          <p className="text-destructive">
+            {error instanceof Error
+              ? error.message
+              : "Failed to load batch progress"}
+          </p>
+        </div>
+      </main>
+    );
   }
 
   return <BatchProgressView data={data} />;
