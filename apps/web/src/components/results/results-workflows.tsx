@@ -34,9 +34,15 @@ function WorkflowSection({
           </div>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-body">{description}</p>
         </div>
-        <Button className="h-10 rounded-full px-4 sm:shrink-0">
+        <Button
+          variant="outline"
+          className="h-10 gap-2 rounded-full border-hairline bg-surface-card px-4 hover:bg-surface-stone hover:cursor-pointer sm:shrink-0"
+        >
           {action}
-          <ArrowRight className="size-4" aria-hidden="true" />
+          <ArrowRight
+            className="size-4 transition-transform duration-200 group-hover/button:translate-x-1"
+            aria-hidden="true"
+          />
         </Button>
       </div>
       {children}
