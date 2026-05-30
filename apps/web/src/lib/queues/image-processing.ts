@@ -39,7 +39,7 @@ export function getImageProcessingQueue() {
 export async function enqueueImageProcessingJob(sessionId: string) {
   const queue = getImageProcessingQueue();
 
-  return queue.add(
+  const job = await queue.add(
     PROCESS_UPLOAD_SESSION_JOB_NAME,
     {
       message: `Process upload session ${sessionId}`,
@@ -47,4 +47,6 @@ export async function enqueueImageProcessingJob(sessionId: string) {
     },
     { removeOnComplete: true },
   );
+
+  return job;
 }

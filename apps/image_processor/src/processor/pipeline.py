@@ -32,8 +32,6 @@ class ImageProcessingPipeline:
         context = self.batch_loader.load(data["sessionId"])
         failed_count = 0
 
-        print(f"Processing {len(context.images)} images")
-
         for image in context.images:
             try:
                 downloaded = self.image_downloader.download(image)
@@ -49,17 +47,6 @@ class ImageProcessingPipeline:
                     str(exc),
                 )
                 continue
-
-            print(
-                f"image={image.id} blur_score={quality_result.blur_score:.2f} "
-                f"is_blurry={quality_result.is_blurry} "
-                f"exposure_score={quality_result.exposure_score:.2f} "
-                f"is_low_exposure={quality_result.is_low_exposure} "
-                f"compression_score={quality_result.compression_score:.2f} "
-                f"has_compression_artifacts="
-                f"{quality_result.has_compression_artifacts}",
-                flush=True,
-            )
 
         next_status = (
             BatchStatus.FAILED if failed_count > 0 else BatchStatus.COMPLETED
