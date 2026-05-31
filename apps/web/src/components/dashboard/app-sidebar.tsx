@@ -4,7 +4,7 @@ import { CheckCircle2, Images, Settings, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { SidebarUser } from "@/components/dashboard/sidebar-user";
 import {
   Sidebar,
   SidebarContent,
@@ -55,20 +55,8 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function getInitials(user: DashboardUser) {
-  const label = user.name || user.email || "User";
-  const words = label
-    .split(/[\s@.]+/)
-    .filter(Boolean)
-    .slice(0, 2);
-
-  return words.map((word) => word[0]?.toUpperCase()).join("") || "U";
-}
-
 export function AppSidebar({ user }: AppSidebarProps) {
   const pathname = usePathname();
-  const userLabel = user.name || user.email || "Account";
-  const userDetail = user.email && user.email !== userLabel ? user.email : "Signed in";
 
   return (
     <Sidebar collapsible="icon">
@@ -119,25 +107,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
       </SidebarContent>
       <SidebarSeparator />
       <SidebarFooter className="p-3">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" tooltip={userLabel}>
-              <Avatar className="rounded-md" size="default">
-                <AvatarFallback className="rounded-md bg-surface-stone text-xs font-semibold text-ink">
-                  {getInitials(user)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="min-w-0 text-left">
-                <span className="block truncate text-sm font-medium">
-                  {userLabel}
-                </span>
-                <span className="block truncate text-xs text-muted-foreground">
-                  {userDetail}
-                </span>
-              </span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <SidebarUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
