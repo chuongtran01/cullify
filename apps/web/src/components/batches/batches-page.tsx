@@ -67,7 +67,10 @@ export function BatchesPage() {
               Upload, process, and review your photo collections.
             </p>
           </div>
-          <Button className="h-10 self-start" onClick={() => setUploadOpen(true)}>
+          <Button
+            className="h-11 cursor-pointer gap-2 self-start rounded-full border-primary !bg-primary px-6 !text-on-primary hover:!border-primary hover:!bg-primary/90 hover:!text-on-primary"
+            onClick={() => setUploadOpen(true)}
+          >
             <Upload className="size-4" aria-hidden="true" />
             Upload New Batch
           </Button>
