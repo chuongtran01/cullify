@@ -7,7 +7,6 @@ import { useMemo, useState } from "react";
 import { BatchFilters } from "@/components/batches/batch-filters";
 import { BatchList } from "@/components/batches/batch-list";
 import { BatchesSummary } from "@/components/batches/batches-summary";
-import { ContinueBatches } from "@/components/batches/continue-batches";
 import { EmptyBatches } from "@/components/batches/empty-batches";
 import { mockBatches } from "@/components/batches/mock-data";
 import type { BatchFilterValue } from "@/components/batches/types";
@@ -20,10 +19,6 @@ export function BatchesPage() {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<BatchFilterValue>("ALL");
   const [search, setSearch] = useState("");
-
-  const continueBatches = mockBatches.filter((batch) =>
-    ["READY_FOR_REVIEW", "IN_REVIEW"].includes(batch.status),
-  );
 
   const filteredBatches = useMemo(() => {
     return mockBatches
@@ -81,7 +76,6 @@ export function BatchesPage() {
         ) : (
           <>
             <BatchesSummary {...summary} />
-            <ContinueBatches batches={continueBatches} />
             <section className="grid gap-4">
               <BatchFilters
                 activeFilter={activeFilter}
