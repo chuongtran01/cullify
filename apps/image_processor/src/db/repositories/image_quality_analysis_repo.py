@@ -28,10 +28,14 @@ class ImageQualityAnalysisRepository:
                 session.add(analysis)
 
             analysis.blur_score = result.blur_score
+            analysis.focus_score = result.focus_score
+            analysis.motion_blur_score = result.motion_blur_score
             analysis.exposure_score = result.exposure_score
             analysis.compression_score = result.compression_score
             analysis.overall_quality_score = None
             analysis.is_blurry = result.is_blurry
+            analysis.is_out_of_focus = result.is_out_of_focus
+            analysis.has_motion_blur = result.has_motion_blur
             analysis.is_low_exposure = result.is_low_exposure
             analysis.is_high_exposure = result.is_high_exposure
             analysis.has_compression_artifacts = result.has_compression_artifacts
@@ -63,10 +67,14 @@ class ImageQualityAnalysisRepository:
                 session.add(analysis)
 
             analysis.blur_score = None
+            analysis.focus_score = None
+            analysis.motion_blur_score = None
             analysis.exposure_score = None
             analysis.compression_score = None
             analysis.overall_quality_score = None
             analysis.is_blurry = False
+            analysis.is_out_of_focus = False
+            analysis.has_motion_blur = False
             analysis.is_low_exposure = False
             analysis.is_high_exposure = False
             analysis.has_compression_artifacts = False

@@ -5,7 +5,11 @@ from typing import Annotated
 from image_processor.processor.quality.blur import (
     DEFAULT_MAX_DIMENSION,
     BlurScoreResult,
+    FocusScoreResult,
+    MotionBlurScoreResult,
     calculate_blur_score_from_pixels,
+    calculate_focus_score_from_pixels,
+    calculate_motion_blur_score_from_pixels,
 )
 from image_processor.processor.quality.compression import (
     CompressionScoreResult,
@@ -25,7 +29,23 @@ class ImageQualityResult:
     ]
     is_blurry: Annotated[
         bool,
-        "True when the blur score falls below the configured blur threshold.",
+        "True when blur, focus, or motion blur checks detect a blurry image.",
+    ]
+    focus_score: Annotated[
+        float,
+        "Tenengrad focus score; higher values indicate a better-focused image.",
+    ]
+    is_out_of_focus: Annotated[
+        bool,
+        "True when the focus score falls below the configured focus threshold.",
+    ]
+    motion_blur_score: Annotated[
+        float,
+        "Directional blur score; higher values indicate stronger motion blur.",
+    ]
+    has_motion_blur: Annotated[
+        bool,
+        "True when directional blur exceeds the configured motion blur threshold.",
     ]
     exposure_score: Annotated[
         float,
@@ -87,6 +107,16 @@ class ImageQualityAnalyzer:
             width=width,
             height=height,
         )
+        focus_result = calculate_focus_score_from_pixels(
+            pixels,
+            width=width,
+            height=height,
+        )
+        motion_blur_result = calculate_motion_blur_score_from_pixels(
+            pixels,
+            width=width,
+            height=height,
+        )
         exposure_result = calculate_exposure_score_from_pixels(
             pixels,
             width=width,
@@ -99,6 +129,8 @@ class ImageQualityAnalyzer:
         )
         return self._to_quality_result(
             blur_result,
+            focus_result,
+            motion_blur_result,
             exposure_result,
             compression_result,
             width=width,
@@ -125,6 +157,8 @@ class ImageQualityAnalyzer:
     def _to_quality_result(
         self,
         blur_result: BlurScoreResult,
+        focus_result: FocusScoreResult,
+        motion_blur_result: MotionBlurScoreResult,
         exposure_result: ExposureScoreResult,
         compression_result: CompressionScoreResult,
         *,
@@ -133,7 +167,15 @@ class ImageQualityAnalyzer:
     ) -> ImageQualityResult:
         return ImageQualityResult(
             blur_score=blur_result.score,
-            is_blurry=blur_result.is_blurry,
+            is_blurry=(
+                blur_result.is_blurry
+                or focus_result.is_out_of_focus
+                or motion_blur_result.has_motion_blur
+            ),
+            focus_score=focus_result.score,
+            is_out_of_focus=focus_result.is_out_of_focus,
+            motion_blur_score=motion_blur_result.score,
+            has_motion_blur=motion_blur_result.has_motion_blur,
             exposure_score=exposure_result.score,
             mean_luminance=exposure_result.mean_luminance,
             dark_pixel_ratio=exposure_result.dark_pixel_ratio,

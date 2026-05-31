@@ -98,6 +98,10 @@ class FakeQualityAnalyzer:
         return ImageQualityResult(
             blur_score=42.0,
             is_blurry=True,
+            focus_score=256.0,
+            is_out_of_focus=False,
+            motion_blur_score=0.0,
+            has_motion_blur=False,
             exposure_score=0.8,
             mean_luminance=0.45,
             dark_pixel_ratio=0.1,

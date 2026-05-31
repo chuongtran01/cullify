@@ -5,8 +5,12 @@ from image_processor.processor.quality import (
     BlurScoreResult,
     CompressionScoreResult,
     ExposureScoreResult,
+    FocusScoreResult,
     ImageQualityAnalyzer,
+    MotionBlurScoreResult,
     calculate_blur_score_from_pixels,
+    calculate_focus_score_from_pixels,
+    calculate_motion_blur_score_from_pixels,
 )
 
 
@@ -67,6 +71,132 @@ class BlurScoreTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             calculate_blur_score_from_pixels([0, 1, 2], width=3, height=3)
 
+    def test_flat_image_is_out_of_focus(self) -> None:
+        result = calculate_focus_score_from_pixels(
+            [128] * 25,
+            width=5,
+            height=5,
+            threshold=100.0,
+        )
+
+        self.assertEqual(result.score, 0.0)
+        self.assertTrue(result.is_out_of_focus)
+
+    def test_edge_image_scores_more_focused_than_flat_image(self) -> None:
+        flat = calculate_focus_score_from_pixels(
+            [128] * 25,
+            width=5,
+            height=5,
+        )
+        edge = calculate_focus_score_from_pixels(
+            [
+                0,
+                0,
+                0,
+                255,
+                255,
+                0,
+                0,
+                0,
+                255,
+                255,
+                0,
+                0,
+                0,
+                255,
+                255,
+                0,
+                0,
+                0,
+                255,
+                255,
+                0,
+                0,
+                0,
+                255,
+                255,
+            ],
+            width=5,
+            height=5,
+        )
+
+        self.assertGreater(edge.score, flat.score)
+        self.assertFalse(edge.is_out_of_focus)
+
+    def test_directional_pattern_scores_as_motion_blur(self) -> None:
+        result = calculate_motion_blur_score_from_pixels(
+            [
+                0,
+                0,
+                0,
+                0,
+                0,
+                255,
+                255,
+                255,
+                255,
+                255,
+                0,
+                0,
+                0,
+                0,
+                0,
+                255,
+                255,
+                255,
+                255,
+                255,
+                0,
+                0,
+                0,
+                0,
+                0,
+            ],
+            width=5,
+            height=5,
+            threshold=100.0,
+        )
+
+        self.assertGreaterEqual(result.score, 100.0)
+        self.assertTrue(result.has_motion_blur)
+
+    def test_balanced_pattern_does_not_score_as_motion_blur(self) -> None:
+        result = calculate_motion_blur_score_from_pixels(
+            [
+                0,
+                255,
+                0,
+                255,
+                0,
+                255,
+                0,
+                255,
+                0,
+                255,
+                0,
+                255,
+                0,
+                255,
+                0,
+                255,
+                0,
+                255,
+                0,
+                255,
+                0,
+                255,
+                0,
+                255,
+                0,
+            ],
+            width=5,
+            height=5,
+            threshold=100.0,
+        )
+
+        self.assertLess(result.score, 100.0)
+        self.assertFalse(result.has_motion_blur)
+
     def test_analyzer_returns_quality_result_from_blur_score(self) -> None:
         analyzer = ImageQualityAnalyzer()
 
@@ -79,32 +209,52 @@ class BlurScoreTest(unittest.TestCase):
                 "image_processor.processor.quality.analyzer.calculate_blur_score_from_pixels",
                 return_value=BlurScoreResult(
                     score=42.0,
-                    is_blurry=True,
+                    is_blurry=False,
                 ),
             ) as calculate_blur:
                 with patch(
-                    "image_processor.processor.quality.analyzer.calculate_exposure_score_from_pixels",
-                    return_value=ExposureScoreResult(
-                        score=0.8,
-                        mean_luminance=0.45,
-                        dark_pixel_ratio=0.1,
-                        bright_pixel_ratio=0.0,
-                        is_low_exposure=False,
-                        is_high_exposure=False,
+                    "image_processor.processor.quality.analyzer.calculate_focus_score_from_pixels",
+                    return_value=FocusScoreResult(
+                        score=12.0,
+                        is_out_of_focus=True,
                     ),
-                ) as calculate_exposure:
+                ) as calculate_focus:
                     with patch(
-                        "image_processor.processor.quality.analyzer.calculate_compression_score_from_pixels",
-                        return_value=CompressionScoreResult(
-                            score=0.9,
-                            blockiness_score=0.01,
-                            has_compression_artifacts=False,
+                        "image_processor.processor.quality.analyzer.calculate_motion_blur_score_from_pixels",
+                        return_value=MotionBlurScoreResult(
+                            score=120.0,
+                            has_motion_blur=True,
                         ),
-                    ) as calculate_compression:
-                        result = analyzer.analyze(b"encoded-image-bytes")
+                    ) as calculate_motion_blur:
+                        with patch(
+                            "image_processor.processor.quality.analyzer.calculate_exposure_score_from_pixels",
+                            return_value=ExposureScoreResult(
+                                score=0.8,
+                                mean_luminance=0.45,
+                                dark_pixel_ratio=0.1,
+                                bright_pixel_ratio=0.0,
+                                is_low_exposure=False,
+                                is_high_exposure=False,
+                            ),
+                        ) as calculate_exposure:
+                            with patch(
+                                "image_processor.processor.quality.analyzer.calculate_compression_score_from_pixels",
+                                return_value=CompressionScoreResult(
+                                    score=0.9,
+                                    blockiness_score=0.01,
+                                    has_compression_artifacts=False,
+                                ),
+                            ) as calculate_compression:
+                                result = analyzer.analyze(b"encoded-image-bytes")
 
         load_pixels.assert_called_once_with(b"encoded-image-bytes")
         calculate_blur.assert_called_once_with([128] * 200, width=10, height=20)
+        calculate_focus.assert_called_once_with([128] * 200, width=10, height=20)
+        calculate_motion_blur.assert_called_once_with(
+            [128] * 200,
+            width=10,
+            height=20,
+        )
         calculate_exposure.assert_called_once_with([128] * 200, width=10, height=20)
         calculate_compression.assert_called_once_with(
             [128] * 200,
@@ -113,6 +263,10 @@ class BlurScoreTest(unittest.TestCase):
         )
         self.assertEqual(result.blur_score, 42.0)
         self.assertTrue(result.is_blurry)
+        self.assertEqual(result.focus_score, 12.0)
+        self.assertTrue(result.is_out_of_focus)
+        self.assertEqual(result.motion_blur_score, 120.0)
+        self.assertTrue(result.has_motion_blur)
         self.assertEqual(result.exposure_score, 0.8)
         self.assertEqual(result.mean_luminance, 0.45)
         self.assertFalse(result.is_low_exposure)

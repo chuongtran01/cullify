@@ -50,12 +50,22 @@ once, then calculates blur and exposure scores from shared grayscale pixels:
 from image_processor.processor.quality import ImageQualityAnalyzer
 
 result = ImageQualityAnalyzer().analyze(downloaded_image.data)
-print(result.blur_score, result.is_blurry, result.exposure_score)
+print(
+    result.blur_score,
+    result.focus_score,
+    result.motion_blur_score,
+    result.is_blurry,
+    result.exposure_score,
+)
 ```
 
 The blur score is the variance of the Laplacian. Higher values indicate sharper
-images; values below the threshold are treated as blurry. The exposure score is
-normalized from 0.0 to 1.0, where higher values indicate more balanced exposure.
+images; values below the threshold are treated as blurry. The focus score is a
+Tenengrad score, where higher values indicate a better-focused image. The motion
+blur score measures directional high-frequency imbalance, where higher values
+indicate stronger motion blur. Generic blur, out-of-focus, and motion blur all
+contribute to `is_blurry`. The exposure score is normalized from 0.0 to 1.0,
+where higher values indicate more balanced exposure.
 
 ## Local Setup
 
