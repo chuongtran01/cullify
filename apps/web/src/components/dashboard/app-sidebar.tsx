@@ -60,15 +60,20 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="gap-3 px-3 py-3">
+      <SidebarHeader className="gap-3 px-3 py-3 group-data-[collapsible=icon]:px-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild size="lg" tooltip="Cullify">
+            <SidebarMenuButton
+              asChild
+              size="lg"
+              tooltip="Cullify"
+              className="group-data-[collapsible=icon]:justify-center"
+            >
               <Link href="/dashboard">
                 <span className="grid size-8 place-items-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
                   <Sparkles className="size-4" aria-hidden="true" />
                 </span>
-                <span className="min-w-0">
+                <span className="min-w-0 group-data-[collapsible=icon]:hidden">
                   <span className="block truncate text-sm font-semibold">
                     Cullify
                   </span>
@@ -106,7 +111,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarSeparator />
-      <SidebarFooter className="p-3">
+      <SidebarFooter className="p-3 group-data-[collapsible=icon]:p-2">
         <SidebarUser user={user} />
       </SidebarFooter>
       <SidebarRail />

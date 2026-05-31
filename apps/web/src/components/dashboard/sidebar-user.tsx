@@ -62,14 +62,14 @@ export function SidebarUser({ user }: SidebarUserProps) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group-data-[collapsible=icon]:justify-center"
             >
               <Avatar className="rounded-md" size="default">
                 <AvatarFallback className="rounded-md bg-surface-stone text-xs font-semibold text-ink">
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <span className="min-w-0 flex-1 text-left">
+              <span className="min-w-0 flex-1 text-left group-data-[collapsible=icon]:hidden">
                 <span className="block truncate text-sm font-medium">
                   {userLabel}
                 </span>
@@ -77,7 +77,10 @@ export function SidebarUser({ user }: SidebarUserProps) {
                   {userDetail}
                 </span>
               </span>
-              <ChevronsUpDown className="ml-auto size-4" aria-hidden="true" />
+              <ChevronsUpDown
+                className="ml-auto size-4 group-data-[collapsible=icon]:hidden"
+                aria-hidden="true"
+              />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
