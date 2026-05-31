@@ -53,9 +53,9 @@ function ContinueProgress({ batch }: { batch: Batch }) {
   const progress = isInReview
     ? Math.min(100, Math.round((reviewedImages / batch.totalImages) * 100))
     : Math.min(
-        100,
-        Math.round(((batch.aiPicksCount ?? 0) / batch.totalImages) * 100),
-      );
+      100,
+      Math.round(((batch.aiPicksCount ?? 0) / batch.totalImages) * 100),
+    );
 
   return (
     <div className="grid gap-1.5">
@@ -96,7 +96,7 @@ export function ContinueBatches({ batches }: ContinueBatchesProps) {
           <ChevronRight className="size-4" aria-hidden="true" />
         </button>
       </div>
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid gap-4 xl:grid-cols-4">
         {batches.map((batch) => (
           <article
             key={batch.id}
