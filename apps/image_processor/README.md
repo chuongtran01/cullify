@@ -43,13 +43,18 @@ apps/image_processor/
 
 ## Quality Scores
 
-For images downloaded from R2, use the quality analyzer. It decodes the image
-once, then calculates blur and exposure scores from shared grayscale pixels:
+For decoded images, use the quality analyzer. The processing pipeline opens each
+downloaded image once, then calculates blur and exposure scores from shared
+grayscale pixels:
 
 ```python
+from PIL import Image
+
 from image_processor.processor.quality import ImageQualityAnalyzer
 
-result = ImageQualityAnalyzer().analyze(downloaded_image.data)
+with Image.open("photo.jpg") as image:
+    result = ImageQualityAnalyzer().analyze_image(image)
+
 print(
     result.blur_score,
     result.focus_score,

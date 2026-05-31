@@ -9,6 +9,7 @@ from image_processor.db.models.enums import ImageUploadStatus
 
 if TYPE_CHECKING:
     from image_processor.db.models.batch import Batch
+    from image_processor.db.models.image_embedding import ImageEmbedding
     from image_processor.db.models.image_quality_analysis import ImageQualityAnalysis
 
 
@@ -47,6 +48,11 @@ class Image(Base):
 
     batch: Mapped["Batch"] = relationship(back_populates="images")
     quality_analysis: Mapped["ImageQualityAnalysis | None"] = relationship(
+        back_populates="image",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+    embedding: Mapped["ImageEmbedding | None"] = relationship(
         back_populates="image",
         uselist=False,
         cascade="all, delete-orphan",

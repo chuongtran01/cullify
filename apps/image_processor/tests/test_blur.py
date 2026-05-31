@@ -202,7 +202,7 @@ class BlurScoreTest(unittest.TestCase):
 
         with patch.object(
             analyzer,
-            "_load_grayscale_pixels",
+            "_load_grayscale_pixels_from_image",
             return_value=([128] * 200, 10, 20),
         ) as load_pixels:
             with patch(
@@ -245,9 +245,9 @@ class BlurScoreTest(unittest.TestCase):
                                     has_compression_artifacts=False,
                                 ),
                             ) as calculate_compression:
-                                result = analyzer.analyze(b"encoded-image-bytes")
+                                result = analyzer.analyze_image(object())
 
-        load_pixels.assert_called_once_with(b"encoded-image-bytes")
+        load_pixels.assert_called_once()
         calculate_blur.assert_called_once_with([128] * 200, width=10, height=20)
         calculate_focus.assert_called_once_with([128] * 200, width=10, height=20)
         calculate_motion_blur.assert_called_once_with(

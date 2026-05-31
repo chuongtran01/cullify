@@ -3,7 +3,7 @@ import unittest
 from contextlib import redirect_stdout
 from dataclasses import dataclass
 from datetime import datetime
-from io import StringIO
+from io import BytesIO, StringIO
 from typing import Any
 from unittest.mock import MagicMock
 
@@ -15,6 +15,7 @@ from image_processor.processor.batch_loader import BatchLoader, BatchNotFoundErr
 from image_processor.processor.image_downloader import DownloadedImage, ImageDownloader
 from image_processor.processor.pipeline import ImageProcessingPipeline
 from image_processor.processor.quality import ImageQualityResult
+from image_processor.processor.similarity import ImageEmbeddingResult
 
 
 @dataclass(frozen=True)
@@ -85,16 +86,16 @@ class FakeImageDownloader:
 
         return DownloadedImage(
             image=image,
-            data=f"encoded-image-bytes:{image.id}".encode(),
+            data=make_image_bytes(),
         )
 
 
 class FakeQualityAnalyzer:
     def __init__(self) -> None:
-        self.image_bytes: list[bytes] = []
+        self.images: list[object] = []
 
-    def analyze(self, image_bytes: bytes) -> ImageQualityResult:
-        self.image_bytes.append(image_bytes)
+    def analyze_image(self, image: object) -> ImageQualityResult:
+        self.images.append(image)
         return ImageQualityResult(
             blur_score=42.0,
             is_blurry=True,
@@ -116,6 +117,28 @@ class FakeQualityAnalyzer:
         )
 
 
+class FakeEmbeddingAnalyzer:
+    model = "openclip"
+    version = "ViT-B-32/test"
+    dimension = 512
+
+    def __init__(self, failing: bool = False) -> None:
+        self.failing = failing
+        self.images: list[object] = []
+
+    def analyze_image(self, image: object) -> ImageEmbeddingResult:
+        self.images.append(image)
+        if self.failing:
+            raise RuntimeError("embedding failed")
+        return ImageEmbeddingResult(
+            vector=[0.0] * 512,
+            model=self.model,
+            version=self.version,
+            dimension=self.dimension,
+            raw={"provider": "test"},
+        )
+
+
 class FakeQualityAnalysisRepository:
     def __init__(self) -> None:
         self.successes: list[tuple[str, ImageQualityResult]] = []
@@ -126,6 +149,26 @@ class FakeQualityAnalysisRepository:
 
     def upsert_failure(self, image_id: str, error: str) -> None:
         self.failures.append((image_id, error))
+
+
+class FakeEmbeddingRepository:
+    def __init__(self) -> None:
+        self.successes: list[tuple[str, ImageEmbeddingResult]] = []
+        self.failures: list[tuple[str, str, str, str | None, int]] = []
+
+    def upsert_success(self, image_id: str, result: ImageEmbeddingResult) -> None:
+        self.successes.append((image_id, result))
+
+    def upsert_failure(
+        self,
+        image_id: str,
+        error: str,
+        *,
+        model: str,
+        version: str | None,
+        dimension: int,
+    ) -> None:
+        self.failures.append((image_id, error, model, version, dimension))
 
 
 class FakeBatchStatusRepository:
@@ -158,6 +201,15 @@ def make_image(image_id: str, object_key: str | None = None) -> Image:
         created_at=datetime(2026, 1, 1),
         uploaded_at=datetime(2026, 1, 1),
     )
+
+
+def make_image_bytes() -> bytes:
+    from PIL import Image as PILImage
+
+    image = PILImage.new("RGB", (4, 4), color=(128, 128, 128))
+    output = BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
 
 
 class WorkerPlaceholderTest(unittest.TestCase):
@@ -250,22 +302,27 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline.batch_loader = FakeBatchLoader()
         pipeline.image_downloader = FakeImageDownloader()
         pipeline.quality_analyzer = FakeQualityAnalyzer()
+        pipeline.embedding_analyzer = FakeEmbeddingAnalyzer()
         pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
+        pipeline.image_embedding_repository = FakeEmbeddingRepository()
         pipeline.batch_repository = FakeBatchStatusRepository()
 
         with redirect_stdout(StringIO()) as output:
             pipeline.process({"sessionId": "session-1"})
 
         self.assertEqual(
-            pipeline.quality_analyzer.image_bytes,
-            [b"encoded-image-bytes:image-1"],
+            len(pipeline.quality_analyzer.images),
+            1,
         )
+        self.assertEqual(len(pipeline.embedding_analyzer.images), 1)
         self.assertEqual(len(pipeline.quality_analysis_repository.successes), 1)
+        self.assertEqual(len(pipeline.image_embedding_repository.successes), 1)
         self.assertEqual(
             pipeline.quality_analysis_repository.successes[0][0],
             "image-1",
         )
         self.assertEqual(pipeline.quality_analysis_repository.failures, [])
+        self.assertEqual(pipeline.image_embedding_repository.failures, [])
         self.assertEqual(
             pipeline.batch_repository.statuses,
             [("session-1", BatchStatus.COMPLETED)],
@@ -287,19 +344,19 @@ class WorkerPlaceholderTest(unittest.TestCase):
             failing_image_ids={"image-2"}
         )
         pipeline.quality_analyzer = FakeQualityAnalyzer()
+        pipeline.embedding_analyzer = FakeEmbeddingAnalyzer()
         pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
+        pipeline.image_embedding_repository = FakeEmbeddingRepository()
         pipeline.batch_repository = FakeBatchStatusRepository()
 
         with redirect_stdout(StringIO()) as output:
             pipeline.process({"sessionId": "session-1"})
 
         self.assertEqual(
-            pipeline.quality_analyzer.image_bytes,
-            [
-                b"encoded-image-bytes:image-1",
-                b"encoded-image-bytes:image-3",
-            ],
+            len(pipeline.quality_analyzer.images),
+            2,
         )
+        self.assertEqual(len(pipeline.embedding_analyzer.images), 2)
         self.assertEqual(
             [image_id for image_id, _result in pipeline.quality_analysis_repository.successes],
             ["image-1", "image-3"],
@@ -316,6 +373,37 @@ class WorkerPlaceholderTest(unittest.TestCase):
         self.assertIn("image=image-1 blur_score=42.00", summary)
         self.assertIn("image=image-3 blur_score=42.00", summary)
         self.assertNotIn("image=image-2", summary)
+
+    def test_pipeline_records_embedding_failure_without_failing_batch(self) -> None:
+        pipeline = ImageProcessingPipeline.__new__(ImageProcessingPipeline)
+        pipeline.batch_loader = FakeBatchLoader()
+        pipeline.image_downloader = FakeImageDownloader()
+        pipeline.quality_analyzer = FakeQualityAnalyzer()
+        pipeline.embedding_analyzer = FakeEmbeddingAnalyzer(failing=True)
+        pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
+        pipeline.image_embedding_repository = FakeEmbeddingRepository()
+        pipeline.batch_repository = FakeBatchStatusRepository()
+
+        pipeline.process({"sessionId": "session-1"})
+
+        self.assertEqual(len(pipeline.quality_analysis_repository.successes), 1)
+        self.assertEqual(pipeline.image_embedding_repository.successes, [])
+        self.assertEqual(
+            pipeline.image_embedding_repository.failures,
+            [
+                (
+                    "image-1",
+                    "embedding failed",
+                    "openclip",
+                    "ViT-B-32/test",
+                    512,
+                )
+            ],
+        )
+        self.assertEqual(
+            pipeline.batch_repository.statuses,
+            [("session-1", BatchStatus.COMPLETED)],
+        )
 
 
 if __name__ == "__main__":

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from io import BytesIO
-from typing import Annotated
+from typing import Annotated, Any
 
 from image_processor.processor.quality.blur import (
     DEFAULT_MAX_DIMENSION,
@@ -100,8 +99,17 @@ class ImageQualityAnalyzer:
 
         self.max_dimension = max_dimension
 
-    def analyze(self, image_bytes: bytes) -> ImageQualityResult:
-        pixels, width, height = self._load_grayscale_pixels(image_bytes)
+    def analyze_image(self, image: Any) -> ImageQualityResult:
+        pixels, width, height = self._load_grayscale_pixels_from_image(image)
+        return self._analyze_pixels(pixels, width=width, height=height)
+
+    def _analyze_pixels(
+        self,
+        pixels: list[int],
+        *,
+        width: int,
+        height: int,
+    ) -> ImageQualityResult:
         blur_result = calculate_blur_score_from_pixels(
             pixels,
             width=width,
@@ -137,20 +145,19 @@ class ImageQualityAnalyzer:
             height=height,
         )
 
-    def _load_grayscale_pixels(self, image_bytes: bytes) -> tuple[list[int], int, int]:
+    def _load_grayscale_pixels_from_image(self, image: Any) -> tuple[list[int], int, int]:
         try:
-            from PIL import Image
+            from PIL import ImageOps
         except ImportError as exc:
             raise RuntimeError(
-                "Pillow is required to analyze image quality from image bytes. "
+                "Pillow is required to analyze image quality from image data. "
                 "Install the image processor dependencies first."
             ) from exc
 
-        with Image.open(BytesIO(image_bytes)) as image:
-            grayscale = image.convert("L")
-            grayscale.thumbnail((self.max_dimension, self.max_dimension))
-            width, height = grayscale.size
-            pixels = list(grayscale.getdata())
+        grayscale = ImageOps.exif_transpose(image).convert("L")
+        grayscale.thumbnail((self.max_dimension, self.max_dimension))
+        width, height = grayscale.size
+        pixels = list(grayscale.getdata())
 
         return pixels, width, height
 

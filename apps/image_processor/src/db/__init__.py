@@ -3,6 +3,7 @@ from image_processor.db.models import (
     Batch,
     BatchStatus,
     Image,
+    ImageEmbedding,
     ImageQualityAnalysis,
     ImageUploadStatus,
 )
@@ -15,6 +16,7 @@ __all__ = [
     "BatchRepository",
     "BatchStatus",
     "Image",
+    "ImageEmbedding",
     "ImageQualityAnalysis",
     "ImageRepository",
     "ImageUploadStatus",
