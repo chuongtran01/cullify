@@ -60,16 +60,6 @@ const listStatusMeta: Record<
   },
 };
 
-function BatchRowThumbnail({ batch }: { batch: Batch }) {
-  return (
-    <div
-      className="h-[52px] w-40 shrink-0 rounded-md bg-surface-stone bg-cover bg-center"
-      style={{ backgroundImage: `url(${batch.thumbnailUrls[0]})` }}
-      aria-label={`${batch.name} thumbnail`}
-    />
-  );
-}
-
 function BatchStatusBlock({ batch }: { batch: Batch }) {
   const meta = listStatusMeta[batch.status];
   const Icon = meta.icon;
@@ -193,21 +183,16 @@ export function BatchList({ batches }: BatchListProps) {
         <div
           key={batch.id}
           className={cn(
-            "grid gap-4 px-4 py-3 lg:grid-cols-[minmax(360px,1.45fr)_minmax(260px,1fr)_120px_180px_32px] lg:items-center",
+            "grid gap-4 px-4 py-3 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_120px_180px_32px] lg:items-center",
             index > 0 && "border-t border-hairline",
           )}
         >
-          <div className="flex min-w-0 items-center gap-3">
-            <BatchRowThumbnail batch={batch} />
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-ink">
-                {batch.name}
-              </p>
-              <p className="mt-1 text-xs text-body">
-                {batch.totalImages} photos <span className="px-1">·</span> Created{" "}
-                {formatBatchDate(batch.createdAt)}
-              </p>
-            </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-ink">{batch.name}</p>
+            <p className="mt-1 text-xs text-body">
+              {batch.totalImages} photos <span className="px-1">·</span> Created{" "}
+              {formatBatchDate(batch.createdAt)}
+            </p>
           </div>
           <BatchStatusBlock batch={batch} />
           <BatchTimeline batch={batch} />
