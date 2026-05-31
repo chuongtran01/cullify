@@ -2,6 +2,7 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock3,
+  Loader2,
   MoreHorizontal,
   Sparkles,
 } from "lucide-react";
@@ -23,18 +24,18 @@ const listStatusMeta: Record<
   BatchStatus,
   {
     label: string;
-    icon: typeof Clock3;
+    icon: typeof CheckCircle2;
     className: string;
   }
 > = {
   UPLOADING: {
     label: "Uploading",
-    icon: Clock3,
+    icon: Loader2,
     className: "text-action-blue",
   },
   PROCESSING: {
     label: "Processing",
-    icon: Clock3,
+    icon: Loader2,
     className: "text-[#27A365]",
   },
   READY_FOR_REVIEW: {
@@ -72,6 +73,8 @@ function BatchRowThumbnail({ batch }: { batch: Batch }) {
 function BatchStatusBlock({ batch }: { batch: Batch }) {
   const meta = listStatusMeta[batch.status];
   const Icon = meta.icon;
+  const isSpinning =
+    batch.status === "PROCESSING" || batch.status === "UPLOADING";
 
   return (
     <div className="grid gap-2">
@@ -81,7 +84,10 @@ function BatchStatusBlock({ batch }: { batch: Batch }) {
           meta.className,
         )}
       >
-        <Icon className="size-3.5" aria-hidden="true" />
+        <Icon
+          className={cn("size-3.5", isSpinning && "animate-spin")}
+          aria-hidden="true"
+        />
         {meta.label}
       </div>
       <BatchStatusDetail batch={batch} />
