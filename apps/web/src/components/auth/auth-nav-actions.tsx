@@ -80,6 +80,7 @@ export function AuthNavActions() {
         onOpenChange={setOpen}
         initialMode={mode}
         onAuthenticated={refetch}
+        redirectTo="/dashboard"
       />
     </>
   );

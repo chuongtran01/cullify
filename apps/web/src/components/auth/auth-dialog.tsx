@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -80,6 +81,7 @@ type AuthDialogProps = {
   initialMode?: AuthMode;
   copy?: Partial<Record<AuthMode, Partial<AuthDialogCopy>>>;
   onAuthenticated?: () => void | Promise<void>;
+  redirectTo?: string;
 };
 
 export function AuthDialog({
@@ -88,7 +90,9 @@ export function AuthDialog({
   initialMode = "sign-in",
   copy,
   onAuthenticated,
+  redirectTo,
 }: AuthDialogProps) {
+  const router = useRouter();
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -121,6 +125,10 @@ export function AuthDialog({
     signInForm.reset();
     signUpForm.reset();
     await onAuthenticated?.();
+    if (redirectTo) {
+      router.push(redirectTo);
+      router.refresh();
+    }
   }
 
   async function handleSignIn(values: SignInValues) {
