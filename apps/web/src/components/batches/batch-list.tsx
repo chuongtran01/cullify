@@ -1,6 +1,6 @@
 import {
-  AlertCircle,
   CheckCircle2,
+  CircleX,
   Clock3,
   Loader2,
   MoreHorizontal,
@@ -55,7 +55,7 @@ const listStatusMeta: Record<
   },
   FAILED: {
     label: "Failed",
-    icon: AlertCircle,
+    icon: CircleX,
     className: "text-semantic-error",
   },
 };
