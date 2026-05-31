@@ -59,7 +59,7 @@ export function BatchesPage() {
 
   return (
     <>
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
+      <div className="flex w-full flex-col gap-8">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-ink">Batches</h1>
