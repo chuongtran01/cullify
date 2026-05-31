@@ -6,6 +6,7 @@ import {
   MoreHorizontal,
   Sparkles,
 } from "lucide-react";
+import Link from "next/link";
 
 import {
   formatBatchDate,
@@ -176,6 +177,22 @@ function BatchTimeline({ batch }: { batch: Batch }) {
   );
 }
 
+function getBatchActionHref(batch: Batch) {
+  if (batch.status === "PROCESSING" || batch.status === "UPLOADING") {
+    return `/batches/${batch.id}/progress`;
+  }
+
+  if (
+    batch.status === "READY_FOR_REVIEW" ||
+    batch.status === "IN_REVIEW" ||
+    batch.status === "COMPLETED"
+  ) {
+    return `/batches/${batch.id}/results`;
+  }
+
+  return null;
+}
+
 export function BatchList({ batches }: BatchListProps) {
   return (
     <div className="overflow-hidden rounded-lg border border-hairline bg-surface-card">
@@ -197,13 +214,26 @@ export function BatchList({ batches }: BatchListProps) {
           <BatchStatusBlock batch={batch} />
           <BatchTimeline batch={batch} />
           <div className="flex items-center gap-2 lg:justify-end">
-            <Button
-              className="h-9 min-w-36 border-hairline bg-surface-card text-[#6D3C28] hover:bg-surface-stone hover:text-[#6D3C28]"
-              size="sm"
-              variant="outline"
-            >
-              {getBatchActionLabel(batch.status)}
-            </Button>
+            {getBatchActionHref(batch) ? (
+              <Button
+                asChild
+                className="h-9 min-w-36 border-hairline bg-surface-card text-[#6D3C28] hover:bg-surface-stone hover:text-[#6D3C28]"
+                size="sm"
+                variant="outline"
+              >
+                <Link href={getBatchActionHref(batch)!}>
+                  {getBatchActionLabel(batch.status)}
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                className="h-9 min-w-36 border-hairline bg-surface-card text-[#6D3C28] hover:bg-surface-stone hover:text-[#6D3C28]"
+                size="sm"
+                variant="outline"
+              >
+                {getBatchActionLabel(batch.status)}
+              </Button>
+            )}
           </div>
           <Button
             className="size-8 text-body"
