@@ -38,10 +38,10 @@ function ContinueStatusPill({ batch }: { batch: Batch }) {
         "inline-flex h-5 w-fit items-center gap-1 rounded-full px-2 text-[11px] font-semibold uppercase",
         isInReview
           ? "bg-action-blue/10 text-action-blue"
-          : "bg-coral-soft/25 text-[#B85B20]",
+          : "border border-coral/20 bg-coral-soft/20 text-ink",
       )}
     >
-      {!isInReview ? <span className="size-1.5 rounded-full bg-[#D8781F]" /> : null}
+      {!isInReview ? <span className="size-1.5 rounded-full bg-coral" /> : null}
       {isInReview ? "In Review" : "Ready for Review"}
     </span>
   );
@@ -68,7 +68,7 @@ function ContinueProgress({ batch }: { batch: Batch }) {
         <div
           className={cn(
             "h-full rounded-full",
-            isInReview ? "bg-action-blue" : "bg-[#7A3F22]",
+            isInReview ? "bg-action-blue" : "bg-primary",
           )}
           style={{ width: `${progress}%` }}
         />
@@ -96,11 +96,11 @@ export function ContinueBatches({ batches }: ContinueBatchesProps) {
           <ChevronRight className="size-4" aria-hidden="true" />
         </button>
       </div>
-      <div className="grid gap-4 xl:grid-cols-4">
+      <div className="grid gap-4 xl:grid-cols-3">
         {batches.map((batch) => (
           <article
             key={batch.id}
-            className="flex gap-4 rounded-lg border border-hairline bg-surface-card p-3 shadow-sm"
+            className="flex gap-4 rounded-md border border-hairline-light bg-surface-card p-3"
           >
             <ContinueThumbnailGrid batch={batch} />
             <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 py-1">
@@ -132,7 +132,11 @@ export function ContinueBatches({ batches }: ContinueBatchesProps) {
                 </div>
               </div>
               <ContinueProgress batch={batch} />
-              <Button className="h-9 justify-between" size="sm" variant="outline">
+              <Button
+                className="h-9 justify-between border-hairline bg-surface-card text-ink hover:bg-surface-stone"
+                size="sm"
+                variant="outline"
+              >
                 Continue Review
                 <ChevronRight className="size-4" aria-hidden="true" />
               </Button>

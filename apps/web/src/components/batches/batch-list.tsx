@@ -37,12 +37,12 @@ const listStatusMeta: Record<
   PROCESSING: {
     label: "Processing",
     icon: Loader2,
-    className: "text-[#27A365]",
+    className: "text-semantic-success",
   },
   READY_FOR_REVIEW: {
     label: "Ready for Review",
     icon: Sparkles,
-    className: "text-[#E1842E]",
+    className: "text-coral",
   },
   IN_REVIEW: {
     label: "In Review",
@@ -52,7 +52,7 @@ const listStatusMeta: Record<
   COMPLETED: {
     label: "Completed",
     icon: CheckCircle2,
-    className: "text-[#35A968]",
+    className: "text-semantic-success",
   },
   FAILED: {
     label: "Failed",
@@ -95,7 +95,7 @@ function BatchStatusDetail({ batch }: { batch: Batch }) {
         </p>
         <div className="h-1 overflow-hidden rounded-full bg-hairline-light">
           <div
-            className="h-full rounded-full bg-[#27A365]"
+            className="h-full rounded-full bg-semantic-success"
             style={{ width: `${getBatchProgress(batch)}%` }}
           />
         </div>
@@ -195,13 +195,13 @@ function getBatchActionHref(batch: Batch) {
 
 export function BatchList({ batches }: BatchListProps) {
   return (
-    <div className="overflow-hidden rounded-lg border border-hairline bg-surface-card">
+    <div className="overflow-hidden rounded-md border border-hairline-light bg-surface-card">
       {batches.map((batch, index) => (
         <div
           key={batch.id}
           className={cn(
             "grid gap-4 px-4 py-3 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_120px_180px_32px] lg:items-center",
-            index > 0 && "border-t border-hairline",
+            index > 0 && "border-t border-hairline-light",
           )}
         >
           <div className="min-w-0">
@@ -217,7 +217,7 @@ export function BatchList({ batches }: BatchListProps) {
             {getBatchActionHref(batch) ? (
               <Button
                 asChild
-                className="h-9 min-w-36 border-hairline bg-surface-card text-[#6D3C28] hover:bg-surface-stone hover:text-[#6D3C28]"
+                className="h-9 min-w-36 border-hairline bg-surface-card text-ink hover:bg-surface-stone hover:text-ink"
                 size="sm"
                 variant="outline"
               >
@@ -227,7 +227,7 @@ export function BatchList({ batches }: BatchListProps) {
               </Button>
             ) : (
               <Button
-                className="h-9 min-w-36 border-hairline bg-surface-card text-[#6D3C28] hover:bg-surface-stone hover:text-[#6D3C28]"
+                className="h-9 min-w-36 border-hairline bg-surface-card text-ink hover:bg-surface-stone hover:text-ink"
                 size="sm"
                 variant="outline"
               >

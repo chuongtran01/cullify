@@ -23,10 +23,12 @@ export function BatchesSummary({
       {stats.map(([label, value]) => (
         <div
           key={label}
-          className="rounded-md border border-hairline bg-surface-card p-4"
+          className="rounded-md border border-hairline-light bg-surface-card p-4"
         >
-          <p className="text-xs font-medium text-muted-foreground">{label}</p>
-          <p className="mt-3 text-2xl font-semibold text-ink">{value}</p>
+          <p className="font-mono text-xs font-normal uppercase tracking-[0.02em] text-slate">
+            {label}
+          </p>
+          <p className="mt-3 text-2xl font-normal text-ink">{value}</p>
         </div>
       ))}
     </section>

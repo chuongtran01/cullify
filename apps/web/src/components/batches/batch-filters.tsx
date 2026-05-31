@@ -32,7 +32,7 @@ export function BatchFilters({
           <button
             key={filter.value}
             className={cn(
-              "h-8 rounded-full border border-hairline px-3 text-sm font-medium text-body transition-colors hover:border-ink hover:text-ink",
+              "h-8 rounded-full border border-hairline-light px-3 text-sm font-medium text-body transition-colors hover:border-ink hover:text-ink",
               activeFilter === filter.value &&
                 "border-ink bg-ink text-on-primary hover:text-on-primary",
             )}
@@ -58,7 +58,10 @@ export function BatchFilters({
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="h-9 justify-between" variant="outline">
+            <Button
+              className="h-9 justify-between border-hairline bg-surface-card hover:bg-surface-stone"
+              variant="outline"
+            >
               Newest First
               <ChevronDown className="size-4" aria-hidden="true" />
             </Button>

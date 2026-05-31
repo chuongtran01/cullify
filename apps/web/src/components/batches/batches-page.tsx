@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { BatchFilters } from "@/components/batches/batch-filters";
 import { BatchList } from "@/components/batches/batch-list";
 import { BatchesSummary } from "@/components/batches/batches-summary";
+import { ContinueBatches } from "@/components/batches/continue-batches";
 import { EmptyBatches } from "@/components/batches/empty-batches";
 import { mockBatches } from "@/components/batches/mock-data";
 import type { BatchFilterValue } from "@/components/batches/types";
@@ -19,6 +20,10 @@ export function BatchesPage() {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<BatchFilterValue>("ALL");
   const [search, setSearch] = useState("");
+
+  const continueBatches = mockBatches.filter((batch) =>
+    ["READY_FOR_REVIEW", "IN_REVIEW"].includes(batch.status),
+  );
 
   const filteredBatches = useMemo(() => {
     return mockBatches
@@ -57,13 +62,15 @@ export function BatchesPage() {
       <div className="flex w-full flex-col gap-8">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-ink">Batches</h1>
+            <h1 className="text-3xl font-normal leading-tight text-ink">
+              Batches
+            </h1>
             <p className="mt-2 text-sm leading-6 text-body">
               Upload, process, and review your photo collections.
             </p>
           </div>
           <Button
-            className="h-11 cursor-pointer gap-2 self-start rounded-full border-primary !bg-primary px-6 !text-on-primary hover:!border-primary hover:!bg-primary/90 hover:!text-on-primary"
+            className="h-11 cursor-pointer gap-2 self-start rounded-full px-6"
             onClick={() => setUploadOpen(true)}
           >
             <Upload className="size-4" aria-hidden="true" />
@@ -88,7 +95,7 @@ export function BatchesPage() {
           </>
         )}
 
-        <p className="border-t border-hairline pt-4 text-xs text-muted-foreground">
+        <p className="border-t border-hairline-light pt-4 text-xs text-muted-foreground">
           Batches are stored permanently. You can review and download results anytime.
         </p>
       </div>
