@@ -4,6 +4,7 @@ import { CheckCircle2, Images, Settings, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -121,9 +122,11 @@ export function AppSidebar({ user }: AppSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" tooltip={userLabel}>
-              <span className="grid size-8 shrink-0 place-items-center rounded-md bg-surface-stone text-xs font-semibold text-ink">
-                {getInitials(user)}
-              </span>
+              <Avatar className="rounded-md" size="default">
+                <AvatarFallback className="rounded-md bg-surface-stone text-xs font-semibold text-ink">
+                  {getInitials(user)}
+                </AvatarFallback>
+              </Avatar>
               <span className="min-w-0 text-left">
                 <span className="block truncate text-sm font-medium">
                   {userLabel}
