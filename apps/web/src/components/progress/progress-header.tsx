@@ -1,5 +1,8 @@
+"use client";
+
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
@@ -18,6 +21,7 @@ export function ProgressHeader({
   status,
   progress,
 }: ProgressHeaderProps) {
+  const router = useRouter();
   const isComplete = progress >= 100 || status === "COMPLETED";
 
   return (
@@ -49,6 +53,7 @@ export function ProgressHeader({
       <Button
         variant="default"
         disabled={!isComplete}
+        onClick={() => router.push(`/batches/${batchId}/results`)}
         className="h-11 w-full gap-2 rounded-full px-5 sm:w-auto lg:shrink-0 hover:cursor-pointer"
       >
         Review Results
