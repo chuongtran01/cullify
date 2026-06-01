@@ -1,6 +1,12 @@
 "use client";
 
 import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
   CheckCircle2,
   CircleX,
   Clock3,
@@ -22,9 +28,18 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
 type CollectionListProps = {
@@ -166,15 +181,15 @@ function CollectionRowActions({ collection }: { collection: Collection }) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            className="size-8 text-body hover:text-ink"
-            size="icon"
+            className="h-8 w-8 p-0 text-body hover:text-ink"
             variant="ghost"
-            aria-label={`More actions for ${collection.name}`}
           >
-            <MoreHorizontal className="size-4" aria-hidden="true" />
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-36">
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
             onSelect={(event) => {
               event.preventDefault();
@@ -195,51 +210,120 @@ function CollectionRowActions({ collection }: { collection: Collection }) {
   );
 }
 
+const collectionColumns: ColumnDef<Collection>[] = [
+  {
+    id: "details",
+    header: "Collection",
+    cell: ({ row }) => {
+      const collection = row.original;
+
+      return (
+        <div className="min-w-0">
+          <p className="truncate text-sm font-semibold text-ink">{collection.name}</p>
+          <p className="mt-1 text-xs text-body">
+            {collection.totalImages} photos <span className="px-1">·</span> Created{" "}
+            {formatCollectionDate(collection.createdAt)}
+          </p>
+        </div>
+      );
+    },
+  },
+  {
+    id: "status",
+    header: "Status",
+    cell: ({ row }) => <CollectionStatusBlock collection={row.original} />,
+  },
+  {
+    id: "timeline",
+    header: "Timeline",
+    cell: ({ row }) => <CollectionTimeline collection={row.original} />,
+  },
+  {
+    id: "primaryAction",
+    header: "Action",
+    cell: ({ row }) => {
+      const collection = row.original;
+      const actionHref = getCollectionActionHref(collection);
+
+      return (
+        <div className="flex items-center gap-2 lg:justify-end">
+          {actionHref ? (
+            <Button
+              asChild
+              className="h-9 min-w-36 border-hairline bg-surface-card text-ink hover:bg-surface-stone hover:text-ink"
+              size="sm"
+              variant="outline"
+            >
+              <Link href={actionHref}>
+                {getCollectionActionLabel(collection.status)}
+              </Link>
+            </Button>
+          ) : (
+            <Button
+              className="h-9 min-w-36 border-hairline bg-surface-card text-ink hover:bg-surface-stone hover:text-ink"
+              size="sm"
+              variant="outline"
+            >
+              {getCollectionActionLabel(collection.status)}
+            </Button>
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    id: "rowActions",
+    header: "More actions",
+    cell: ({ row }) => <CollectionRowActions collection={row.original} />,
+  },
+];
+
 export function CollectionList({ collections }: CollectionListProps) {
+  // TanStack Table exposes function-heavy instances that React Compiler intentionally skips.
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const table = useReactTable({
+    data: collections,
+    columns: collectionColumns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
     <div className="overflow-hidden rounded-md border border-hairline-light bg-surface-card">
-      {collections.map((collection, index) => (
-        <div
-          key={collection.id}
-          className={cn(
-            "grid gap-4 px-4 py-3 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_120px_180px_32px] lg:items-center",
-            index > 0 && "border-t border-hairline-light",
-          )}
-        >
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-ink">{collection.name}</p>
-            <p className="mt-1 text-xs text-body">
-              {collection.totalImages} photos <span className="px-1">·</span> Created{" "}
-              {formatCollectionDate(collection.createdAt)}
-            </p>
-          </div>
-          <CollectionStatusBlock collection={collection} />
-          <CollectionTimeline collection={collection} />
-          <div className="flex items-center gap-2 lg:justify-end">
-            {getCollectionActionHref(collection) ? (
-              <Button
-                asChild
-                className="h-9 min-w-36 border-hairline bg-surface-card text-ink hover:bg-surface-stone hover:text-ink"
-                size="sm"
-                variant="outline"
-              >
-                <Link href={getCollectionActionHref(collection)!}>
-                  {getCollectionActionLabel(collection.status)}
-                </Link>
-              </Button>
-            ) : (
-              <Button
-                className="h-9 min-w-36 border-hairline bg-surface-card text-ink hover:bg-surface-stone hover:text-ink"
-                size="sm"
-                variant="outline"
-              >
-                {getCollectionActionLabel(collection.status)}
-              </Button>
-            )}
-          </div>
-          <CollectionRowActions collection={collection} />
-        </div>
-      ))}
+      <Table className="min-w-0">
+        <TableHeader className="sr-only">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody className="block">
+          {table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.id}
+              className="grid gap-4 border-b border-hairline-light px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_120px_180px_32px] lg:items-center"
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell
+                  key={cell.id}
+                  className="block whitespace-normal p-0"
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
@@ -252,32 +336,52 @@ export function CollectionListSkeleton({
       className="overflow-hidden rounded-md border border-hairline-light bg-surface-card"
       aria-label="Loading collections"
     >
-      {Array.from({ length: rowCount }).map((_, index) => (
-        <div
-          key={index}
-          className={cn(
-            "grid gap-4 px-4 py-3 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_120px_180px_32px] lg:items-center",
-            index > 0 && "border-t border-hairline-light",
-          )}
-        >
-          <div className="min-w-0">
-            <Skeleton className="h-4 w-40" />
-            <Skeleton className="mt-2 h-3 w-56 max-w-full" />
-          </div>
-          <div className="flex items-center gap-2">
-            <Skeleton className="size-3.5 rounded-full" />
-            <Skeleton className="h-3 w-32" />
-          </div>
-          <div className="grid gap-1">
-            <Skeleton className="h-3 w-16" />
-            <Skeleton className="h-3 w-20" />
-          </div>
-          <div className="flex items-center gap-2 lg:justify-end">
-            <Skeleton className="h-9 w-36" />
-          </div>
-          <Skeleton className="size-8 rounded-md" />
-        </div>
-      ))}
+      <Table className="min-w-0">
+        <TableHeader className="sr-only">
+          <TableRow>
+            <TableHead>Collection</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Timeline</TableHead>
+            <TableHead>Action</TableHead>
+            <TableHead>More actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody className="block">
+          {Array.from({ length: rowCount }).map((_, index) => (
+            <TableRow
+              key={index}
+              className="grid gap-4 border-b border-hairline-light px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_120px_180px_32px] lg:items-center"
+            >
+              <TableCell className="block whitespace-normal p-0">
+                <div className="min-w-0">
+                  <Skeleton className="h-4 w-40" />
+                  <Skeleton className="mt-2 h-3 w-56 max-w-full" />
+                </div>
+              </TableCell>
+              <TableCell className="block whitespace-normal p-0">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="size-3.5 rounded-full" />
+                  <Skeleton className="h-3 w-32" />
+                </div>
+              </TableCell>
+              <TableCell className="block whitespace-normal p-0">
+                <div className="grid gap-1">
+                  <Skeleton className="h-3 w-16" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+              </TableCell>
+              <TableCell className="block whitespace-normal p-0">
+                <div className="flex items-center gap-2 lg:justify-end">
+                  <Skeleton className="h-9 w-36" />
+                </div>
+              </TableCell>
+              <TableCell className="block whitespace-normal p-0">
+                <Skeleton className="size-8 rounded-md" />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
