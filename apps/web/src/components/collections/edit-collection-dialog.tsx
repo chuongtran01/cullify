@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useFormState, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 import type { Collection } from "@/components/collections/types";
@@ -50,12 +50,14 @@ export function EditCollectionDialog({
   const resetMutationRef = useRef(updateCollectionName.reset);
   const form = useForm<EditCollectionValues>({
     resolver: zodResolver(editCollectionSchema),
+    mode: "onChange",
     defaultValues: {
       name: collection.name,
     },
   });
   const name = useWatch({ control: form.control, name: "name" }) ?? "";
-  const { reset } = form;
+  const { isValid } = useFormState({ control: form.control });
+  const { reset, trigger } = form;
 
   useEffect(() => {
     resetMutationRef.current = updateCollectionName.reset;
@@ -65,8 +67,9 @@ export function EditCollectionDialog({
     if (open) {
       reset({ name: collection.name });
       resetMutationRef.current();
+      void trigger("name");
     }
-  }, [collection.name, open, reset]);
+  }, [collection.name, open, reset, trigger]);
 
   function handleOpenChange(nextOpen: boolean) {
     onOpenChange(nextOpen);
@@ -138,7 +141,10 @@ export function EditCollectionDialog({
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={updateCollectionName.isPending}>
+              <Button
+                type="submit"
+                disabled={!isValid || updateCollectionName.isPending}
+              >
                 {updateCollectionName.isPending ? "Saving..." : "Save"}
               </Button>
             </div>
