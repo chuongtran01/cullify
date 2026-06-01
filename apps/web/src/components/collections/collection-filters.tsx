@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 type CollectionFiltersProps = {
@@ -70,6 +71,25 @@ export function CollectionFilters({
             <DropdownMenuItem>Newest First</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+      </div>
+    </div>
+  );
+}
+
+export function CollectionFiltersSkeleton() {
+  return (
+    <div
+      className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+      aria-label="Loading collection filters"
+    >
+      <div className="flex flex-wrap gap-2">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <Skeleton key={index} className="h-8 w-24 rounded-full" />
+        ))}
+      </div>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <Skeleton className="h-9 w-full sm:w-64" />
+        <Skeleton className="h-9 w-32" />
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { Skeleton } from "@/components/ui/skeleton";
+
 type CollectionsSummaryProps = {
   totalCollections: number;
   needsReview: number;
@@ -29,6 +31,25 @@ export function CollectionsSummary({
             {label}
           </p>
           <p className="mt-3 text-2xl font-normal text-ink">{value}</p>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+export function CollectionsSummarySkeleton() {
+  return (
+    <section
+      className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+      aria-label="Loading collection summary"
+    >
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div
+          key={index}
+          className="rounded-md border border-hairline-light bg-surface-card p-4"
+        >
+          <Skeleton className="h-3 w-28" />
+          <Skeleton className="mt-3 h-8 w-12" />
         </div>
       ))}
     </section>

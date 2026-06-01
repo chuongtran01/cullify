@@ -24,10 +24,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 type CollectionListProps = {
   collections: Collection[];
+};
+
+type CollectionListSkeletonProps = {
+  rowCount?: number;
 };
 
 const listStatusMeta: Record<
@@ -233,6 +238,44 @@ export function CollectionList({ collections }: CollectionListProps) {
             )}
           </div>
           <CollectionRowActions collection={collection} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function CollectionListSkeleton({
+  rowCount = 5,
+}: CollectionListSkeletonProps) {
+  return (
+    <div
+      className="overflow-hidden rounded-md border border-hairline-light bg-surface-card"
+      aria-label="Loading collections"
+    >
+      {Array.from({ length: rowCount }).map((_, index) => (
+        <div
+          key={index}
+          className={cn(
+            "grid gap-4 px-4 py-3 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_120px_180px_32px] lg:items-center",
+            index > 0 && "border-t border-hairline-light",
+          )}
+        >
+          <div className="min-w-0">
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="mt-2 h-3 w-56 max-w-full" />
+          </div>
+          <div className="flex items-center gap-2">
+            <Skeleton className="size-3.5 rounded-full" />
+            <Skeleton className="h-3 w-32" />
+          </div>
+          <div className="grid gap-1">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+          <div className="flex items-center gap-2 lg:justify-end">
+            <Skeleton className="h-9 w-36" />
+          </div>
+          <Skeleton className="size-8 rounded-md" />
         </div>
       ))}
     </div>

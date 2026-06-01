@@ -4,9 +4,18 @@ import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-import { CollectionFilters } from "@/components/collections/collection-filters";
-import { CollectionList } from "@/components/collections/collection-list";
-import { CollectionsSummary } from "@/components/collections/collections-summary";
+import {
+  CollectionFilters,
+  CollectionFiltersSkeleton,
+} from "@/components/collections/collection-filters";
+import {
+  CollectionList,
+  CollectionListSkeleton,
+} from "@/components/collections/collection-list";
+import {
+  CollectionsSummary,
+  CollectionsSummarySkeleton,
+} from "@/components/collections/collections-summary";
 import { EmptyCollections } from "@/components/collections/empty-collections";
 import type { CollectionFilterValue } from "@/components/collections/types";
 import { UploadDialog } from "@/components/landing/upload-dialog";
@@ -83,12 +92,13 @@ export function CollectionsPage() {
         </header>
 
         {isPending || isSummaryPending ? (
-          <section className="rounded-md border border-hairline-light bg-surface-card p-8 text-center">
-            <h2 className="text-lg font-normal text-ink">Loading collections</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-body">
-              Fetching your photo collections.
-            </p>
-          </section>
+          <>
+            <CollectionsSummarySkeleton />
+            <section className="grid gap-4">
+              <CollectionFiltersSkeleton />
+              <CollectionListSkeleton rowCount={5} />
+            </section>
+          </>
         ) : loadError || error || summaryError ? (
           <section className="rounded-md border border-hairline-light bg-surface-card p-8 text-center">
             <h2 className="text-lg font-normal text-ink">
