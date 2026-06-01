@@ -7,12 +7,11 @@ import { useMemo, useState } from "react";
 import { BatchFilters } from "@/components/batches/batch-filters";
 import { BatchList } from "@/components/batches/batch-list";
 import { BatchesSummary } from "@/components/batches/batches-summary";
-import { ContinueBatches } from "@/components/batches/continue-batches";
 import { EmptyBatches } from "@/components/batches/empty-batches";
-import { mockBatches } from "@/components/batches/mock-data";
 import type { BatchFilterValue } from "@/components/batches/types";
 import { UploadDialog } from "@/components/landing/upload-dialog";
 import { Button } from "@/components/ui/button";
+import { useBatches } from "@/hooks/use-batches";
 import type { CreateUploadSessionResponse } from "@/lib/upload/types";
 
 export function BatchesPage() {
@@ -20,13 +19,11 @@ export function BatchesPage() {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<BatchFilterValue>("ALL");
   const [search, setSearch] = useState("");
-
-  const continueBatches = mockBatches.filter((batch) =>
-    ["READY_FOR_REVIEW", "IN_REVIEW"].includes(batch.status),
-  );
+  const { data, error, isPending } = useBatches();
+  const batches = useMemo(() => data?.batches ?? [], [data?.batches]);
 
   const filteredBatches = useMemo(() => {
-    return mockBatches
+    return batches
       .filter((batch) => {
         const matchesFilter =
           activeFilter === "ALL" || batch.status === activeFilter;
@@ -40,17 +37,17 @@ export function BatchesPage() {
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       );
-  }, [activeFilter, search]);
+  }, [activeFilter, batches, search]);
 
   const summary = {
-    totalBatches: mockBatches.length,
-    needsReview: mockBatches.filter((batch) =>
+    totalBatches: batches.length,
+    needsReview: batches.filter((batch) =>
       ["READY_FOR_REVIEW", "IN_REVIEW"].includes(batch.status),
     ).length,
-    processing: mockBatches.filter((batch) =>
+    processing: batches.filter((batch) =>
       ["UPLOADING", "PROCESSING"].includes(batch.status),
     ).length,
-    totalPhotos: mockBatches.reduce((total, batch) => total + batch.totalImages, 0),
+    totalPhotos: batches.reduce((total, batch) => total + batch.totalImages, 0),
   };
 
   function handleUploadSessionCreated(response: CreateUploadSessionResponse) {
@@ -78,7 +75,25 @@ export function BatchesPage() {
           </Button>
         </header>
 
-        {mockBatches.length === 0 ? (
+        {isPending ? (
+          <section className="rounded-md border border-hairline-light bg-surface-card p-8 text-center">
+            <h2 className="text-lg font-normal text-ink">Loading batches</h2>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-body">
+              Fetching your photo collections.
+            </p>
+          </section>
+        ) : error ? (
+          <section className="rounded-md border border-hairline-light bg-surface-card p-8 text-center">
+            <h2 className="text-lg font-normal text-ink">
+              Could not load batches
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-body">
+              {error instanceof Error
+                ? error.message
+                : "Refresh the page and try again."}
+            </p>
+          </section>
+        ) : batches.length === 0 ? (
           <EmptyBatches onUploadClick={() => setUploadOpen(true)} />
         ) : (
           <>
@@ -90,7 +105,18 @@ export function BatchesPage() {
                 onFilterChange={setActiveFilter}
                 onSearchChange={setSearch}
               />
-              <BatchList batches={filteredBatches} />
+              {filteredBatches.length === 0 ? (
+                <section className="rounded-md border border-hairline-light bg-surface-card p-8 text-center">
+                  <h2 className="text-lg font-normal text-ink">
+                    No matching batches
+                  </h2>
+                  <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-body">
+                    Try another search term or filter.
+                  </p>
+                </section>
+              ) : (
+                <BatchList batches={filteredBatches} />
+              )}
             </section>
           </>
         )}

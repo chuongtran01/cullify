@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import type { BatchProgressData, ProcessingStage } from "@/components/progress/types";
 
 const TERMINAL_STATUSES = new Set<string>([
+  BatchStatus.READY_FOR_REVIEW,
+  BatchStatus.IN_REVIEW,
   BatchStatus.COMPLETED,
   BatchStatus.FAILED,
 ]);
@@ -121,7 +123,11 @@ function getEstimatedRemaining(status: BatchStatus): string {
 }
 
 function getStages(status: BatchStatus, progress: number): ProcessingStage[] {
-  if (status === BatchStatus.COMPLETED) {
+  if (
+    status === BatchStatus.READY_FOR_REVIEW ||
+    status === BatchStatus.IN_REVIEW ||
+    status === BatchStatus.COMPLETED
+  ) {
     return [
       { label: "Detecting blurry and out-of-focus photos", status: "completed" },
       { label: "Extracting image features", status: "completed" },

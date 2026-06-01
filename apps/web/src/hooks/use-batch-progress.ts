@@ -3,7 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query-keys";
 import { getBatchProgress } from "@/services/progress";
 
-const TERMINAL_STATUSES = new Set(["COMPLETED", "FAILED"]);
+const TERMINAL_STATUSES = new Set([
+  "READY_FOR_REVIEW",
+  "IN_REVIEW",
+  "COMPLETED",
+  "FAILED",
+]);
 const POLL_INTERVAL_MS = 3_000;
 
 export function useBatchProgress(batchId: string) {

@@ -12,6 +12,8 @@ datasource db {
 enum BatchStatus {
   UPLOADING
   PROCESSING
+  READY_FOR_REVIEW
+  IN_REVIEW
   COMPLETED
   FAILED
 }

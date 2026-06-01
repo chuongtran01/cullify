@@ -88,6 +88,6 @@ class ImageProcessingPipeline:
                 continue
 
         next_status = (
-            BatchStatus.FAILED if failed_count > 0 else BatchStatus.COMPLETED
+            BatchStatus.FAILED if failed_count > 0 else BatchStatus.READY_FOR_REVIEW
         )
         self.batch_repository.update_status(context.batch.id, next_status)

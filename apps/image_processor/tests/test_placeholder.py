@@ -325,7 +325,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
         self.assertEqual(pipeline.image_embedding_repository.failures, [])
         self.assertEqual(
             pipeline.batch_repository.statuses,
-            [("session-1", BatchStatus.COMPLETED)],
+            [("session-1", BatchStatus.READY_FOR_REVIEW)],
         )
         self.assertIn("image=image-1 blur_score=42.00", output.getvalue())
         self.assertIn("exposure_score=0.80", output.getvalue())
@@ -402,7 +402,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
         )
         self.assertEqual(
             pipeline.batch_repository.statuses,
-            [("session-1", BatchStatus.COMPLETED)],
+            [("session-1", BatchStatus.READY_FOR_REVIEW)],
         )
 
 

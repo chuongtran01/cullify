@@ -22,7 +22,11 @@ export function ProgressHeader({
   progress,
 }: ProgressHeaderProps) {
   const router = useRouter();
-  const isComplete = progress >= 100 || status === "COMPLETED";
+  const isComplete =
+    progress >= 100 ||
+    status === "READY_FOR_REVIEW" ||
+    status === "IN_REVIEW" ||
+    status === "COMPLETED";
 
   return (
     <header className="flex flex-col gap-5 rounded-[22px] border border-hairline bg-canvas p-5 lg:flex-row lg:items-center lg:justify-between">
