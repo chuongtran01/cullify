@@ -250,7 +250,7 @@ const collectionColumns: ColumnDef<Collection>[] = [
           {actionHref ? (
             <Button
               asChild
-              className="h-9 min-w-36 border-hairline bg-surface-card text-ink hover:bg-surface-stone hover:text-ink"
+              className="h-9 min-w-36 cursor-pointer"
               size="sm"
               variant="outline"
             >
@@ -260,7 +260,7 @@ const collectionColumns: ColumnDef<Collection>[] = [
             </Button>
           ) : (
             <Button
-              className="h-9 min-w-36 border-hairline bg-surface-card text-ink hover:bg-surface-stone hover:text-ink"
+              className="h-9 min-w-36 cursor-pointer"
               size="sm"
               variant="outline"
             >
@@ -298,9 +298,9 @@ export function CollectionList({ collections }: CollectionListProps) {
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
                 </TableHead>
               ))}
             </TableRow>

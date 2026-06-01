@@ -36,7 +36,7 @@ export function ProgressHeader({
           variant="outline"
           size="icon"
           aria-label="Back"
-          className="size-10 shrink-0 rounded-full border-hairline bg-surface-card hover:bg-surface-stone"
+          className="size-10 shrink-0 rounded-full cursor-pointer"
         >
           <Link href="/">
             <ArrowLeft className="size-4" />

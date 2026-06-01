@@ -290,15 +290,16 @@ export function UploadDialog({
                           {getFileExtension(file)} / {formatFileSize(file.size)}
                         </p>
                       </div>
-                      <button
-                        type="button"
+                      <Button
+                        variant="ghost"
+                        size="icon-xs"
                         disabled={isSubmitting}
-                        className="grid size-9 shrink-0 place-items-center rounded-full text-body transition-colors hover:bg-surface-stone hover:text-ink disabled:pointer-events-none disabled:opacity-50"
+                        className="cursor-pointer"
                         onClick={() => removeFile(file)}
                         aria-label={`Remove ${file.name}`}
                       >
                         <X className="size-4" />
-                      </button>
+                      </Button>
                     </div>
                   ))}
                   {filteredFiles.length === 0 ? (
@@ -430,15 +431,16 @@ export function UploadDialog({
                                 {formatFileSize(file.size)}
                               </p>
                             </div>
-                            <button
-                              type="button"
+                            <Button
+                              variant="ghost"
+                              size="icon-xs"
                               disabled={isSubmitting}
-                              className="grid size-9 shrink-0 place-items-center rounded-full text-body transition-colors hover:bg-surface-stone hover:text-ink disabled:pointer-events-none disabled:opacity-50"
+                              className="cursor-pointer"
                               onClick={() => removeFile(file)}
                               aria-label={`Remove ${file.name}`}
                             >
                               <X className="size-4" />
-                            </button>
+                            </Button>
                           </div>
                         ))}
                         {files.length > 4 ? (
@@ -512,7 +514,7 @@ export function UploadDialog({
             <div className="flex flex-col-reverse gap-2 sm:flex-row">
               <Button
                 variant="outline"
-                className="h-11 cursor-pointer rounded-full border-hairline bg-surface-card px-5 text-ink hover:bg-surface-stone"
+                className="h-11 cursor-pointer rounded-full border-hairline bg-surface-card px-5"
                 disabled={isSubmitting}
                 onClick={() => handleOpenChange(false)}
               >
