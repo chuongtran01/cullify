@@ -11,11 +11,11 @@ export function BenefitsSection() {
       <div>
         <Badge
           variant="outline"
-          className="border-hairline bg-transparent font-mono font-normal uppercase tracking-[0.02em] text-muted"
+          className="border-hairline bg-transparent font-mono font-normal uppercase tracking-wide text-muted"
         >
           Benefits
         </Badge>
-        <h2 className="mt-4 text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-ink sm:text-5xl">
+        <h2 className="mt-4 text-4xl font-normal leading-none tracking-tight text-ink sm:text-5xl">
           Spend your attention on the final choice, not the messy first pass.
         </h2>
         <div className="mt-10 grid border-y border-hairline">
@@ -30,10 +30,10 @@ export function BenefitsSection() {
           ))}
         </div>
       </div>
-      <div className="rounded-[22px] border border-hairline bg-surface-stone p-4">
-        <div className="rounded-[16px] bg-canvas p-5">
+      <div className="rounded-3xl border border-hairline bg-surface-stone p-4">
+        <div className="rounded-2xl bg-canvas p-5">
           <div className="mb-5 flex items-center justify-between">
-            <span className="font-mono text-xs uppercase tracking-[0.02em] text-muted">
+            <span className="font-mono text-xs uppercase tracking-wide text-muted">
               Review queue
             </span>
             <Badge className="rounded-full font-mono font-normal uppercase">

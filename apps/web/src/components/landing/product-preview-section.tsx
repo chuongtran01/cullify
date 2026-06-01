@@ -19,14 +19,14 @@ export function ProductPreviewSection() {
             align="left"
             inverted
           />
-          <div className="grid grid-cols-3 gap-3 border-y border-white/15 py-4 text-center font-mono text-xs uppercase tracking-[0.02em] text-white/60">
+          <div className="grid grid-cols-3 gap-3 border-y border-white/15 py-4 text-center font-mono text-xs uppercase tracking-wide text-white/60">
             {["42 groups", "31 left", "96 top score"].map((stat) => (
               <span key={stat}>{stat}</span>
             ))}
           </div>
         </div>
-        <div className="mt-12 rounded-[22px] border border-white/10 bg-surface-dark p-3">
-          <div className="rounded-[18px] border border-white/10 bg-white/5 p-4">
+        <div className="mt-12 rounded-3xl border border-white/10 bg-surface-dark p-3">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap gap-2">
               {["Grouping", "Best Shot", "Blur Detection"].map((tab) => (
@@ -53,11 +53,11 @@ export function ProductPreviewSection() {
               <PhotoTile className="h-44 border-white/15 sm:h-56" label="similar" />
               <PhotoTile className="h-44 border-white/15 sm:h-56" label="similar" />
             </div>
-            <aside className="rounded-[16px] border border-white/10 bg-white p-5 text-ink">
+            <aside className="rounded-2xl border border-white/10 bg-white p-5 text-ink">
               <Badge variant="outline" className="border-hairline font-mono font-normal uppercase text-muted">
                 Compare mode
               </Badge>
-              <h3 className="mt-4 text-3xl font-normal leading-tight tracking-[-0.02em] text-ink">
+              <h3 className="mt-4 text-3xl font-normal leading-tight tracking-tight text-ink">
                 Cullify recommends frame 04 for sharpness and expression.
               </h3>
               <div className="mt-6 grid gap-3">

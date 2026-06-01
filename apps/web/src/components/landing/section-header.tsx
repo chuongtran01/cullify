@@ -23,8 +23,8 @@ export function SectionHeader({
         variant="outline"
         className={
           inverted
-            ? "border-white/20 bg-white/5 font-mono font-normal uppercase tracking-[0.02em] text-white/70"
-            : "border-hairline bg-transparent font-mono font-normal uppercase tracking-[0.02em] text-muted"
+            ? "border-white/20 bg-white/5 font-mono font-normal uppercase tracking-wide text-white/70"
+            : "border-hairline bg-transparent font-mono font-normal uppercase tracking-wide text-muted"
         }
       >
         {eyebrow}
@@ -32,8 +32,8 @@ export function SectionHeader({
       <h2
         className={
           inverted
-            ? "mt-4 text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl"
-            : "mt-4 text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-ink sm:text-5xl"
+            ? "mt-4 text-4xl font-normal leading-none tracking-tight text-white sm:text-5xl"
+            : "mt-4 text-4xl font-normal leading-none tracking-tight text-ink sm:text-5xl"
         }
       >
         {title}

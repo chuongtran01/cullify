@@ -29,7 +29,7 @@ export function ProgressHeader({
     status === "COMPLETED";
 
   return (
-    <header className="flex flex-col gap-5 rounded-[22px] border border-hairline bg-canvas p-5 lg:flex-row lg:items-center lg:justify-between">
+    <header className="flex flex-col gap-5 rounded-3xl border border-hairline bg-canvas p-5 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex items-start gap-3">
         <Button
           asChild
@@ -43,10 +43,10 @@ export function ProgressHeader({
           </Link>
         </Button>
         <div>
-          <div className="mb-2 font-mono text-xs uppercase tracking-[0.02em] text-muted">
+          <div className="mb-2 font-mono text-xs uppercase tracking-wide text-muted">
             Batch {batchId}
           </div>
-          <h1 className="text-3xl leading-tight font-normal tracking-[-0.02em] sm:text-4xl">
+          <h1 className="text-3xl leading-tight font-normal tracking-tight sm:text-4xl">
             {title}
           </h1>
           <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted">

@@ -19,13 +19,13 @@ export function PricingSection() {
             <article
               key={tier.name}
               className={cn(
-                "rounded-[16px] border p-8",
+                "rounded-2xl border p-8",
                 tier.featured
                   ? "border-primary bg-primary text-on-primary"
                   : "border-hairline bg-surface-card text-ink",
               )}
             >
-              <h3 className="text-2xl font-normal tracking-[-0.01em]">
+              <h3 className="text-2xl font-normal tracking-tight">
                 {tier.name}
               </h3>
               <p

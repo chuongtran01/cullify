@@ -21,16 +21,16 @@ export function ProcessingSummaryCard({
   stages,
 }: ProcessingSummaryCardProps) {
   return (
-    <section className="grid gap-5 rounded-[22px] bg-deep-green p-3 text-white lg:grid-cols-[1.4fr_0.9fr]">
-      <div className="grid gap-5 rounded-[18px] border border-white/10 bg-surface-dark p-5 sm:grid-cols-[176px_1fr] sm:items-center">
+    <section className="grid gap-5 rounded-3xl bg-deep-green p-3 text-white lg:grid-cols-[1.4fr_0.9fr]">
+      <div className="grid gap-5 rounded-2xl border border-white/10 bg-surface-dark p-5 sm:grid-cols-[176px_1fr] sm:items-center">
         <ProcessingProgressDonut progress={progress} />
 
         <div className="min-w-0">
-          <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.02em] text-white/60">
+          <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-white/60">
             <Sparkles className="size-4" />
             AI processing
           </div>
-          <h2 className="mt-3 text-3xl leading-tight font-normal tracking-[-0.02em] text-white">
+          <h2 className="mt-3 text-3xl leading-tight font-normal tracking-tight text-white">
             Analyzing your photos
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-white/65">

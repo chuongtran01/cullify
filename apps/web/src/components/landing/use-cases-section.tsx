@@ -17,7 +17,7 @@ export function UseCasesSection() {
               className="rounded-sm border border-card-border bg-canvas py-0 ring-0"
             >
               <CardHeader className="p-5">
-                <CardTitle className="text-xl font-normal tracking-[-0.01em]">
+                <CardTitle className="text-xl font-normal tracking-tight">
                   {useCase.title}
                 </CardTitle>
                 <CardDescription className="mt-3 leading-6">

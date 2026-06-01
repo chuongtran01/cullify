@@ -18,11 +18,11 @@ export function FaqSection() {
         <Accordion
           type="single"
           collapsible
-          className="mt-10 rounded-[16px] border border-hairline bg-canvas"
+          className="mt-10 rounded-2xl border border-hairline bg-canvas"
         >
           {faqs.map((faq) => (
             <AccordionItem key={faq.question} value={faq.question}>
-              <AccordionTrigger className="px-5 py-5 text-lg font-normal tracking-[-0.01em] text-ink">
+              <AccordionTrigger className="px-5 py-5 text-lg font-normal tracking-tight text-ink">
                 {faq.question}
               </AccordionTrigger>
               <AccordionContent className="px-5 pb-5 text-sm leading-6 text-body">

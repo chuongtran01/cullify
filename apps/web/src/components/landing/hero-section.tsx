@@ -23,12 +23,12 @@ export function HeroSection({
       >
         <Badge
           variant="outline"
-          className="mb-7 h-auto gap-2 rounded-full border-hairline bg-transparent px-4 py-2 font-mono text-xs font-normal uppercase tracking-[0.02em] text-body"
+          className="mb-7 h-auto gap-2 rounded-full border-hairline bg-transparent px-4 py-2 font-mono text-xs font-normal uppercase tracking-wide text-body"
         >
           <Sparkles className="size-3.5 text-coral" />
           AI culling for high-volume review
         </Badge>
-        <h1 className="mx-auto max-w-4xl text-6xl font-normal leading-none tracking-[-0.02em] text-ink sm:text-7xl">
+        <h1 className="mx-auto max-w-4xl text-6xl font-normal leading-none tracking-tight text-ink sm:text-7xl">
           AI photo culling for cleaner first-pass decisions.
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-body">

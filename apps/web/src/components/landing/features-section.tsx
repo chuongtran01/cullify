@@ -37,7 +37,7 @@ export function FeaturesSection() {
                     </Badge>
                   </div>
                 </div>
-                <CardTitle className="text-2xl font-normal tracking-[-0.01em]">
+                <CardTitle className="text-2xl font-normal tracking-tight">
                   {feature.title}
                 </CardTitle>
                 <CardDescription className="mt-3 leading-6">

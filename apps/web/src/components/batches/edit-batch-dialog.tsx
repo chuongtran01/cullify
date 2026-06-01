@@ -88,7 +88,7 @@ export function EditBatchDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="rounded-[16px] border border-hairline bg-surface-card p-0 shadow-none sm:max-w-md">
+      <DialogContent className="rounded-2xl border border-hairline bg-surface-card p-0 shadow-none sm:max-w-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <DialogHeader className="border-b border-hairline px-6 py-5">
@@ -129,7 +129,7 @@ export function EditBatchDialog({
               ) : null}
             </div>
 
-            <div className="flex items-center justify-end gap-2 rounded-b-[16px] border-t border-hairline bg-surface-card px-6 py-4">
+            <div className="flex items-center justify-end gap-2 rounded-b-2xl border-t border-hairline bg-surface-card px-6 py-4">
               <Button
                 type="button"
                 variant="outline"

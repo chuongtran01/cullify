@@ -25,7 +25,7 @@ export function BatchesSummary({
           key={label}
           className="rounded-md border border-hairline-light bg-surface-card p-4"
         >
-          <p className="font-mono text-xs font-normal uppercase tracking-[0.02em] text-slate">
+          <p className="font-mono text-xs font-normal uppercase tracking-wide text-slate">
             {label}
           </p>
           <p className="mt-3 text-2xl font-normal text-ink">{value}</p>

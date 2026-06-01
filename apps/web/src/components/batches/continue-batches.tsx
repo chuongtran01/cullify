@@ -21,7 +21,7 @@ function ContinueThumbnailGrid({ batch }: { batch: Batch }) {
       {urls.map((url, index) => (
         <div
           key={`${url}-${index}`}
-          className="size-full rounded-[4px] bg-cover bg-center"
+          className="size-full rounded-sm bg-cover bg-center"
           style={{ backgroundImage: `url(${url})` }}
         />
       ))}
@@ -35,7 +35,7 @@ function ContinueStatusPill({ batch }: { batch: Batch }) {
   return (
     <span
       className={cn(
-        "inline-flex h-5 w-fit items-center gap-1 rounded-full px-2 text-[11px] font-semibold uppercase",
+        "inline-flex h-5 w-fit items-center gap-1 rounded-full px-2 text-xs font-semibold uppercase",
         isInReview
           ? "bg-action-blue/10 text-action-blue"
           : "border border-coral/20 bg-coral-soft/20 text-ink",

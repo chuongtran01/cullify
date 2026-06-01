@@ -15,7 +15,7 @@ export function PhotoTile({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-[22px] border border-white/20 bg-surface-card",
+        "relative overflow-hidden rounded-3xl border border-white/20 bg-surface-card",
         className,
       )}
     >

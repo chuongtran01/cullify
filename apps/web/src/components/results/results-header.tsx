@@ -10,7 +10,7 @@ type ResultsHeaderProps = {
 
 export function ResultsHeader({ data }: ResultsHeaderProps) {
   return (
-    <header className="rounded-[22px] border border-hairline bg-canvas p-5">
+    <header className="rounded-3xl border border-hairline bg-canvas p-5">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
           <Link

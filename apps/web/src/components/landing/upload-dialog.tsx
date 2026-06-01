@@ -211,14 +211,14 @@ export function UploadDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="flex max-h-[calc(100dvh-2rem)] !max-w-3xl flex-col overflow-hidden rounded-[22px] border border-hairline bg-surface-card p-0 text-ink shadow-none sm:!max-w-3xl">
+        <DialogContent className="flex max-h-[calc(100dvh-2rem)] !max-w-3xl flex-col overflow-hidden rounded-3xl border border-hairline bg-surface-card p-0 text-ink shadow-none sm:!max-w-3xl">
         <DialogHeader className="gap-4 border-b border-hairline px-6 pt-7 pb-6 sm:px-8">
           <div className="flex items-start gap-4">
             <div className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-on-primary">
               <Sparkles className="size-5" />
             </div>
             <div className="space-y-2">
-              <DialogTitle className="text-2xl font-normal leading-tight tracking-[-0.01em] text-ink">
+              <DialogTitle className="text-2xl font-normal leading-tight tracking-tight text-ink">
                 Upload a batch to Cullify
               </DialogTitle>
               <DialogDescription className="max-w-prose text-sm leading-6 text-body">
@@ -231,7 +231,7 @@ export function UploadDialog({
 
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-6 py-6 sm:px-8 sm:py-8">
           {isManagingSelection ? (
-            <div className="rounded-[16px] border border-hairline bg-surface-card p-5">
+            <div className="rounded-2xl border border-hairline bg-surface-card p-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <button
@@ -242,7 +242,7 @@ export function UploadDialog({
                     <ArrowLeft className="size-4" />
                     Back to upload
                   </button>
-                  <p className="font-mono text-xs uppercase tracking-[0.02em] text-muted">
+                  <p className="font-mono text-xs uppercase tracking-wide text-muted">
                     Manage selection
                   </p>
                   <p className="mt-1 text-sm text-body">
@@ -271,7 +271,7 @@ export function UploadDialog({
                 />
               </label>
 
-              <div className="mt-4 flex items-center justify-between gap-3 border-y border-hairline py-3 font-mono text-xs uppercase tracking-[0.02em] text-muted">
+              <div className="mt-4 flex items-center justify-between gap-3 border-y border-hairline py-3 font-mono text-xs uppercase tracking-wide text-muted">
                 <span>
                   {filteredFiles.length} of {files.length} shown
                 </span>
@@ -313,7 +313,7 @@ export function UploadDialog({
               <div
                 {...getRootProps()}
                 className={cn(
-                  "rounded-[22px] border border-dashed bg-surface-blue-wash p-6 transition-colors outline-none focus-visible:border-focus-blue focus-visible:ring-3 focus-visible:ring-focus-blue/20 sm:p-8",
+                  "rounded-3xl border border-dashed bg-surface-blue-wash p-6 transition-colors outline-none focus-visible:border-focus-blue focus-visible:ring-3 focus-visible:ring-focus-blue/20 sm:p-8",
                   isDragActive
                     ? "border-action-blue bg-action-blue/5"
                     : "border-hairline",
@@ -325,7 +325,7 @@ export function UploadDialog({
                   <div className="grid size-14 place-items-center rounded-full border border-hairline bg-surface-card text-primary">
                     <ImagePlus className="size-6" />
                   </div>
-                  <h3 className="mt-4 text-lg font-normal tracking-[-0.01em] text-ink">
+                  <h3 className="mt-4 text-lg font-normal tracking-tight text-ink">
                     {isDragActive
                       ? "Drop your photos here"
                       : "Drag and drop your photos here"}
@@ -346,10 +346,10 @@ export function UploadDialog({
                 </div>
               </div>
 
-              <div className="rounded-[16px] border border-hairline bg-surface-card p-5">
+              <div className="rounded-2xl border border-hairline bg-surface-card p-5">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <p className="font-mono text-xs uppercase tracking-[0.02em] text-muted">
+                    <p className="font-mono text-xs uppercase tracking-wide text-muted">
                       Batch intake
                     </p>
                     <p className="mt-1 text-sm text-body">
@@ -402,12 +402,12 @@ export function UploadDialog({
                       ].map(([label, value, helper]) => (
                         <div
                           key={label}
-                          className="rounded-[16px] border border-card-border bg-surface-stone/60 p-4"
+                          className="rounded-2xl border border-card-border bg-surface-stone/60 p-4"
                         >
-                          <p className="font-mono text-xs uppercase tracking-[0.02em] text-muted">
+                          <p className="font-mono text-xs uppercase tracking-wide text-muted">
                             {label}
                           </p>
-                          <p className="mt-2 truncate text-2xl font-normal tracking-[-0.02em] text-ink">
+                          <p className="mt-2 truncate text-2xl font-normal tracking-tight text-ink">
                             {value}
                           </p>
                           <p className="mt-1 text-xs text-body">{helper}</p>
@@ -462,7 +462,7 @@ export function UploadDialog({
             <div
               role="status"
               aria-live="polite"
-              className="flex gap-3 rounded-[16px] border border-hairline bg-surface-stone px-4 py-3"
+              className="flex gap-3 rounded-2xl border border-hairline bg-surface-stone px-4 py-3"
             >
               <Loader2
                 className="mt-0.5 size-4 shrink-0 animate-spin text-primary"
@@ -497,14 +497,14 @@ export function UploadDialog({
           {error ? (
             <p
               role="alert"
-              className="rounded-[16px] border border-semantic-error/30 bg-semantic-error/10 px-4 py-3 text-sm text-semantic-error"
+              className="rounded-2xl border border-semantic-error/30 bg-semantic-error/10 px-4 py-3 text-sm text-semantic-error"
             >
               {error}
             </p>
           ) : null}
         </div>
 
-        <DialogFooter className="rounded-b-[22px] border-hairline bg-surface-stone/70 px-6 py-5 sm:justify-between sm:px-8">
+        <DialogFooter className="rounded-b-3xl border-hairline bg-surface-stone/70 px-6 py-5 sm:justify-between sm:px-8">
           <p className="text-xs leading-5 text-muted">
             Processing begins after confirmation. Files stay private to your
             review project.

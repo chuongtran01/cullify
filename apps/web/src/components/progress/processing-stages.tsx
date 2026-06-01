@@ -31,10 +31,10 @@ function StageIcon({ status }: { status: ProcessingStageStatus }) {
 
 export function ProcessingStages({ stages }: { stages: ProcessingStage[] }) {
   return (
-    <aside className="rounded-[18px] border border-white/10 bg-black/20 p-5">
+    <aside className="rounded-2xl border border-white/10 bg-black/20 p-5">
       <div className="flex items-center gap-2">
         <ScanSearch className="size-4 text-white/70" />
-        <h3 className="font-mono text-xs uppercase tracking-[0.02em] text-white/60">
+        <h3 className="font-mono text-xs uppercase tracking-wide text-white/60">
           Processing stages
         </h3>
       </div>
@@ -47,7 +47,7 @@ export function ProcessingStages({ stages }: { stages: ProcessingStage[] }) {
             <StageIcon status={stage.status} />
             <div className="min-w-0">
               <div className="text-sm leading-5 text-white">{stage.label}</div>
-              <div className="mt-1 font-mono text-xs uppercase tracking-[0.02em] text-white/45">
+              <div className="mt-1 font-mono text-xs uppercase tracking-wide text-white/45">
                 {stage.status}
               </div>
             </div>

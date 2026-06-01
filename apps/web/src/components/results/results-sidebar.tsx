@@ -70,7 +70,7 @@ export function ResultsSidebar({
 }) {
   return (
     <aside className="grid gap-5 lg:sticky lg:top-20">
-      <section className="rounded-[22px] border border-hairline bg-canvas p-5">
+      <section className="rounded-3xl border border-hairline bg-canvas p-5">
         <div className="flex items-center gap-4">
           <ProgressRing percent={progress.percent} />
           <div>
@@ -90,7 +90,7 @@ export function ResultsSidebar({
         </div>
       </section>
 
-      <section className="rounded-[16px] border border-hairline bg-canvas p-5">
+      <section className="rounded-2xl border border-hairline bg-canvas p-5">
         <div className="flex items-start gap-3">
           <Lightbulb className="mt-0.5 size-5 text-coral" />
           <div>
@@ -103,7 +103,7 @@ export function ResultsSidebar({
         </div>
       </section>
 
-      <section className="rounded-[16px] border border-hairline bg-canvas p-5">
+      <section className="rounded-2xl border border-hairline bg-canvas p-5">
         <div className="flex items-start gap-3">
           <Info className="mt-0.5 size-5 text-action-blue" />
           <div>
@@ -116,7 +116,7 @@ export function ResultsSidebar({
         </div>
       </section>
 
-      <section className="rounded-[16px] border border-hairline bg-surface-blue-wash p-5">
+      <section className="rounded-2xl border border-hairline bg-surface-blue-wash p-5">
         <div className="flex items-start gap-3">
           <CheckCircle2 className="mt-0.5 size-5 text-deep-green" />
           <div>

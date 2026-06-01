@@ -21,7 +21,7 @@ function WorkflowSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="min-w-0 overflow-hidden rounded-[22px] border border-hairline bg-canvas p-5">
+    <section className="min-w-0 overflow-hidden rounded-3xl border border-hairline bg-canvas p-5">
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-3">
@@ -54,7 +54,7 @@ function PicksStrip({ photos }: { photos: ReviewPhoto[] }) {
       {photos.map((photo) => (
         <article
           key={photo.id}
-          className="min-w-[220px] overflow-hidden rounded-[22px] border border-hairline bg-surface-card"
+          className="min-w-56 overflow-hidden rounded-3xl border border-hairline bg-surface-card"
         >
           <PhotoSurface className="aspect-[4/3]" src={photo.src} title={photo.title} />
         </article>
@@ -65,7 +65,7 @@ function PicksStrip({ photos }: { photos: ReviewPhoto[] }) {
 
 function SimilarGroupCard({ group }: { group: SimilarGroup }) {
   return (
-    <article className="min-w-[240px] overflow-hidden rounded-[16px] border border-hairline bg-surface-card">
+    <article className="min-w-60 overflow-hidden rounded-2xl border border-hairline bg-surface-card">
       <div className="relative">
         <PhotoSurface className="aspect-[4/3]" src={group.src} title={group.name} />
         <Badge className="absolute top-3 left-3 h-7 rounded-full bg-primary px-3 text-on-primary">
@@ -82,7 +82,7 @@ function SimilarGroupCard({ group }: { group: SimilarGroup }) {
 
 function RejectedPhotoCard({ photo }: { photo: ReviewPhoto }) {
   return (
-    <article className="min-w-[190px] overflow-hidden rounded-[16px] border border-hairline bg-surface-card">
+    <article className="min-w-48 overflow-hidden rounded-2xl border border-hairline bg-surface-card">
       <div className="relative">
         <PhotoSurface className="aspect-[4/3]" src={photo.src} title={photo.title} />
         <Badge className="absolute top-3 left-3 h-7 rounded-full border-coral-soft bg-coral/90 px-3 text-white">

@@ -27,11 +27,11 @@ export function HowItWorksSection() {
                   <span className="grid size-11 place-items-center rounded-full bg-surface-stone">
                     <step.icon className="size-5 text-ink" />
                   </span>
-                  <span className="font-mono text-xs uppercase tracking-[0.08em] text-muted">
+                  <span className="font-mono text-xs uppercase tracking-widest text-muted">
                     0{index + 1}
                   </span>
                 </div>
-                <CardTitle className="text-2xl font-normal tracking-[-0.01em]">
+                <CardTitle className="text-2xl font-normal tracking-tight">
                   {step.title}
                 </CardTitle>
                 <CardDescription className="mt-4 leading-6">

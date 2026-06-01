@@ -2,9 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function RecentActivityCard({ activity }: { activity: string[] }) {
   return (
-    <Card className="rounded-[16px] border border-card-border bg-canvas py-0 ring-0">
+    <Card className="rounded-2xl border border-card-border bg-canvas py-0 ring-0">
       <CardHeader className="p-5 pb-0">
-        <CardTitle className="font-mono text-xs font-normal uppercase tracking-[0.02em] text-muted">
+        <CardTitle className="font-mono text-xs font-normal uppercase tracking-wide text-muted">
           Recent activity
         </CardTitle>
       </CardHeader>

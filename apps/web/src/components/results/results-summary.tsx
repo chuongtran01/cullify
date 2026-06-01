@@ -13,7 +13,7 @@ function SummaryStat({
   helper: string;
 }) {
   return (
-    <div className="rounded-[8px] border border-white/10 bg-white/8 p-4">
+    <div className="rounded-lg border border-white/10 bg-white/8 p-4">
       <p className="font-mono text-xs uppercase text-white/55">{label}</p>
       <p className="mt-2 text-3xl leading-none font-normal text-white">{value}</p>
       <p className="mt-2 text-xs leading-5 text-white/55">{helper}</p>
@@ -30,7 +30,7 @@ type ResultsSummaryProps = {
 
 export function ResultsSummary({ data }: ResultsSummaryProps) {
   return (
-    <section className="grid gap-5 rounded-[22px] bg-deep-green p-5 text-white lg:grid-cols-[1.15fr_1fr] lg:items-center">
+    <section className="grid gap-5 rounded-3xl bg-deep-green p-5 text-white lg:grid-cols-[1.15fr_1fr] lg:items-center">
       <div className="max-w-2xl">
         <div className="flex items-center gap-2 font-mono text-xs uppercase text-white/60">
           <Sparkles className="size-4" />

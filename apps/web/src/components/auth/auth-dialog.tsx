@@ -180,7 +180,7 @@ export function AuthDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[calc(100%-2rem)] gap-6 rounded-[1.5rem] border border-hairline bg-canvas p-6 shadow-2xl sm:max-w-md">
+      <DialogContent className="max-w-[calc(100%-2rem)] gap-6 rounded-3xl border border-hairline bg-canvas p-6 shadow-2xl sm:max-w-md">
         <DialogHeader className="gap-3">
           <DialogTitle className="text-2xl font-semibold leading-tight text-ink">
             {activeCopy.title}
