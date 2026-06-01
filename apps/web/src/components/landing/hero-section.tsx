@@ -38,7 +38,7 @@ export function HeroSection({
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button
-            className="h-11 cursor-pointer gap-2 rounded-full border-primary !bg-primary px-6 !text-on-primary hover:!border-primary hover:!bg-primary/90 hover:!text-on-primary"
+            className="h-11 cursor-pointer gap-2 rounded-full px-6"
             onClick={onUploadClick}
           >
             <Upload className="size-4" />
