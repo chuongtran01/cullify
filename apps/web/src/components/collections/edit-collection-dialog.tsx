@@ -136,13 +136,14 @@ export function EditCollectionDialog({
               <Button
                 type="button"
                 variant="outline"
-                className="border-hairline bg-surface-card text-ink hover:bg-surface-stone"
+                className="cursor-pointer"
                 onClick={() => onOpenChange(false)}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
+                className="cursor-pointer"
                 disabled={!isValid || updateCollectionName.isPending}
               >
                 {updateCollectionName.isPending ? "Saving..." : "Save"}
