@@ -16,6 +16,13 @@ type ListBatchesResponse = {
   batches: Batch[];
 };
 
+type UpdateBatchNameResponse = {
+  batch: {
+    id: string;
+    name: string;
+  };
+};
+
 type BatchUploadProgressOptions = {
   onProgress?: (progress: BatchUploadProgress) => void;
 };
@@ -80,6 +87,30 @@ export async function getBatchProgress(
   }
 
   return response.json() as Promise<BatchProgressData>;
+}
+
+export async function updateBatchName(
+  batchId: string,
+  name: string,
+): Promise<UpdateBatchNameResponse> {
+  const response = await fetch(`/api/batches/${batchId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  });
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
+
+    throw new BatchesServiceError(
+      data.error ?? "Failed to update batch name",
+      response.status,
+    );
+  }
+
+  return response.json() as Promise<UpdateBatchNameResponse>;
 }
 
 export async function createBatchUpload(

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   CheckCircle2,
   CircleX,
@@ -7,13 +9,21 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import {
   formatBatchDate,
   getBatchActionLabel,
 } from "@/components/batches/batch-ui";
+import { EditBatchDialog } from "@/components/batches/edit-batch-dialog";
 import type { Batch, BatchStatus } from "@/components/batches/types";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 type BatchListProps = {
@@ -143,6 +153,43 @@ function getBatchActionHref(batch: Batch) {
   return null;
 }
 
+function BatchRowActions({ batch }: { batch: Batch }) {
+  const [editOpen, setEditOpen] = useState(false);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            className="size-8 text-body hover:text-ink"
+            size="icon"
+            variant="ghost"
+            aria-label={`More actions for ${batch.name}`}
+          >
+            <MoreHorizontal className="size-4" aria-hidden="true" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-36">
+          <DropdownMenuItem
+            onSelect={(event) => {
+              event.preventDefault();
+              setEditOpen(true);
+            }}
+          >
+            Edit
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <EditBatchDialog
+        batch={batch}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+      />
+    </>
+  );
+}
+
 export function BatchList({ batches }: BatchListProps) {
   return (
     <div className="overflow-hidden rounded-md border border-hairline-light bg-surface-card">
@@ -185,14 +232,7 @@ export function BatchList({ batches }: BatchListProps) {
               </Button>
             )}
           </div>
-          <Button
-            className="size-8 text-body"
-            size="icon"
-            variant="ghost"
-            aria-label={`More actions for ${batch.name}`}
-          >
-            <MoreHorizontal className="size-4" aria-hidden="true" />
-          </Button>
+          <BatchRowActions batch={batch} />
         </div>
       ))}
     </div>

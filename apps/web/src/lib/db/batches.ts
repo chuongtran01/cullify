@@ -29,6 +29,7 @@ export async function listUserBatches(userId: string): Promise<Batch[]> {
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
+      name: true,
       status: true,
       createdAt: true,
       updatedAt: true,
@@ -61,7 +62,7 @@ export async function listUserBatches(userId: string): Promise<Batch[]> {
 
     return {
       id: batch.id,
-      name: `Photo batch ${batch.id.slice(0, 8)}`,
+      name: batch.name ?? formatFallbackBatchName(batch.createdAt),
       status,
       totalImages,
       processedImages,
@@ -83,6 +84,29 @@ export async function listUserBatches(userId: string): Promise<Batch[]> {
         status === "FAILED" ? "Processing failed. Retry this batch." : undefined,
     };
   });
+}
+
+export async function updateUserBatchName(
+  batchId: string,
+  userId: string,
+  name: string,
+): Promise<{ id: string; name: string } | null> {
+  const normalizedName = normalizeBatchName(name);
+
+  if (!normalizedName) {
+    throw new Error("Batch name is required");
+  }
+
+  const result = await prisma.batch.updateMany({
+    where: { id: batchId, userId },
+    data: { name: normalizedName },
+  });
+
+  if (result.count === 0) {
+    return null;
+  }
+
+  return { id: batchId, name: normalizedName };
 }
 
 export async function getUserBatchesSummary(
@@ -136,6 +160,26 @@ function countProcessedImages(images: BatchImageSignal[]) {
       image.qualityAnalysis?.analyzedAt || image.qualityAnalysis?.analysisError,
     );
   }).length;
+}
+
+function formatFallbackBatchName(createdAt: Date): string {
+  const date = new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(createdAt);
+
+  return `Batch ${date}`;
+}
+
+function normalizeBatchName(name: string): string | null {
+  const normalized = name.trim();
+
+  if (normalized.length === 0 || normalized.length > 100) {
+    return null;
+  }
+
+  return normalized;
 }
 
 function countLowQualityImages(images: BatchImageSignal[]) {
