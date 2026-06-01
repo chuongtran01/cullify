@@ -137,10 +137,6 @@ export function CollectionsPage() {
             </section>
           </>
         )}
-
-        <p className="border-t border-hairline-light pt-4 text-xs text-muted-foreground">
-          Collections are stored permanently. You can review and download results anytime.
-        </p>
       </div>
 
       <UploadDialog
