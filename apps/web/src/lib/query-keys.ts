@@ -1,10 +1,10 @@
 export const queryKeys = {
-  batches: {
-    all: ["batches"] as const,
-    list: () => [...queryKeys.batches.all, "list"] as const,
-    summary: () => [...queryKeys.batches.all, "summary"] as const,
-    upload: () => [...queryKeys.batches.all, "upload"] as const,
-    progress: (batchId: string) =>
-      [...queryKeys.batches.all, batchId, "progress"] as const,
+  collections: {
+    all: ["collections"] as const,
+    list: () => [...queryKeys.collections.all, "list"] as const,
+    summary: () => [...queryKeys.collections.all, "summary"] as const,
+    upload: () => [...queryKeys.collections.all, "upload"] as const,
+    progress: (collectionId: string) =>
+      [...queryKeys.collections.all, collectionId, "progress"] as const,
   },
 } as const;

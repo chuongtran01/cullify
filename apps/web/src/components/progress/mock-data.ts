@@ -1,10 +1,10 @@
 import { Check, Images, Layers3, ShieldAlert } from "lucide-react";
 
-import type { BatchProgressData, ProgressStat } from "@/components/progress/types";
+import type { CollectionProgressData, ProgressStat } from "@/components/progress/types";
 
-export function getMockBatchProgress(batchId: string): BatchProgressData {
+export function getMockCollectionProgress(collectionId: string): CollectionProgressData {
   return {
-    batchId,
+    collectionId,
     title: "Italy Trip 2024",
     uploadedAt: "May 14, 2024",
     status: "PROCESSING",
@@ -47,7 +47,7 @@ export function getMockBatchProgress(batchId: string): BatchProgressData {
   };
 }
 
-export function getProgressStats(data: BatchProgressData): ProgressStat[] {
+export function getProgressStats(data: CollectionProgressData): ProgressStat[] {
   return [
     { label: "Total Photos", value: String(data.totalPhotos), icon: Images },
     { label: "Processed", value: String(data.processedPhotos), icon: Check },

@@ -14,7 +14,7 @@ export function HowItWorksSection() {
         <SectionHeader
           eyebrow="How it works"
           title="One upload becomes a smaller set of confident decisions."
-          description="Cullify turns messy batches into grouped review moments, with the strongest frame already surfaced."
+          description="Cullify turns messy collections into grouped review moments, with the strongest frame already surfaced."
         />
         <div className="mt-14 grid border-y border-hairline md:grid-cols-3">
           {steps.map((step, index) => (

@@ -24,18 +24,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { useUploadBatch } from "@/features/batches/hooks";
+import { useUploadCollection } from "@/features/collections/hooks";
 import { authClient } from "@/lib/auth-client";
 import type {
-  BatchUploadProgress,
-  CreateBatchUploadResponse,
-} from "@/services/batches";
-import { BatchUploadError, BatchUploadStorageError } from "@/services/batches";
+  CollectionUploadProgress,
+  CreateCollectionUploadResponse,
+} from "@/services/collections";
+import { CollectionUploadError, CollectionUploadStorageError } from "@/services/collections";
 
 type UploadDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onBatchUploadCreated?: (response: CreateBatchUploadResponse) => void;
+  onCollectionUploadCreated?: (response: CreateCollectionUploadResponse) => void;
 };
 
 function mergeImageFiles(current: File[], nextFiles: File[]) {
@@ -69,17 +69,17 @@ function getFileExtension(file: File) {
 export function UploadDialog({
   open,
   onOpenChange,
-  onBatchUploadCreated,
+  onCollectionUploadCreated,
 }: UploadDialogProps) {
   const [files, setFiles] = React.useState<File[]>([]);
   const [isManagingSelection, setIsManagingSelection] = React.useState(false);
   const [fileSearch, setFileSearch] = React.useState("");
   const [authOpen, setAuthOpen] = React.useState(false);
   const [uploadProgress, setUploadProgress] =
-    React.useState<BatchUploadProgress | null>(null);
+    React.useState<CollectionUploadProgress | null>(null);
   const { data: session, refetch: refetchSession } = authClient.useSession();
-  const uploadBatch = useUploadBatch();
-  const isSubmitting = uploadBatch.isPending;
+  const uploadCollection = useUploadCollection();
+  const isSubmitting = uploadCollection.isPending;
   const uploadProgressValue =
     uploadProgress && uploadProgress.total > 0
       ? Math.round((uploadProgress.completed / uploadProgress.total) * 100)
@@ -111,10 +111,10 @@ export function UploadDialog({
 
     return files.filter((file) => file.name.toLowerCase().includes(query));
   }, [fileSearch, files]);
-  const error = uploadBatch.error
-    ? uploadBatch.error instanceof BatchUploadError ||
-        uploadBatch.error instanceof BatchUploadStorageError
-      ? uploadBatch.error.message
+  const error = uploadCollection.error
+    ? uploadCollection.error instanceof CollectionUploadError ||
+        uploadCollection.error instanceof CollectionUploadStorageError
+      ? uploadCollection.error.message
       : "Upload failed"
     : null;
 
@@ -147,24 +147,24 @@ export function UploadDialog({
   }
 
   function startUpload() {
-    if (files.length === 0 || uploadBatch.isPending) {
+    if (files.length === 0 || uploadCollection.isPending) {
       return;
     }
 
     setUploadProgress({ completed: 0, total: files.length, fileName: "" });
 
-    uploadBatch.mutate(
+    uploadCollection.mutate(
       {
         files,
         onProgress: setUploadProgress,
       },
       {
         onSuccess: (response) => {
-          onBatchUploadCreated?.(response);
+          onCollectionUploadCreated?.(response);
           setFiles([]);
           setUploadProgress(null);
           onOpenChange(false);
-          uploadBatch.reset();
+          uploadCollection.reset();
         },
         onError: () => {
           setUploadProgress(null);
@@ -204,7 +204,7 @@ export function UploadDialog({
       setIsManagingSelection(false);
       setUploadProgress(null);
       setAuthOpen(false);
-      uploadBatch.reset();
+      uploadCollection.reset();
     }
   }
 
@@ -219,7 +219,7 @@ export function UploadDialog({
             </div>
             <div className="space-y-2">
               <DialogTitle className="text-2xl font-normal leading-tight tracking-tight text-ink">
-                Upload a batch to Cullify
+                Upload a collection to Cullify
               </DialogTitle>
               <DialogDescription className="max-w-prose text-sm leading-6 text-body">
                 Add a set of images and let the review pipeline handle blur
@@ -332,7 +332,7 @@ export function UploadDialog({
                   </h3>
                   <p className="mt-2 max-w-prose text-sm leading-6 text-body">
                     JPG, PNG, and other standard image formats are accepted.
-                    Large batches stay grouped into one review project.
+                    Large collections stay grouped into one review project.
                   </p>
                   <Button
                     type="button"
@@ -350,12 +350,12 @@ export function UploadDialog({
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <p className="font-mono text-xs uppercase tracking-wide text-muted">
-                      Batch intake
+                      Collection intake
                     </p>
                     <p className="mt-1 text-sm text-body">
                       {files.length === 0
                         ? "No files selected yet."
-                        : "Review the batch summary before starting."}
+                        : "Review the collection summary before starting."}
                     </p>
                   </div>
                   {files.length > 0 ? (
@@ -397,7 +397,7 @@ export function UploadDialog({
                         [
                           "Formats",
                           fileTypeSummary || "Images",
-                          "detected in batch",
+                          "detected in collection",
                         ],
                       ].map(([label, value, helper]) => (
                         <div
@@ -543,13 +543,13 @@ export function UploadDialog({
           "sign-in": {
             title: "Sign in to start review",
             description:
-              "Your batch needs an account so the review stays private and tied to you.",
+              "Your collection needs an account so the review stays private and tied to you.",
             submit: "Sign in and start",
           },
           "sign-up": {
             title: "Create an account to start review",
             description:
-              "Your batch needs an account so the review stays private and tied to you.",
+              "Your collection needs an account so the review stays private and tied to you.",
             submit: "Create account and start",
           },
         }}

@@ -102,7 +102,7 @@ export function ResultsWorkflows({
     <div className="grid min-w-0 gap-5">
       <WorkflowSection
         count={`${data.standoutPhotos.length} picks`}
-        description="Start with the photos the AI believes are the strongest moments from the batch."
+        description="Start with the photos the AI believes are the strongest moments from the collection."
         title="Review AI Picks"
       >
         <PicksStrip photos={data.standoutPhotos} />

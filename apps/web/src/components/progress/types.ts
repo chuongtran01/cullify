@@ -13,8 +13,8 @@ export type ProgressStat = {
   icon: LucideIcon;
 };
 
-export type BatchProgressData = {
-  batchId: string;
+export type CollectionProgressData = {
+  collectionId: string;
   title: string;
   uploadedAt: string;
   status: string;

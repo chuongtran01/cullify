@@ -8,10 +8,10 @@ from typing import Any
 from unittest.mock import MagicMock
 
 from image_processor.config import WorkerSettings
-from image_processor.db import Batch, BatchStatus, Image, ImageUploadStatus
+from image_processor.db import Collection, CollectionStatus, Image, ImageUploadStatus
 from image_processor.mq.consumer import ImageWorker
-from image_processor.mq.message_types import PROCESS_UPLOAD_SESSION_JOB_NAME
-from image_processor.processor.batch_loader import BatchLoader, BatchNotFoundError
+from image_processor.mq.message_types import PROCESS_COLLECTION_JOB_NAME
+from image_processor.processor.collection_loader import CollectionLoader, CollectionNotFoundError
 from image_processor.processor.image_downloader import DownloadedImage, ImageDownloader
 from image_processor.processor.pipeline import ImageProcessingPipeline
 from image_processor.processor.quality import ImageQualityResult
@@ -33,18 +33,18 @@ class RecordingPipeline:
         self.messages.append(message)
 
 
-class FakeBatchRepository:
-    def get_by_id(self, batch_id: str) -> Batch | None:
-        return Batch(
-            id=batch_id,
-            status=BatchStatus.PROCESSING,
+class FakeCollectionRepository:
+    def get_by_id(self, collection_id: str) -> Collection | None:
+        return Collection(
+            id=collection_id,
+            status=CollectionStatus.PROCESSING,
             created_at=datetime(2026, 1, 1),
             updated_at=datetime(2026, 1, 1),
         )
 
 
-class MissingBatchRepository:
-    def get_by_id(self, batch_id: str) -> Batch | None:
+class MissingCollectionRepository:
+    def get_by_id(self, collection_id: str) -> Collection | None:
         return None
 
 
@@ -52,15 +52,15 @@ class FakeImageRepository:
     def __init__(self, images: list[Image] | None = None) -> None:
         self._images = images
 
-    def list_uploaded_for_batch(self, batch_id: str) -> list[Image]:
+    def list_uploaded_for_collection(self, collection_id: str) -> list[Image]:
         return self._images or [
             Image(
                 id="image-1",
-                batch_id=batch_id,
+                collection_id=collection_id,
                 file_name="photo.jpg",
                 mime_type="image/jpeg",
                 size_bytes=1024,
-                object_key="batches/session-1/image-1.jpg",
+                object_key="collections/collection-1/image-1.jpg",
                 status=ImageUploadStatus.UPLOADED,
                 created_at=datetime(2026, 1, 1),
                 uploaded_at=datetime(2026, 1, 1),
@@ -68,12 +68,12 @@ class FakeImageRepository:
         ]
 
 
-class FakeBatchLoader:
+class FakeCollectionLoader:
     def __init__(self, images: list[Image] | None = None) -> None:
         self.images = images
 
     def load(self, session_id: str):
-        return make_batch_loader(images=FakeImageRepository(self.images)).load(session_id)
+        return make_collection_loader(images=FakeImageRepository(self.images)).load(session_id)
 
 
 class FakeImageDownloader:
@@ -171,20 +171,20 @@ class FakeEmbeddingRepository:
         self.failures.append((image_id, error, model, version, dimension))
 
 
-class FakeBatchStatusRepository:
+class FakeCollectionStatusRepository:
     def __init__(self) -> None:
-        self.statuses: list[tuple[str, BatchStatus]] = []
+        self.statuses: list[tuple[str, CollectionStatus]] = []
 
-    def update_status(self, batch_id: str, status: BatchStatus) -> None:
-        self.statuses.append((batch_id, status))
+    def update_status(self, collection_id: str, status: CollectionStatus) -> None:
+        self.statuses.append((collection_id, status))
 
 
-def make_batch_loader(
-    batches: FakeBatchRepository | MissingBatchRepository | None = None,
+def make_collection_loader(
+    collections: FakeCollectionRepository | MissingCollectionRepository | None = None,
     images: FakeImageRepository | None = None,
-) -> BatchLoader:
-    loader = BatchLoader(MagicMock())
-    loader.batches = batches or FakeBatchRepository()
+) -> CollectionLoader:
+    loader = CollectionLoader(MagicMock())
+    loader.collections = collections or FakeCollectionRepository()
     loader.images = images or FakeImageRepository()
     return loader
 
@@ -192,11 +192,11 @@ def make_batch_loader(
 def make_image(image_id: str, object_key: str | None = None) -> Image:
     return Image(
         id=image_id,
-        batch_id="session-1",
+        collection_id="session-1",
         file_name=f"{image_id}.jpg",
         mime_type="image/jpeg",
         size_bytes=1024,
-        object_key=object_key or f"batches/session-1/{image_id}.jpg",
+        object_key=object_key or f"collections/collection-1/{image_id}.jpg",
         status=ImageUploadStatus.UPLOADED,
         created_at=datetime(2026, 1, 1),
         uploaded_at=datetime(2026, 1, 1),
@@ -228,10 +228,10 @@ class WorkerPlaceholderTest(unittest.TestCase):
             worker.process_job(
                 FakeJob(
                     id="1",
-                    name=PROCESS_UPLOAD_SESSION_JOB_NAME,
+                    name=PROCESS_COLLECTION_JOB_NAME,
                     data={
                         "message": "hello from test",
-                        "sessionId": "session-1",
+                        "collectionId": "session-1",
                     },
                 ),
                 "token",
@@ -242,7 +242,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
         self.assertEqual(worker.settings.queue_name, "image-processing")
         self.assertEqual(
             pipeline.messages,
-            [{"message": "hello from test", "sessionId": "session-1"}],
+            [{"message": "hello from test", "collectionId": "session-1"}],
         )
 
     def test_worker_rejects_unsupported_job_name(self) -> None:
@@ -262,53 +262,53 @@ class WorkerPlaceholderTest(unittest.TestCase):
                         name="unsupported-job",
                         data={
                             "message": "hello from test",
-                            "sessionId": "session-1",
+                            "collectionId": "session-1",
                         },
                     ),
                     "token",
                 )
             )
 
-    def test_batch_loader_loads_batch_and_images(self) -> None:
-        context = make_batch_loader().load("session-1")
+    def test_collection_loader_loads_collection_and_images(self) -> None:
+        context = make_collection_loader().load("session-1")
 
-        self.assertEqual(context.batch.id, "session-1")
+        self.assertEqual(context.collection.id, "session-1")
         self.assertEqual(len(context.images), 1)
-        self.assertEqual(context.images[0].object_key, "batches/session-1/image-1.jpg")
+        self.assertEqual(context.images[0].object_key, "collections/collection-1/image-1.jpg")
 
-    def test_batch_loader_raises_when_batch_missing(self) -> None:
-        loader = make_batch_loader(batches=MissingBatchRepository())
+    def test_collection_loader_raises_when_collection_missing(self) -> None:
+        loader = make_collection_loader(collections=MissingCollectionRepository())
 
-        with self.assertRaises(BatchNotFoundError):
+        with self.assertRaises(CollectionNotFoundError):
             loader.load("missing-session")
 
-    def test_image_downloader_downloads_batch_images(self) -> None:
+    def test_image_downloader_downloads_collection_images(self) -> None:
         class FakeStorage:
             def download_bytes(self, object_key: str) -> bytes:
                 return f"bytes:{object_key}".encode()
 
-        context = make_batch_loader().load("session-1")
-        downloaded = ImageDownloader(FakeStorage()).download_for_batch(context)
+        context = make_collection_loader().load("session-1")
+        downloaded = ImageDownloader(FakeStorage()).download_for_collection(context)
 
         self.assertEqual(len(downloaded), 1)
         self.assertEqual(downloaded[0].image.id, "image-1")
         self.assertEqual(
             downloaded[0].data,
-            b"bytes:batches/session-1/image-1.jpg",
+            b"bytes:collections/collection-1/image-1.jpg",
         )
 
     def test_pipeline_scores_downloaded_images_for_blur(self) -> None:
         pipeline = ImageProcessingPipeline.__new__(ImageProcessingPipeline)
-        pipeline.batch_loader = FakeBatchLoader()
+        pipeline.collection_loader = FakeCollectionLoader()
         pipeline.image_downloader = FakeImageDownloader()
         pipeline.quality_analyzer = FakeQualityAnalyzer()
         pipeline.embedding_analyzer = FakeEmbeddingAnalyzer()
         pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
         pipeline.image_embedding_repository = FakeEmbeddingRepository()
-        pipeline.batch_repository = FakeBatchStatusRepository()
+        pipeline.collection_repository = FakeCollectionStatusRepository()
 
         with redirect_stdout(StringIO()) as output:
-            pipeline.process({"sessionId": "session-1"})
+            pipeline.process({"collectionId": "session-1"})
 
         self.assertEqual(
             len(pipeline.quality_analyzer.images),
@@ -324,8 +324,8 @@ class WorkerPlaceholderTest(unittest.TestCase):
         self.assertEqual(pipeline.quality_analysis_repository.failures, [])
         self.assertEqual(pipeline.image_embedding_repository.failures, [])
         self.assertEqual(
-            pipeline.batch_repository.statuses,
-            [("session-1", BatchStatus.READY_FOR_REVIEW)],
+            pipeline.collection_repository.statuses,
+            [("session-1", CollectionStatus.READY_FOR_REVIEW)],
         )
         self.assertIn("image=image-1 blur_score=42.00", output.getvalue())
         self.assertIn("exposure_score=0.80", output.getvalue())
@@ -333,7 +333,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
 
     def test_pipeline_continues_when_one_image_fails(self) -> None:
         pipeline = ImageProcessingPipeline.__new__(ImageProcessingPipeline)
-        pipeline.batch_loader = FakeBatchLoader(
+        pipeline.collection_loader = FakeCollectionLoader(
             images=[
                 make_image("image-1"),
                 make_image("image-2"),
@@ -347,10 +347,10 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline.embedding_analyzer = FakeEmbeddingAnalyzer()
         pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
         pipeline.image_embedding_repository = FakeEmbeddingRepository()
-        pipeline.batch_repository = FakeBatchStatusRepository()
+        pipeline.collection_repository = FakeCollectionStatusRepository()
 
         with redirect_stdout(StringIO()) as output:
-            pipeline.process({"sessionId": "session-1"})
+            pipeline.process({"collectionId": "session-1"})
 
         self.assertEqual(
             len(pipeline.quality_analyzer.images),
@@ -366,25 +366,25 @@ class WorkerPlaceholderTest(unittest.TestCase):
             [("image-2", "download failed")],
         )
         self.assertEqual(
-            pipeline.batch_repository.statuses,
-            [("session-1", BatchStatus.FAILED)],
+            pipeline.collection_repository.statuses,
+            [("session-1", CollectionStatus.FAILED)],
         )
         summary = output.getvalue()
         self.assertIn("image=image-1 blur_score=42.00", summary)
         self.assertIn("image=image-3 blur_score=42.00", summary)
         self.assertNotIn("image=image-2", summary)
 
-    def test_pipeline_records_embedding_failure_without_failing_batch(self) -> None:
+    def test_pipeline_records_embedding_failure_without_failing_collection(self) -> None:
         pipeline = ImageProcessingPipeline.__new__(ImageProcessingPipeline)
-        pipeline.batch_loader = FakeBatchLoader()
+        pipeline.collection_loader = FakeCollectionLoader()
         pipeline.image_downloader = FakeImageDownloader()
         pipeline.quality_analyzer = FakeQualityAnalyzer()
         pipeline.embedding_analyzer = FakeEmbeddingAnalyzer(failing=True)
         pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
         pipeline.image_embedding_repository = FakeEmbeddingRepository()
-        pipeline.batch_repository = FakeBatchStatusRepository()
+        pipeline.collection_repository = FakeCollectionStatusRepository()
 
-        pipeline.process({"sessionId": "session-1"})
+        pipeline.process({"collectionId": "session-1"})
 
         self.assertEqual(len(pipeline.quality_analysis_repository.successes), 1)
         self.assertEqual(pipeline.image_embedding_repository.successes, [])
@@ -401,8 +401,8 @@ class WorkerPlaceholderTest(unittest.TestCase):
             ],
         )
         self.assertEqual(
-            pipeline.batch_repository.statuses,
-            [("session-1", BatchStatus.READY_FOR_REVIEW)],
+            pipeline.collection_repository.statuses,
+            [("session-1", CollectionStatus.READY_FOR_REVIEW)],
         )
 
 

@@ -25,7 +25,7 @@ export function HeroMockup() {
         <Card className="gap-0 rounded-2xl border border-white/10 bg-white/5 py-0 ring-0">
           <CardHeader className="gap-2 p-4 pb-0">
             <p className="font-mono text-xs uppercase tracking-wide text-white/55">
-              Batch review
+              Collection review
             </p>
             <CardTitle className="text-xl font-normal tracking-tight text-white">
               284 photos grouped into 42 decisions

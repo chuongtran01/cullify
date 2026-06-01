@@ -1,1 +1,0 @@
-ALTER TABLE "batch" ADD COLUMN "name" VARCHAR(100);

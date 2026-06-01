@@ -109,7 +109,7 @@ model ImageEmbedding {
 
 model ImageCluster {
   id          String      @id @default(uuid())
-  sessionId   String
+  collectionId   String
 
   type        ClusterType @default(SIMILAR_SHOT)
   label       String?
@@ -122,7 +122,7 @@ model ImageCluster {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  @@index([sessionId])
+  @@index([collectionId])
 }
 
 model ClusterImage {
@@ -153,9 +153,9 @@ enum ClusterType {
 }
 ```
 
-For the current schema, `sessionId` maps to the upload batch id. If the product
-renames upload sessions to batches or projects later, keep the cluster relation
-attached to that durable batch/project entity rather than to a transient job.
+For the current schema, `collectionId` maps to the upload collection id. If the product
+renames upload collections to collections or projects later, keep the cluster relation
+attached to that durable collection/project entity rather than to a transient job.
 
 ## `flags` And `raw` Examples
 
@@ -265,13 +265,13 @@ later migration.
 
 ## Worker Pipeline
 
-The Python worker should receive a BullMQ job with a `sessionId`, then load the
+The Python worker should receive a BullMQ job with a `collectionId`, then load the
 images for that session from the database.
 
 Recommended pipeline:
 
 ```text
-process_upload_session(sessionId)
+process_upload_session(collectionId)
   load completed images for session
   for each image:
     download original from R2
@@ -315,7 +315,7 @@ apps/image_processor/src/
 │   │   ├── session.py
 │   │   ├── models/
 │   │   └── repositories/
-│   │       ├── batch_repo.py
+│   │       ├── collection_repo.py
 │   │       └── image_repo.py
 │   └── storage.py
 ```
@@ -352,7 +352,7 @@ Similarity signals:
 
 ### Phase B: Quality MVP
 
-- Worker loads images by `sessionId`.
+- Worker loads images by `collectionId`.
 - Compute blur score.
 - Compute exposure score.
 - Persist quality scores and flags.

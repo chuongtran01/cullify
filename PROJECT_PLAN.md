@@ -6,7 +6,7 @@ Cullify is a premium, AI-first photo culling SaaS that helps users answer one qu
 
 > Which photos should I keep?
 
-The product lets users upload batches of images, automatically identifies blurry or low-quality photos, groups visually similar shots, and recommends the best photo or photos from each group. The experience should reduce decision fatigue and turn large photo batches into fast, confident keep/delete decisions.
+The product lets users upload collections of images, automatically identifies blurry or low-quality photos, groups visually similar shots, and recommends the best photo or photos from each group. The experience should reduce decision fatigue and turn large photo collections into fast, confident keep/delete decisions.
 
 ## Target Experience
 
@@ -63,7 +63,7 @@ Key sections:
 
 ### Upload Page
 
-Purpose: provide a low-friction batch upload experience.
+Purpose: provide a low-friction collection upload experience.
 
 Key features:
 
@@ -71,7 +71,7 @@ Key features:
 - File picker fallback.
 - Upload queue with thumbnail previews.
 - File validation and duplicate file warnings.
-- Batch size and storage guidance.
+- Collection size and storage guidance.
 - Clear call to begin analysis.
 
 ### Processing Page
@@ -83,7 +83,7 @@ Key features:
 - Processing progress indicator.
 - Stage-based status updates.
 - AI action timeline.
-- Thumbnail stream or subtle batch preview.
+- Thumbnail stream or subtle collection preview.
 - Estimated remaining time.
 - Failure and retry states.
 
@@ -206,7 +206,7 @@ Recommended flow:
 Initial entities:
 
 - `User`: account owner.
-- `Project`: one photo culling batch.
+- `Project`: one photo culling collection.
 - `Image`: uploaded photo with metadata, storage keys, quality scores, and review state.
 - `Cluster`: group of related images.
 - `ClusterImage`: join model for image order, score, and recommendation status.
@@ -374,13 +374,13 @@ Use the visual system in `DESIGN.md` as the product baseline:
 - Rate limits.
 - Storage lifecycle policies.
 - Privacy and deletion controls.
-- Performance tuning for large batches.
+- Performance tuning for large collections.
 
 ## MVP Scope
 
 The first useful MVP should include:
 
-- Upload a batch of images.
+- Upload a collection of images.
 - Show upload and processing progress.
 - Detect blurry images.
 - Group visually similar photos.
@@ -394,5 +394,5 @@ The first useful MVP should include:
 - Should images be permanently stored, temporarily processed, or user-configurable?
 - What is the first supported export workflow: delete list, selected image download, Lightroom-compatible metadata, or folder sync?
 - Should face analysis be included in the MVP or deferred?
-- What batch size should the MVP optimize for?
+- What collection size should the MVP optimize for?
 - Should processing happen fully in the cloud, locally, or hybrid later?

@@ -12,7 +12,7 @@ export default function ReviewPage() {
       <section className="rounded-md border border-dashed border-hairline bg-surface-card p-6">
         <h2 className="text-sm font-semibold text-ink">Nothing to review</h2>
         <p className="mt-2 max-w-xl text-sm leading-6 text-body">
-          Completed processing batches will create review items in this space.
+          Completed processing collections will create review items in this space.
         </p>
       </section>
     </div>

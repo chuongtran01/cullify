@@ -8,9 +8,9 @@ from bullmq import Worker as BullMQWorker
 from image_processor.config import WorkerSettings
 from image_processor.db.session import create_session_factory
 from image_processor.mq.message_types import (
-    PROCESS_UPLOAD_SESSION_JOB_NAME,
+    PROCESS_COLLECTION_JOB_NAME,
     BullMQJob,
-    ProcessUploadSessionJobData,
+    ProcessCollectionJobData,
 )
 from image_processor.processor.pipeline import ImageProcessingPipeline
 
@@ -35,11 +35,11 @@ class ImageWorker:
 
     async def process_job(self, job: BullMQJob, job_token: str) -> dict[str, bool]:
         print(f"Processing job {job.id} with data {job.data}")
-        if job.name != PROCESS_UPLOAD_SESSION_JOB_NAME:
+        if job.name != PROCESS_COLLECTION_JOB_NAME:
             raise ValueError(
                 f"Unsupported image-processing job type: {job.name}")
 
-        data = cast(ProcessUploadSessionJobData, job.data)
+        data = cast(ProcessCollectionJobData, job.data)
         self.pipeline.process(data)
         return {"ok": True}
 

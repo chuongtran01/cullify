@@ -12,8 +12,8 @@ The guiding product question stays constant:
 
 The MVP should prove the core product loop:
 
-1. User uploads a batch of photos.
-2. The app processes the batch.
+1. User uploads a collection of photos.
+2. The app processes the collection.
 3. Similar photos are grouped.
 4. Blurry or low-quality photos are flagged.
 5. The best shot in each group is recommended.
@@ -54,7 +54,7 @@ The MVP does not need full production infrastructure, billing, advanced account 
 - Lightroom export.
 - Mobile phone workflow.
 - Advanced face analysis.
-- Fully optimized large-batch processing.
+- Fully optimized large-collection processing.
 - Public API.
 - Native desktop app.
 - Complex storage lifecycle automation.
@@ -240,10 +240,10 @@ Deliverables:
 
 Acceptance Criteria:
 
-- User can review a batch quickly without excessive clicking.
+- User can review a collection quickly without excessive clicking.
 - Core actions are available from both gallery and cluster detail views.
 - Keyboard shortcuts are discoverable and reliable.
-- UI remains responsive with realistic batch sizes.
+- UI remains responsive with realistic collection sizes.
 
 ## Phase 8: Production Readiness
 
@@ -269,7 +269,7 @@ Acceptance Criteria:
 - Private images are protected.
 - Deleted images are removed according to policy.
 - Processing failures are observable and recoverable.
-- The system handles expected MVP batch sizes reliably.
+- The system handles expected MVP collection sizes reliably.
 
 ## Suggested Build Order
 
@@ -323,7 +323,7 @@ This milestone validates Cullify's core product promise.
 
 ## Risks
 
-- Image processing can become slow for large batches.
+- Image processing can become slow for large collections.
 - Similarity grouping quality may need tuning across different photography styles.
 - Face analysis introduces privacy and dependency complexity.
 - Storage costs can grow quickly with original uploads and derivatives.

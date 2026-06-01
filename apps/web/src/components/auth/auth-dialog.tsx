@@ -36,7 +36,7 @@ type AuthDialogCopy = {
 const defaultAuthCopy = {
   "sign-in": {
     title: "Welcome back",
-    description: "Sign in to continue managing your photo review batches.",
+    description: "Sign in to continue managing your photo review collections.",
     submit: "Sign in",
     switchLabel: "Create an account",
   },

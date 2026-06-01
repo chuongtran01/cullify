@@ -24,15 +24,15 @@ apps/image_processor/
 │   ├── db/
 │   │   ├── session.py
 │   │   ├── models/
-│   │   │   ├── batch.py
+│   │   │   ├── collection.py
 │   │   │   ├── image.py
 │   │   │   └── image_quality_analysis.py
 │   │   └── repositories/
-│   │       ├── batch_repo.py
+│   │       ├── collection_repo.py
 │   │       └── image_repo.py
 │   └── processor/
 │       ├── __init__.py
-│       ├── batch_loader.py
+│       ├── collection_loader.py
 │       ├── pipeline.py
 │       └── quality/
 │           └── blur.py
@@ -103,8 +103,8 @@ payload from the placeholder pipeline.
 
 ## Process A Message
 
-Start the Next.js app and complete an upload session. The completion API
-enqueues a BullMQ job with the upload session id.
+Start the Next.js app and complete an upload collection. The completion API
+enqueues a BullMQ job with the upload collection id.
 
 Run the image processor:
 

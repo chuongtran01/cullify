@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Annotated, Protocol
 
 from image_processor.db.models import Image
-from image_processor.processor.batch_loader import BatchContext
+from image_processor.processor.collection_loader import CollectionContext
 
 
 class ObjectStorage(Protocol):
@@ -26,5 +26,5 @@ class ImageDownloader:
             data=self.storage.download_bytes(image.object_key),
         )
 
-    def download_for_batch(self, context: BatchContext) -> list[DownloadedImage]:
+    def download_for_collection(self, context: CollectionContext) -> list[DownloadedImage]:
         return [self.download(image) for image in context.images]

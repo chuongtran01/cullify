@@ -3,14 +3,14 @@ from io import BytesIO
 from sqlalchemy.orm import sessionmaker
 
 from image_processor.config import WorkerSettings
-from image_processor.db import BatchStatus
+from image_processor.db import CollectionStatus
 from image_processor.db.repositories import (
-    BatchRepository,
+    CollectionRepository,
     ImageEmbeddingRepository,
     ImageQualityAnalysisRepository,
 )
-from image_processor.mq.message_types import ProcessUploadSessionJobData
-from image_processor.processor.batch_loader import BatchLoader
+from image_processor.mq.message_types import ProcessCollectionJobData
+from image_processor.processor.collection_loader import CollectionLoader
 from image_processor.processor.image_downloader import ImageDownloader
 from image_processor.processor.quality import ImageQualityAnalyzer
 from image_processor.processor.similarity import ImageEmbeddingAnalyzer
@@ -23,8 +23,8 @@ class ImageProcessingPipeline:
         session_factory: sessionmaker,
         settings: WorkerSettings,
     ) -> None:
-        self.batch_loader = BatchLoader(session_factory)
-        self.batch_repository = BatchRepository(session_factory)
+        self.collection_loader = CollectionLoader(session_factory)
+        self.collection_repository = CollectionRepository(session_factory)
         self.quality_analysis_repository = ImageQualityAnalysisRepository(
             session_factory,
         )
@@ -33,8 +33,8 @@ class ImageProcessingPipeline:
         self.quality_analyzer = ImageQualityAnalyzer()
         self.embedding_analyzer = ImageEmbeddingAnalyzer()
 
-    def process(self, data: ProcessUploadSessionJobData) -> None:
-        context = self.batch_loader.load(data["sessionId"])
+    def process(self, data: ProcessCollectionJobData) -> None:
+        context = self.collection_loader.load(data["collectionId"])
         failed_count = 0
 
         for image in context.images:
@@ -88,6 +88,6 @@ class ImageProcessingPipeline:
                 continue
 
         next_status = (
-            BatchStatus.FAILED if failed_count > 0 else BatchStatus.READY_FOR_REVIEW
+            CollectionStatus.FAILED if failed_count > 0 else CollectionStatus.READY_FOR_REVIEW
         )
-        self.batch_repository.update_status(context.batch.id, next_status)
+        self.collection_repository.update_status(context.collection.id, next_status)

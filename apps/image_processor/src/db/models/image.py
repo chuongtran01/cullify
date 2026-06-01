@@ -8,7 +8,7 @@ from image_processor.db.models.base import Base
 from image_processor.db.models.enums import ImageUploadStatus
 
 if TYPE_CHECKING:
-    from image_processor.db.models.batch import Batch
+    from image_processor.db.models.collection import Collection
     from image_processor.db.models.image_embedding import ImageEmbedding
     from image_processor.db.models.image_quality_analysis import ImageQualityAnalysis
 
@@ -16,15 +16,15 @@ if TYPE_CHECKING:
 class Image(Base):
     __tablename__ = "image"
     __table_args__ = (
-        Index("image_batch_id_idx", "batch_id"),
+        Index("image_collection_id_idx", "collection_id"),
         Index("image_status_idx", "status"),
     )
 
     id: Mapped[str] = mapped_column(Uuid(as_uuid=False), primary_key=True)
-    batch_id: Mapped[str] = mapped_column(
-        "batch_id",
+    collection_id: Mapped[str] = mapped_column(
+        "collection_id",
         Uuid(as_uuid=False),
-        ForeignKey("batch.id", ondelete="CASCADE"),
+        ForeignKey("collection.id", ondelete="CASCADE"),
     )
     file_name: Mapped[str] = mapped_column("file_name", String)
     mime_type: Mapped[str] = mapped_column("mime_type", String)
@@ -46,7 +46,7 @@ class Image(Base):
         nullable=True,
     )
 
-    batch: Mapped["Batch"] = relationship(back_populates="images")
+    collection: Mapped["Collection"] = relationship(back_populates="images")
     quality_analysis: Mapped["ImageQualityAnalysis | None"] = relationship(
         back_populates="image",
         uselist=False,

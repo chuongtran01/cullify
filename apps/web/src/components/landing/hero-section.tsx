@@ -33,7 +33,7 @@ export function HeroSection({
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-body">
           Cullify removes blurry shots, groups similar frames, and explains the
-          strongest picks so large photo batches become small, confident review
+          strongest picks so large photo collections become small, confident review
           moments.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">

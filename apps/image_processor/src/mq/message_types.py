@@ -1,12 +1,12 @@
 from typing import Annotated, Any, Protocol, TypedDict
 
 
-PROCESS_UPLOAD_SESSION_JOB_NAME = "process-upload-session"
+PROCESS_COLLECTION_JOB_NAME = "process-collection"
 
 
-class ProcessUploadSessionJobData(TypedDict):
+class ProcessCollectionJobData(TypedDict):
     message: Annotated[str, "Human-readable job message for logs/debugging."]
-    sessionId: Annotated[str, "Upload session/batch id to process."]
+    collectionId: Annotated[str, "Upload collection/collection id to process."]
 
 
 class BullMQJob(Protocol):

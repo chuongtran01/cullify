@@ -6,11 +6,11 @@ const DEFAULT_IMAGE_PROCESSING_QUEUE_NAME = "image-processing";
 
 export const IMAGE_PROCESSING_QUEUE_NAME =
   process.env.IMAGE_WORKER_QUEUE ?? DEFAULT_IMAGE_PROCESSING_QUEUE_NAME;
-export const PROCESS_UPLOAD_SESSION_JOB_NAME = "process-upload-session";
+export const PROCESS_COLLECTION_JOB_NAME = "process-collection";
 
 export type ImageProcessingJobData = {
   message: string;
-  sessionId: string;
+  collectionId: string;
 };
 
 const globalForImageProcessingQueue = globalThis as unknown as {
@@ -36,14 +36,14 @@ export function getImageProcessingQueue() {
   return globalForImageProcessingQueue.imageProcessingQueue;
 }
 
-export async function enqueueImageProcessingJob(batchId: string) {
+export async function enqueueImageProcessingJob(collectionId: string) {
   const queue = getImageProcessingQueue();
 
   const job = await queue.add(
-    PROCESS_UPLOAD_SESSION_JOB_NAME,
+    PROCESS_COLLECTION_JOB_NAME,
     {
-      message: `Process batch ${batchId}`,
-      sessionId: batchId,
+      message: `Process collection ${collectionId}`,
+      collectionId: collectionId,
     },
     { removeOnComplete: true },
   );

@@ -1,6 +1,6 @@
 # Cullify
 
-AI-first photo culling — upload batches, detect blur and duplicates, group similar shots, and pick the best photos faster.
+AI-first photo culling — upload collections, detect blur and duplicates, group similar shots, and pick the best photos faster.
 
 ## Repository layout
 
@@ -96,7 +96,7 @@ cp apps/image_processor/.env.example apps/image_processor/.env.local
 npm run image_processor
 ```
 
-The web app enqueues an image-processing job after an upload session is marked
+The web app enqueues an image-processing job after an upload collection is marked
 complete.
 
 ## Environment variables

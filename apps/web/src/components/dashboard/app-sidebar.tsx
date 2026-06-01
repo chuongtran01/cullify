@@ -31,7 +31,7 @@ type AppSidebarProps = {
 
 const navItems = [
   {
-    title: "Batches",
+    title: "Collections",
     href: "/dashboard",
     icon: Images,
   },

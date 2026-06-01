@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 type ProgressHeaderProps = {
   title: string;
   uploadedAt: string;
-  batchId: string;
+  collectionId: string;
   status: string;
   progress: number;
 };
@@ -17,7 +17,7 @@ type ProgressHeaderProps = {
 export function ProgressHeader({
   title,
   uploadedAt,
-  batchId,
+  collectionId,
   status,
   progress,
 }: ProgressHeaderProps) {
@@ -44,7 +44,7 @@ export function ProgressHeader({
         </Button>
         <div>
           <div className="mb-2 font-mono text-xs uppercase tracking-wide text-muted">
-            Batch {batchId}
+            Collection {collectionId}
           </div>
           <h1 className="text-3xl leading-tight font-normal tracking-tight sm:text-4xl">
             {title}
@@ -57,7 +57,7 @@ export function ProgressHeader({
       <Button
         variant="default"
         disabled={!isComplete}
-        onClick={() => router.push(`/batches/${batchId}/results`)}
+        onClick={() => router.push(`/collections/${collectionId}/results`)}
         className="h-11 w-full gap-2 rounded-full px-5 sm:w-auto lg:shrink-0 hover:cursor-pointer"
       >
         Review Results

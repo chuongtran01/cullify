@@ -1,0 +1,28 @@
+import { useQuery } from "@tanstack/react-query";
+
+import { queryKeys } from "@/lib/query-keys";
+import { getCollectionProgress } from "@/services/collections";
+
+const TERMINAL_STATUSES = new Set([
+  "READY_FOR_REVIEW",
+  "IN_REVIEW",
+  "COMPLETED",
+  "FAILED",
+]);
+const POLL_INTERVAL_MS = 3_000;
+
+export function useCollectionProgress(collectionId: string) {
+  return useQuery({
+    queryKey: queryKeys.collections.progress(collectionId),
+    queryFn: () => getCollectionProgress(collectionId),
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+
+      if (!status || TERMINAL_STATUSES.has(status)) {
+        return false;
+      }
+
+      return POLL_INTERVAL_MS;
+    },
+  });
+}

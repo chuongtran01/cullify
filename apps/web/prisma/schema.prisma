@@ -9,7 +9,7 @@ datasource db {
   provider = "postgresql"
 }
 
-enum BatchStatus {
+enum CollectionStatus {
   UPLOADING
   PROCESSING
   READY_FOR_REVIEW
@@ -24,24 +24,24 @@ enum ImageUploadStatus {
   FAILED
 }
 
-model Batch {
-  id        String      @id @db.Uuid
-  userId    String      @map("user_id")
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String?     @db.VarChar(100)
-  status    BatchStatus @default(UPLOADING)
-  createdAt DateTime    @default(now()) @map("created_at")
-  updatedAt DateTime    @updatedAt @map("updated_at")
+model Collection {
+  id        String           @id @db.Uuid
+  userId    String           @map("user_id")
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String?          @db.VarChar(100)
+  status    CollectionStatus @default(UPLOADING)
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
   images    Image[]
 
   @@index([userId])
-  @@map("batch")
+  @@map("collection")
 }
 
 model Image {
   id              String                @id @db.Uuid
-  batchId         String                @db.Uuid @map("batch_id")
-  batch           Batch                 @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  collectionId    String                @db.Uuid @map("collection_id")
+  collection      Collection            @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   fileName        String                @map("file_name")
   mimeType        String                @map("mime_type")
   sizeBytes       Int                   @map("size_bytes")
@@ -52,7 +52,7 @@ model Image {
   qualityAnalysis ImageQualityAnalysis?
   embedding       ImageEmbedding?
 
-  @@index([batchId])
+  @@index([collectionId])
   @@index([status])
   @@map("image")
 }
@@ -107,14 +107,14 @@ model ImageEmbedding {
 }
 
 model User {
-  id            String    @id
+  id            String       @id
   name          String
   email         String
-  emailVerified Boolean   @default(false) @map("email_verified")
+  emailVerified Boolean      @default(false) @map("email_verified")
   image         String?
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  batches       Batch[]
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  collections   Collection[]
   sessions      Session[]
   accounts      Account[]
 

@@ -14,14 +14,14 @@ import { UploadDialog } from "@/components/landing/upload-dialog";
 import { UseCasesSection } from "@/components/landing/use-cases-section";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
-import type { CreateBatchUploadResponse } from "@/services/batches";
+import type { CreateCollectionUploadResponse } from "@/services/collections";
 
 export default function Home() {
   const router = useRouter();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
-  function handleBatchUploadCreated(response: CreateBatchUploadResponse) {
-    router.push(`/batches/${response.batchId}/progress`);
+  function handleCollectionUploadCreated(response: CreateCollectionUploadResponse) {
+    router.push(`/collections/${response.collectionId}/progress`);
   }
 
   return (
@@ -39,7 +39,7 @@ export default function Home() {
       <UploadDialog
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
-        onBatchUploadCreated={handleBatchUploadCreated}
+        onCollectionUploadCreated={handleCollectionUploadCreated}
       />
     </main>
   );

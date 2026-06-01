@@ -5,7 +5,7 @@ import type { ReviewResultsData } from "@/components/results/mock-data";
 import { Button } from "@/components/ui/button";
 
 type ResultsHeaderProps = {
-  data: Pick<ReviewResultsData, "batchId" | "title" | "uploadedAt" | "totalPhotos">;
+  data: Pick<ReviewResultsData, "collectionId" | "title" | "uploadedAt" | "totalPhotos">;
 };
 
 export function ResultsHeader({ data }: ResultsHeaderProps) {
@@ -26,7 +26,7 @@ export function ResultsHeader({ data }: ResultsHeaderProps) {
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted">
             <span>Uploaded {data.uploadedAt}</span>
             <span>{data.totalPhotos} total photos</span>
-            <span>Batch {data.batchId}</span>
+            <span>Collection {data.collectionId}</span>
           </div>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row lg:shrink-0">

@@ -1,5 +1,5 @@
-import { BatchesPage } from "@/components/batches/batches-page";
+import { CollectionsPage } from "@/components/collections/collections-page";
 
 export default function DashboardPage() {
-  return <BatchesPage />;
+  return <CollectionsPage />;
 }

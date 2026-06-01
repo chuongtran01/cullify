@@ -12,7 +12,7 @@ export function PricingSection() {
       <div className="mx-auto max-w-6xl px-5 py-20">
         <SectionHeader
           eyebrow="Pricing"
-          title="Start small, then scale into larger photo batches."
+          title="Start small, then scale into larger photo collections."
         />
         <div className="mt-12 grid gap-4 lg:grid-cols-3">
           {pricing.map((tier) => (

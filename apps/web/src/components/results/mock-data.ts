@@ -19,7 +19,7 @@ export type ReviewProgressItem = {
 };
 
 export type ReviewResultsData = {
-  batchId: string;
+  collectionId: string;
   title: string;
   uploadedAt: string;
   totalPhotos: number;
@@ -43,9 +43,9 @@ const photoSources = [
   "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=80",
 ];
 
-export function getMockReviewResults(batchId: string): ReviewResultsData {
+export function getMockReviewResults(collectionId: string): ReviewResultsData {
   return {
-    batchId,
+    collectionId,
     title: "Italy Trip 2024",
     uploadedAt: "May 24, 2026",
     totalPhotos: 284,

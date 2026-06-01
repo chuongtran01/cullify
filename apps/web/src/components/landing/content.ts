@@ -30,7 +30,7 @@ export const steps: IconContent[] = [
     icon: Upload,
     title: "Upload photos",
     description:
-      "Drop a full batch into Cullify and keep working while previews and metadata are prepared.",
+      "Drop a full collection into Cullify and keep working while previews and metadata are prepared.",
   },
   {
     icon: WandSparkles,
@@ -77,10 +77,10 @@ export const features = [
   },
   {
     icon: Zap,
-    title: "Fast Batch Processing",
+    title: "Fast Collection Processing",
     description:
       "Progress stages keep large uploads legible while the analysis pipeline does the heavy pass.",
-    preview: "batch queue",
+    preview: "collection queue",
   },
   {
     icon: Download,
@@ -100,7 +100,7 @@ export const useCases = [
   {
     title: "Content Creators",
     description:
-      "Find the cleanest frames from shoots, thumbnails, travel days, and campaign batches.",
+      "Find the cleanest frames from shoots, thumbnails, travel days, and campaign collections.",
   },
   {
     title: "Travelers",
@@ -122,7 +122,7 @@ export const useCases = [
 export const benefits = [
   "Save hours sorting photos",
   "Reduce decision fatigue",
-  "Organize large batches instantly",
+  "Organize large collections instantly",
   "Never miss the best shot",
 ];
 
@@ -130,7 +130,7 @@ export const pricing = [
   {
     name: "Free Trial",
     price: "$0",
-    description: "For testing the workflow on a small batch.",
+    description: "For testing the workflow on a small collection.",
     items: ["250 uploads", "7-day storage", "Basic AI grouping"],
     featured: false,
   },

@@ -1,7 +1,7 @@
 import enum
 
 
-class BatchStatus(enum.StrEnum):
+class CollectionStatus(enum.StrEnum):
     UPLOADING = "UPLOADING"
     PROCESSING = "PROCESSING"
     READY_FOR_REVIEW = "READY_FOR_REVIEW"
