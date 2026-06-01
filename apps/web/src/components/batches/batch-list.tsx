@@ -11,7 +11,6 @@ import Link from "next/link";
 import {
   formatBatchDate,
   getBatchActionLabel,
-  getBatchProgress,
 } from "@/components/batches/batch-ui";
 import type { Batch, BatchStatus } from "@/components/batches/types";
 import { Button } from "@/components/ui/button";
@@ -68,68 +67,19 @@ function BatchStatusBlock({ batch }: { batch: Batch }) {
     batch.status === "PROCESSING" || batch.status === "UPLOADING";
 
   return (
-    <div className="grid gap-2">
-      <div
-        className={cn(
-          "inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide",
-          meta.className,
-        )}
-      >
-        <Icon
-          className={cn("size-3.5", isSpinning && "animate-spin")}
-          aria-hidden="true"
-        />
-        {meta.label}
-      </div>
-      <BatchStatusDetail batch={batch} />
+    <div
+      className={cn(
+        "inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide",
+        meta.className,
+      )}
+    >
+      <Icon
+        className={cn("size-3.5", isSpinning && "animate-spin")}
+        aria-hidden="true"
+      />
+      {meta.label}
     </div>
   );
-}
-
-function BatchStatusDetail({ batch }: { batch: Batch }) {
-  if (batch.status === "PROCESSING" || batch.status === "UPLOADING") {
-    return (
-      <div className="grid max-w-60 gap-1.5">
-        <p className="text-xs text-body">
-          {batch.processedImages} / {batch.totalImages} photos processed
-        </p>
-        <div className="h-1 overflow-hidden rounded-full bg-hairline-light">
-          <div
-            className="h-full rounded-full bg-semantic-success"
-            style={{ width: `${getBatchProgress(batch)}%` }}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if (batch.status === "READY_FOR_REVIEW") {
-    return (
-      <p className="text-xs text-body">
-        AI picks: {batch.aiPicksCount} <span className="px-1">·</span> Groups:{" "}
-        {batch.groupsCount}
-      </p>
-    );
-  }
-
-  if (batch.status === "IN_REVIEW") {
-    return (
-      <p className="text-xs text-body">
-        Reviewed {batch.reviewedImages} / {batch.totalImages}
-      </p>
-    );
-  }
-
-  if (batch.status === "COMPLETED") {
-    return (
-      <p className="text-xs text-body">
-        Kept: {batch.keptImages} <span className="px-1">·</span> Rejected:{" "}
-        {batch.rejectedImages}
-      </p>
-    );
-  }
-
-  return <p className="text-xs text-body">Processing failed</p>;
 }
 
 function BatchTimeline({ batch }: { batch: Batch }) {
