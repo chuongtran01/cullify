@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 
-import { completeUploadSession } from "@/lib/db/upload-session";
+import { completeBatchUpload } from "@/lib/db/batch-upload";
 import { getRequestUserId } from "@/lib/auth-session";
 import { enqueueImageProcessingJob } from "@/lib/queues/image-processing";
 import {
   isUuid,
-  validateCompleteUploadSessionRequest,
-} from "@/lib/upload/validate";
+  validateCompleteBatchUploadRequest,
+} from "@/services/batches/validate";
 
 type RouteContext = {
-  params: Promise<{ sessionId: string }>;
+  params: Promise<{ batchId: string }>;
 };
 
 export async function POST(request: Request, context: RouteContext) {
@@ -19,10 +19,10 @@ export async function POST(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { sessionId } = await context.params;
+  const { batchId } = await context.params;
 
-  if (!isUuid(sessionId)) {
-    return NextResponse.json({ error: "Invalid session id" }, { status: 400 });
+  if (!isUuid(batchId)) {
+    return NextResponse.json({ error: "Invalid batch id" }, { status: 400 });
   }
 
   let body: unknown;
@@ -33,27 +33,27 @@ export async function POST(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const validation = validateCompleteUploadSessionRequest(body);
+  const validation = validateCompleteBatchUploadRequest(body);
 
   if (!validation.ok) {
     return NextResponse.json({ error: validation.error }, { status: 400 });
   }
 
   try {
-    const updated = await completeUploadSession(
-      sessionId,
+    const updated = await completeBatchUpload(
+      batchId,
       userId,
       validation.data.fileIds,
     );
 
     if (updated === null) {
-      return NextResponse.json({ error: "Session not found" }, { status: 404 });
+      return NextResponse.json({ error: "Batch not found" }, { status: 404 });
     }
 
-    const processingJob = await enqueueImageProcessingJob(sessionId);
+    const processingJob = await enqueueImageProcessingJob(batchId);
 
     return NextResponse.json({
-      sessionId,
+      batchId,
       updated,
       processingJob: {
         id: processingJob.id,
@@ -62,10 +62,10 @@ export async function POST(request: Request, context: RouteContext) {
       },
     });
   } catch (error) {
-    console.error("Failed to complete upload session", error);
+    console.error("Failed to complete batch upload", error);
 
     return NextResponse.json(
-      { error: "Failed to complete upload session" },
+      { error: "Failed to complete batch upload" },
       { status: 500 },
     );
   }

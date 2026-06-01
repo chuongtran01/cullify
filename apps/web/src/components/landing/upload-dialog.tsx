@@ -24,18 +24,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { useUploadBatch } from "@/hooks/use-upload-batch";
+import { useUploadBatch } from "@/features/batches/hooks";
 import { authClient } from "@/lib/auth-client";
 import type {
-  CreateUploadSessionResponse,
-  UploadProgress,
-} from "@/lib/upload/types";
-import { UploadR2Error, UploadSessionError } from "@/services/upload";
+  BatchUploadProgress,
+  CreateBatchUploadResponse,
+} from "@/services/batches";
+import { BatchUploadError, BatchUploadStorageError } from "@/services/batches";
 
 type UploadDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onUploadSessionCreated?: (response: CreateUploadSessionResponse) => void;
+  onBatchUploadCreated?: (response: CreateBatchUploadResponse) => void;
 };
 
 function mergeImageFiles(current: File[], nextFiles: File[]) {
@@ -69,14 +69,14 @@ function getFileExtension(file: File) {
 export function UploadDialog({
   open,
   onOpenChange,
-  onUploadSessionCreated,
+  onBatchUploadCreated,
 }: UploadDialogProps) {
   const [files, setFiles] = React.useState<File[]>([]);
   const [isManagingSelection, setIsManagingSelection] = React.useState(false);
   const [fileSearch, setFileSearch] = React.useState("");
   const [authOpen, setAuthOpen] = React.useState(false);
   const [uploadProgress, setUploadProgress] =
-    React.useState<UploadProgress | null>(null);
+    React.useState<BatchUploadProgress | null>(null);
   const { data: session, refetch: refetchSession } = authClient.useSession();
   const uploadBatch = useUploadBatch();
   const isSubmitting = uploadBatch.isPending;
@@ -112,8 +112,8 @@ export function UploadDialog({
     return files.filter((file) => file.name.toLowerCase().includes(query));
   }, [fileSearch, files]);
   const error = uploadBatch.error
-    ? uploadBatch.error instanceof UploadSessionError ||
-        uploadBatch.error instanceof UploadR2Error
+    ? uploadBatch.error instanceof BatchUploadError ||
+        uploadBatch.error instanceof BatchUploadStorageError
       ? uploadBatch.error.message
       : "Upload failed"
     : null;
@@ -160,7 +160,7 @@ export function UploadDialog({
       },
       {
         onSuccess: (response) => {
-          onUploadSessionCreated?.(response);
+          onBatchUploadCreated?.(response);
           setFiles([]);
           setUploadProgress(null);
           onOpenChange(false);

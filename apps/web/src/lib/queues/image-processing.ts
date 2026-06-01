@@ -36,14 +36,14 @@ export function getImageProcessingQueue() {
   return globalForImageProcessingQueue.imageProcessingQueue;
 }
 
-export async function enqueueImageProcessingJob(sessionId: string) {
+export async function enqueueImageProcessingJob(batchId: string) {
   const queue = getImageProcessingQueue();
 
   const job = await queue.add(
     PROCESS_UPLOAD_SESSION_JOB_NAME,
     {
-      message: `Process upload session ${sessionId}`,
-      sessionId,
+      message: `Process batch ${batchId}`,
+      sessionId: batchId,
     },
     { removeOnComplete: true },
   );

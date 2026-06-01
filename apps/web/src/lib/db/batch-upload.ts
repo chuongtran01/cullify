@@ -3,29 +3,29 @@ import { randomUUID } from "node:crypto";
 import { BatchStatus, ImageUploadStatus } from "@/generated/prisma/client";
 import { buildObjectKey } from "@/lib/r2/keys";
 import { prisma } from "@/lib/prisma";
-import type { UploadFileInput } from "@/lib/upload/types";
+import type { BatchUploadFileInput } from "@/services/batches/types";
 
-export type UploadFileRecord = {
+export type BatchUploadFileRecord = {
   fileId: string;
-  file: UploadFileInput;
+  file: BatchUploadFileInput;
   objectKey: string;
 };
 
-export async function createUploadSessionRecords(
-  sessionId: string,
+export async function createBatchUploadRecords(
+  batchId: string,
   userId: string,
-  files: UploadFileInput[],
-): Promise<UploadFileRecord[]> {
+  files: BatchUploadFileInput[],
+): Promise<BatchUploadFileRecord[]> {
   const records = files.map((file) => {
     const fileId = randomUUID();
-    const objectKey = buildObjectKey(userId, sessionId, fileId, file.name);
+    const objectKey = buildObjectKey(userId, batchId, fileId, file.name);
 
     return { fileId, file, objectKey };
   });
 
   await prisma.batch.create({
     data: {
-      id: sessionId,
+      id: batchId,
       userId,
       status: BatchStatus.UPLOADING,
       images: {
@@ -43,24 +43,24 @@ export async function createUploadSessionRecords(
   return records;
 }
 
-export async function deleteUploadSession(
-  sessionId: string,
+export async function deleteBatchUpload(
+  batchId: string,
   userId: string,
 ): Promise<void> {
   await prisma.batch
     .deleteMany({
-      where: { id: sessionId, userId },
+      where: { id: batchId, userId },
     })
     .catch(() => undefined);
 }
 
-export async function completeUploadSession(
-  sessionId: string,
+export async function completeBatchUpload(
+  batchId: string,
   userId: string,
   fileIds: string[],
 ): Promise<number | null> {
   const batch = await prisma.batch.findFirst({
-    where: { id: sessionId, userId },
+    where: { id: batchId, userId },
     select: { id: true },
   });
 
@@ -71,7 +71,7 @@ export async function completeUploadSession(
   const result = await prisma.$transaction(async (tx) => {
     const imageUpdate = await tx.image.updateMany({
       where: {
-        batchId: sessionId,
+        batchId,
         batch: { userId },
         id: { in: fileIds },
       },
@@ -82,7 +82,7 @@ export async function completeUploadSession(
     });
 
     await tx.batch.updateMany({
-      where: { id: sessionId, userId },
+      where: { id: batchId, userId },
       data: { status: BatchStatus.PROCESSING },
     });
 

@@ -3,9 +3,8 @@
 import { notFound, useParams } from "next/navigation";
 
 import { BatchProgressView } from "@/components/progress/batch-progress-view";
-import { useBatchProgress } from "@/hooks/use-batch-progress";
-import { isUuid } from "@/lib/upload/validate";
-import { ProgressServiceError } from "@/services/progress";
+import { useBatchProgress } from "@/features/batches/hooks";
+import { BatchesServiceError, isUuid } from "@/services/batches";
 
 export default function ProgressPage() {
   const { batchId } = useParams<{ batchId: string }>();
@@ -16,7 +15,7 @@ export default function ProgressPage() {
 
   const { data, error, isPending } = useBatchProgress(batchId);
 
-  if (error instanceof ProgressServiceError && error.status === 404) {
+  if (error instanceof BatchesServiceError && error.status === 404) {
     notFound();
   }
 

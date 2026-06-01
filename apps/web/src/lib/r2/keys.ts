@@ -26,9 +26,9 @@ export function sanitizeFileName(name: string): string {
 
 export function buildObjectKey(
   userId: string,
-  sessionId: string,
+  batchId: string,
   fileId: string,
   fileName: string,
 ): string {
-  return `uploads/users/${userId}/batches/${sessionId}/images/${fileId}/${sanitizeFileName(fileName)}`;
+  return `uploads/users/${userId}/batches/${batchId}/images/${fileId}/${sanitizeFileName(fileName)}`;
 }

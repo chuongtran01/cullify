@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { queryKeys } from "@/lib/query-keys";
-import { getBatchProgress } from "@/services/progress";
+import { getBatchProgress } from "@/services/batches";
 
 const TERMINAL_STATUSES = new Set([
   "READY_FOR_REVIEW",

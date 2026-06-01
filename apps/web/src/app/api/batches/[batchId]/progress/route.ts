@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getRequestUserId } from "@/lib/auth-session";
 import { getBatchProgress } from "@/lib/db/batch-progress";
-import { isUuid } from "@/lib/upload/validate";
+import { isUuid } from "@/services/batches/validate";
 
 type RouteContext = {
   params: Promise<{ batchId: string }>;

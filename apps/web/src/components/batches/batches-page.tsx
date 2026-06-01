@@ -11,8 +11,8 @@ import { EmptyBatches } from "@/components/batches/empty-batches";
 import type { BatchFilterValue } from "@/components/batches/types";
 import { UploadDialog } from "@/components/landing/upload-dialog";
 import { Button } from "@/components/ui/button";
-import { useBatches, useBatchesSummary } from "@/hooks/use-batches";
-import type { CreateUploadSessionResponse } from "@/lib/upload/types";
+import { useBatches, useBatchesSummary } from "@/features/batches/hooks";
+import type { CreateBatchUploadResponse } from "@/services/batches";
 
 const emptySummary = {
   totalBatches: 0,
@@ -57,8 +57,8 @@ export function BatchesPage() {
       );
   }, [activeFilter, batches, search]);
 
-  function handleUploadSessionCreated(response: CreateUploadSessionResponse) {
-    router.push(`/batches/${response.sessionId}/progress`);
+  function handleBatchUploadCreated(response: CreateBatchUploadResponse) {
+    router.push(`/batches/${response.batchId}/progress`);
   }
 
   return (
@@ -136,7 +136,7 @@ export function BatchesPage() {
       <UploadDialog
         open={uploadOpen}
         onOpenChange={setUploadOpen}
-        onUploadSessionCreated={handleUploadSessionCreated}
+        onBatchUploadCreated={handleBatchUploadCreated}
       />
     </>
   );

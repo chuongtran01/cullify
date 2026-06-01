@@ -1,17 +1,20 @@
-import type { CreateUploadSessionRequest, UploadFileInput } from "@/lib/upload/types";
+import type {
+  BatchUploadFileInput,
+  CreateBatchUploadRequest,
+} from "@/services/batches/types";
 
-const MAX_FILES_PER_SESSION = 100;
+const MAX_FILES_PER_BATCH = 100;
 const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 
 export type ValidationResult =
-  | { ok: true; data: CreateUploadSessionRequest }
+  | { ok: true; data: CreateBatchUploadRequest }
   | { ok: false; error: string };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function parseFile(value: unknown, index: number): UploadFileInput | string {
+function parseFile(value: unknown, index: number): BatchUploadFileInput | string {
   if (!isRecord(value)) {
     return `files[${index}] must be an object`;
   }
@@ -43,7 +46,7 @@ function parseFile(value: unknown, index: number): UploadFileInput | string {
   };
 }
 
-export function validateCreateUploadSessionRequest(
+export function validateCreateBatchUploadRequest(
   body: unknown,
 ): ValidationResult {
   if (!isRecord(body)) {
@@ -60,14 +63,14 @@ export function validateCreateUploadSessionRequest(
     return { ok: false, error: "files must contain at least one item" };
   }
 
-  if (filesValue.length > MAX_FILES_PER_SESSION) {
+  if (filesValue.length > MAX_FILES_PER_BATCH) {
     return {
       ok: false,
-      error: `files must contain at most ${MAX_FILES_PER_SESSION} items`,
+      error: `files must contain at most ${MAX_FILES_PER_BATCH} items`,
     };
   }
 
-  const files: UploadFileInput[] = [];
+  const files: BatchUploadFileInput[] = [];
 
   for (let index = 0; index < filesValue.length; index += 1) {
     const parsed = parseFile(filesValue[index], index);
@@ -89,15 +92,15 @@ export function isUuid(value: string): boolean {
   return UUID_PATTERN.test(value);
 }
 
-export type CompleteUploadSessionRequest = {
+export type CompleteBatchUploadRequest = {
   fileIds: string[];
 };
 
 export type CompleteValidationResult =
-  | { ok: true; data: CompleteUploadSessionRequest }
+  | { ok: true; data: CompleteBatchUploadRequest }
   | { ok: false; error: string };
 
-export function validateCompleteUploadSessionRequest(
+export function validateCompleteBatchUploadRequest(
   body: unknown,
 ): CompleteValidationResult {
   if (!isRecord(body)) {
@@ -114,10 +117,10 @@ export function validateCompleteUploadSessionRequest(
     return { ok: false, error: "fileIds must contain at least one item" };
   }
 
-  if (fileIdsValue.length > MAX_FILES_PER_SESSION) {
+  if (fileIdsValue.length > MAX_FILES_PER_BATCH) {
     return {
       ok: false,
-      error: `fileIds must contain at most ${MAX_FILES_PER_SESSION} items`,
+      error: `fileIds must contain at most ${MAX_FILES_PER_BATCH} items`,
     };
   }
 

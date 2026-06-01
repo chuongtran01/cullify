@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { getMockReviewResults } from "@/components/results/mock-data";
 import { ReviewResultsView } from "@/components/results/review-results-view";
-import { isUuid } from "@/lib/upload/validate";
+import { isUuid } from "@/services/batches";
 
 type ResultsPageProps = {
   params: Promise<{ batchId: string }>;
