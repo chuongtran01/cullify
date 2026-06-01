@@ -1,7 +1,11 @@
 import "server-only";
 
 import { BatchStatus as PrismaBatchStatus, ImageUploadStatus } from "@/generated/prisma/client";
-import type { Batch, BatchStatus } from "@/components/batches/types";
+import type {
+  Batch,
+  BatchesSummary,
+  BatchStatus,
+} from "@/components/batches/types";
 import { prisma } from "@/lib/prisma";
 
 type BatchImageSignal = {
@@ -79,6 +83,47 @@ export async function listUserBatches(userId: string): Promise<Batch[]> {
         status === "FAILED" ? "Processing failed. Retry this batch." : undefined,
     };
   });
+}
+
+export async function getUserBatchesSummary(
+  userId: string,
+): Promise<BatchesSummary> {
+  const [totalBatches, needsReview, processing, totalPhotos] =
+    await Promise.all([
+      prisma.batch.count({ where: { userId } }),
+      prisma.batch.count({
+        where: {
+          userId,
+          status: {
+            in: [
+              PrismaBatchStatus.READY_FOR_REVIEW,
+              PrismaBatchStatus.IN_REVIEW,
+            ],
+          },
+        },
+      }),
+      prisma.batch.count({
+        where: {
+          userId,
+          status: {
+            in: [PrismaBatchStatus.UPLOADING, PrismaBatchStatus.PROCESSING],
+          },
+        },
+      }),
+      prisma.image.count({
+        where: {
+          status: ImageUploadStatus.UPLOADED,
+          batch: { userId },
+        },
+      }),
+    ]);
+
+  return {
+    totalBatches,
+    needsReview,
+    processing,
+    totalPhotos,
+  };
 }
 
 function countProcessedImages(images: BatchImageSignal[]) {

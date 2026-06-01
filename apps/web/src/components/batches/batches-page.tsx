@@ -11,8 +11,15 @@ import { EmptyBatches } from "@/components/batches/empty-batches";
 import type { BatchFilterValue } from "@/components/batches/types";
 import { UploadDialog } from "@/components/landing/upload-dialog";
 import { Button } from "@/components/ui/button";
-import { useBatches } from "@/hooks/use-batches";
+import { useBatches, useBatchesSummary } from "@/hooks/use-batches";
 import type { CreateUploadSessionResponse } from "@/lib/upload/types";
+
+const emptySummary = {
+  totalBatches: 0,
+  needsReview: 0,
+  processing: 0,
+  totalPhotos: 0,
+};
 
 export function BatchesPage() {
   const router = useRouter();
@@ -20,7 +27,18 @@ export function BatchesPage() {
   const [activeFilter, setActiveFilter] = useState<BatchFilterValue>("ALL");
   const [search, setSearch] = useState("");
   const { data, error, isPending } = useBatches();
+  const {
+    data: summary = emptySummary,
+    error: summaryError,
+    isPending: isSummaryPending,
+  } = useBatchesSummary();
   const batches = useMemo(() => data?.batches ?? [], [data?.batches]);
+  const loadError =
+    error instanceof Error
+      ? error
+      : summaryError instanceof Error
+        ? summaryError
+        : null;
 
   const filteredBatches = useMemo(() => {
     return batches
@@ -38,17 +56,6 @@ export function BatchesPage() {
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       );
   }, [activeFilter, batches, search]);
-
-  const summary = {
-    totalBatches: batches.length,
-    needsReview: batches.filter((batch) =>
-      ["READY_FOR_REVIEW", "IN_REVIEW"].includes(batch.status),
-    ).length,
-    processing: batches.filter((batch) =>
-      ["UPLOADING", "PROCESSING"].includes(batch.status),
-    ).length,
-    totalPhotos: batches.reduce((total, batch) => total + batch.totalImages, 0),
-  };
 
   function handleUploadSessionCreated(response: CreateUploadSessionResponse) {
     router.push(`/batches/${response.sessionId}/progress`);
@@ -75,25 +82,23 @@ export function BatchesPage() {
           </Button>
         </header>
 
-        {isPending ? (
+        {isPending || isSummaryPending ? (
           <section className="rounded-md border border-hairline-light bg-surface-card p-8 text-center">
             <h2 className="text-lg font-normal text-ink">Loading batches</h2>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-body">
               Fetching your photo collections.
             </p>
           </section>
-        ) : error ? (
+        ) : loadError || error || summaryError ? (
           <section className="rounded-md border border-hairline-light bg-surface-card p-8 text-center">
             <h2 className="text-lg font-normal text-ink">
               Could not load batches
             </h2>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-body">
-              {error instanceof Error
-                ? error.message
-                : "Refresh the page and try again."}
+              {loadError?.message ?? "Refresh the page and try again."}
             </p>
           </section>
-        ) : batches.length === 0 ? (
+        ) : summary.totalBatches === 0 ? (
           <EmptyBatches onUploadClick={() => setUploadOpen(true)} />
         ) : (
           <>
@@ -111,7 +116,9 @@ export function BatchesPage() {
                     No matching batches
                   </h2>
                   <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-body">
-                    Try another search term or filter.
+                    {batches.length === 0
+                      ? "No batch rows are available yet."
+                      : "Try another search term or filter."}
                   </p>
                 </section>
               ) : (

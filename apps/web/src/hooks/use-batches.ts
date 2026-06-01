@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { queryKeys } from "@/lib/query-keys";
-import { listBatches } from "@/services/batches";
+import { getBatchesSummary, listBatches } from "@/services/batches";
 
 const ACTIVE_STATUSES = new Set(["UPLOADING", "PROCESSING"]);
 const POLL_INTERVAL_MS = 3_000;
@@ -18,5 +18,12 @@ export function useBatches() {
 
       return hasActiveBatch ? POLL_INTERVAL_MS : false;
     },
+  });
+}
+
+export function useBatchesSummary() {
+  return useQuery({
+    queryKey: queryKeys.batches.summary(),
+    queryFn: getBatchesSummary,
   });
 }

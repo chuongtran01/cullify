@@ -23,6 +23,13 @@ export type Batch = {
   errorMessage?: string;
 };
 
+export type BatchesSummary = {
+  totalBatches: number;
+  needsReview: number;
+  processing: number;
+  totalPhotos: number;
+};
+
 export type BatchFilterValue =
   | "ALL"
   | "PROCESSING"

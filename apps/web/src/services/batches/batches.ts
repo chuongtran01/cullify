@@ -1,4 +1,4 @@
-import type { Batch } from "@/components/batches/types";
+import type { Batch, BatchesSummary } from "@/components/batches/types";
 
 import { BatchesServiceError } from "@/services/batches/errors";
 
@@ -24,4 +24,24 @@ export async function listBatches(): Promise<ListBatchesResponse> {
   }
 
   return response.json() as Promise<ListBatchesResponse>;
+}
+
+export async function getBatchesSummary(): Promise<BatchesSummary> {
+  const response = await fetch("/api/batches/summary", {
+    method: "GET",
+    headers: { Accept: "application/json" },
+  });
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
+
+    throw new BatchesServiceError(
+      data.error ?? "Failed to load batches summary",
+      response.status,
+    );
+  }
+
+  return response.json() as Promise<BatchesSummary>;
 }
