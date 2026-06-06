@@ -39,7 +39,7 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   }
 
   return (
-    <div className="flex w-full flex-col gap-6">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
       <LowQualityHeader isPending={isPending} total={total} />
 
       {isPending ? (
