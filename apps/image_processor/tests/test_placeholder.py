@@ -170,6 +170,38 @@ class FakeEmbeddingRepository:
     ) -> None:
         self.failures.append((image_id, error, model, version, dimension))
 
+    def list_successful_vectors(self, image_ids: list[str]) -> dict[str, list[float]]:
+        return {
+            image_id: result.vector
+            for image_id, result in self.successes
+            if image_id in image_ids
+        }
+
+
+class FakeGroupingService:
+    def __init__(self) -> None:
+        self.calls: list[tuple[list[str], dict[str, list[float]]]] = []
+
+    def group(
+        self,
+        image_ids: list[str],
+        embeddings: dict[str, list[float]],
+    ) -> list[list[str]]:
+        self.calls.append((image_ids, embeddings))
+        return [[image_id] for image_id in image_ids]
+
+
+class FakeImageGroupRepository:
+    def __init__(self) -> None:
+        self.replacements: list[tuple[str, list[list[str]]]] = []
+
+    def replace_for_collection(
+        self,
+        collection_id: str,
+        image_groups: list[list[str]],
+    ) -> None:
+        self.replacements.append((collection_id, image_groups))
+
 
 class FakeCollectionStatusRepository:
     def __init__(self) -> None:
@@ -305,6 +337,8 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline.embedding_analyzer = FakeEmbeddingAnalyzer()
         pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
         pipeline.image_embedding_repository = FakeEmbeddingRepository()
+        pipeline.grouping_service = FakeGroupingService()
+        pipeline.image_group_repository = FakeImageGroupRepository()
         pipeline.collection_repository = FakeCollectionStatusRepository()
 
         with redirect_stdout(StringIO()) as output:
@@ -323,6 +357,10 @@ class WorkerPlaceholderTest(unittest.TestCase):
         )
         self.assertEqual(pipeline.quality_analysis_repository.failures, [])
         self.assertEqual(pipeline.image_embedding_repository.failures, [])
+        self.assertEqual(
+            pipeline.image_group_repository.replacements,
+            [("session-1", [["image-1"]])],
+        )
         self.assertEqual(
             pipeline.collection_repository.statuses,
             [("session-1", CollectionStatus.READY_FOR_REVIEW)],
@@ -347,6 +385,8 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline.embedding_analyzer = FakeEmbeddingAnalyzer()
         pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
         pipeline.image_embedding_repository = FakeEmbeddingRepository()
+        pipeline.grouping_service = FakeGroupingService()
+        pipeline.image_group_repository = FakeImageGroupRepository()
         pipeline.collection_repository = FakeCollectionStatusRepository()
 
         with redirect_stdout(StringIO()) as output:
@@ -366,6 +406,10 @@ class WorkerPlaceholderTest(unittest.TestCase):
             [("image-2", "download failed")],
         )
         self.assertEqual(
+            pipeline.image_group_repository.replacements,
+            [("session-1", [["image-1"], ["image-2"], ["image-3"]])],
+        )
+        self.assertEqual(
             pipeline.collection_repository.statuses,
             [("session-1", CollectionStatus.FAILED)],
         )
@@ -382,6 +426,8 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline.embedding_analyzer = FakeEmbeddingAnalyzer(failing=True)
         pipeline.quality_analysis_repository = FakeQualityAnalysisRepository()
         pipeline.image_embedding_repository = FakeEmbeddingRepository()
+        pipeline.grouping_service = FakeGroupingService()
+        pipeline.image_group_repository = FakeImageGroupRepository()
         pipeline.collection_repository = FakeCollectionStatusRepository()
 
         pipeline.process({"collectionId": "session-1"})
@@ -399,6 +445,10 @@ class WorkerPlaceholderTest(unittest.TestCase):
                     512,
                 )
             ],
+        )
+        self.assertEqual(
+            pipeline.image_group_repository.replacements,
+            [("session-1", [["image-1"]])],
         )
         self.assertEqual(
             pipeline.collection_repository.statuses,

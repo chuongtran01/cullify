@@ -33,6 +33,7 @@ model Collection {
   createdAt DateTime         @default(now()) @map("created_at")
   updatedAt DateTime         @updatedAt @map("updated_at")
   images    Image[]
+  groups    ImageGroup[]
 
   @@index([userId])
   @@map("collection")
@@ -51,10 +52,40 @@ model Image {
   uploadedAt      DateTime?             @map("uploaded_at")
   qualityAnalysis ImageQualityAnalysis?
   embedding       ImageEmbedding?
+  groupMembership GroupImage?
+  representativeForGroups ImageGroup[]  @relation("ImageGroupRepresentative")
 
   @@index([collectionId])
   @@index([status])
   @@map("image")
+}
+
+model ImageGroup {
+  id                    String       @id @default(uuid()) @db.Uuid
+  collectionId          String       @db.Uuid @map("collection_id")
+  collection            Collection   @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  representativeImageId String?      @db.Uuid @map("representative_image_id")
+  representativeImage   Image?       @relation("ImageGroupRepresentative", fields: [representativeImageId], references: [id], onDelete: SetNull)
+  imageCount            Int          @map("image_count")
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
+  images                GroupImage[]
+
+  @@index([collectionId])
+  @@index([representativeImageId])
+  @@map("image_group")
+}
+
+model GroupImage {
+  id        String     @id @default(uuid()) @db.Uuid
+  groupId   String     @db.Uuid @map("group_id")
+  group     ImageGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  imageId   String     @unique @db.Uuid @map("image_id")
+  image     Image      @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@index([groupId])
+  @@map("group_image")
 }
 
 model ImageQualityAnalysis {

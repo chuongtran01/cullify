@@ -7,13 +7,17 @@ from image_processor.db import CollectionStatus
 from image_processor.db.repositories import (
     CollectionRepository,
     ImageEmbeddingRepository,
+    ImageGroupRepository,
     ImageQualityAnalysisRepository,
 )
 from image_processor.mq.message_types import ProcessCollectionJobData
 from image_processor.processor.collection_loader import CollectionLoader
 from image_processor.processor.image_downloader import ImageDownloader
 from image_processor.processor.quality import ImageQualityAnalyzer
-from image_processor.processor.similarity import ImageEmbeddingAnalyzer
+from image_processor.processor.similarity import (
+    ImageEmbeddingAnalyzer,
+    ImageGroupingService,
+)
 from image_processor.storage.r2_client import R2Client
 
 
@@ -29,9 +33,11 @@ class ImageProcessingPipeline:
             session_factory,
         )
         self.image_embedding_repository = ImageEmbeddingRepository(session_factory)
+        self.image_group_repository = ImageGroupRepository(session_factory)
         self.image_downloader = ImageDownloader(R2Client(settings.r2_settings()))
         self.quality_analyzer = ImageQualityAnalyzer()
         self.embedding_analyzer = ImageEmbeddingAnalyzer()
+        self.grouping_service = ImageGroupingService()
 
     def process(self, data: ProcessCollectionJobData) -> None:
         context = self.collection_loader.load(data["collectionId"])
@@ -86,6 +92,14 @@ class ImageProcessingPipeline:
                     str(exc),
                 )
                 continue
+
+        image_ids = [image.id for image in context.images]
+        embeddings = self.image_embedding_repository.list_successful_vectors(image_ids)
+        image_groups = self.grouping_service.group(image_ids, embeddings)
+        self.image_group_repository.replace_for_collection(
+            context.collection.id,
+            image_groups,
+        )
 
         next_status = (
             CollectionStatus.FAILED if failed_count > 0 else CollectionStatus.READY_FOR_REVIEW

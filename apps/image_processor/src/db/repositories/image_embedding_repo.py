@@ -70,6 +70,29 @@ class ImageEmbeddingRepository:
             embedding.embedded_at = None
             embedding.updated_at = now
 
+    def list_successful_vectors(
+        self,
+        image_ids: list[str],
+    ) -> dict[str, list[float]]:
+        if not image_ids:
+            return {}
+
+        with self.session_factory() as session:
+            rows = session.execute(
+                select(ImageEmbedding.image_id, ImageEmbedding.vector).where(
+                    ImageEmbedding.image_id.in_(image_ids),
+                    ImageEmbedding.vector.is_not(None),
+                    ImageEmbedding.embedding_error.is_(None),
+                    ImageEmbedding.embedded_at.is_not(None),
+                )
+            ).all()
+
+        return {
+            image_id: vector
+            for image_id, vector in rows
+            if vector is not None
+        }
+
     def _get_by_image_id(
         self,
         session: Session,
