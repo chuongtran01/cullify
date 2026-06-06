@@ -33,10 +33,7 @@ function SummaryStat({
 }
 
 type ResultsSummaryProps = {
-  data: Pick<
-    ReviewResultsData,
-    "standoutPhotos" | "similarGroups" | "rejectedPhotos" | "totalPhotos"
-  >;
+  data: Pick<ReviewResultsData, "similarGroups" | "rejectedPhotos" | "totalPhotos">;
 };
 
 export function ResultsSummary({ data }: ResultsSummaryProps) {
@@ -73,11 +70,6 @@ export function ResultsSummary({ data }: ResultsSummaryProps) {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <SummaryStat
-          helper="AI-selected best photos"
-          label="Standout Photos"
-          value={data.standoutPhotos.length}
-        />
         <SummaryStat
           helper="Visually similar sets"
           label="Similar Groups"

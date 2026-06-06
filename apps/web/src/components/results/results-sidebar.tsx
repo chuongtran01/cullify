@@ -92,37 +92,12 @@ export function ResultsSidebar({
 
       <section className="rounded-2xl border border-hairline bg-canvas p-5">
         <div className="flex items-start gap-3">
-          <Lightbulb className="mt-0.5 size-5 text-coral" />
-          <div>
-            <h2 className="text-lg font-normal text-ink">Suggested workflow</h2>
-            <p className="mt-2 text-sm leading-6 text-body">
-              Start with AI Picks to confirm the strongest photos, then move into Similar
-              Groups before checking rejected images.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-hairline bg-canvas p-5">
-        <div className="flex items-start gap-3">
           <Info className="mt-0.5 size-5 text-action-blue" />
           <div>
             <h2 className="text-lg font-normal text-ink">Progress is saved</h2>
             <p className="mt-2 text-sm leading-6 text-body">
               You can leave this dashboard and return later. Review progress is saved
               automatically.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-hairline bg-surface-blue-wash p-5">
-        <div className="flex items-start gap-3">
-          <CheckCircle2 className="mt-0.5 size-5 text-deep-green" />
-          <div>
-            <h2 className="text-lg font-normal text-ink">Ready when you are</h2>
-            <p className="mt-2 text-sm leading-6 text-body">
-              Export Picks creates a clean selection set from reviewed AI choices.
             </p>
           </div>
         </div>
