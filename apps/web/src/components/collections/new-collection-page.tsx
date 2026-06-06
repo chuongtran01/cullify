@@ -341,6 +341,40 @@ export function NewCollectionPage() {
           <p className="mt-2 text-sm text-body">{intakeMessage}</p>
         </div>
 
+        {isSubmitting && uploadProgress && uploadProgress.total > 0 ? (
+          <div
+            role="status"
+            aria-live="polite"
+            className="mt-6 flex gap-3 rounded-2xl border border-hairline bg-surface-card px-4 py-3"
+          >
+            <Loader2
+              className="mt-0.5 size-4 shrink-0 animate-spin text-primary"
+              aria-hidden
+            />
+            <div className="min-w-0 flex-1 text-sm text-body">
+              <div className="flex items-center justify-between gap-4">
+                <p>
+                  Uploading{" "}
+                  {uploadProgress.completed > 0
+                    ? `${uploadProgress.completed} of ${uploadProgress.total}`
+                    : `0 of ${uploadProgress.total}`}
+                  …
+                </p>
+                <p className="shrink-0 text-xs text-muted">{uploadProgressValue}%</p>
+              </div>
+              <Progress
+                value={uploadProgressValue}
+                className="mt-3 h-1.5 bg-hairline"
+              />
+              {uploadProgress.fileName ? (
+                <p className="mt-1 truncate text-xs text-muted">
+                  {uploadProgress.fileName}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+
         {files.length > 0 ? (
           <div className="mt-4 flex justify-end">
             <Button
@@ -361,39 +395,7 @@ export function NewCollectionPage() {
 
 
 
-      {isSubmitting && uploadProgress && uploadProgress.total > 0 ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="mt-6 flex gap-3 rounded-2xl border border-hairline bg-surface-card px-4 py-3"
-        >
-          <Loader2
-            className="mt-0.5 size-4 shrink-0 animate-spin text-primary"
-            aria-hidden
-          />
-          <div className="min-w-0 flex-1 text-sm text-body">
-            <div className="flex items-center justify-between gap-4">
-              <p>
-                Uploading{" "}
-                {uploadProgress.completed > 0
-                  ? `${uploadProgress.completed} of ${uploadProgress.total}`
-                  : `0 of ${uploadProgress.total}`}
-                …
-              </p>
-              <p className="shrink-0 text-xs text-muted">{uploadProgressValue}%</p>
-            </div>
-            <Progress
-              value={uploadProgressValue}
-              className="mt-3 h-1.5 bg-hairline"
-            />
-            {uploadProgress.fileName ? (
-              <p className="mt-1 truncate text-xs text-muted">
-                {uploadProgress.fileName}
-              </p>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
+
 
       {error ? (
         <p
