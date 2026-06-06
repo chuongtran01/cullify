@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { AppSidebar } from "@/components/dashboard/app-sidebar";
+import { AppSidebar, APP_SIDEBAR_DEFAULT_OPEN } from "@/components/dashboard/app-sidebar";
 import { DashboardBreadcrumb } from "@/components/dashboard/dashboard-breadcrumb";
 import {
   SidebarInset,
@@ -26,7 +26,7 @@ export default async function DashboardLayout({
 
   return (
     <TooltipProvider>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={APP_SIDEBAR_DEFAULT_OPEN}>
         <AppSidebar
           user={{
             name: session.user.name,

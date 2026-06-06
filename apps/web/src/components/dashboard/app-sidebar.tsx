@@ -31,6 +31,8 @@ type AppSidebarProps = {
   user: DashboardUser;
 };
 
+export const APP_SIDEBAR_DEFAULT_OPEN = false;
+
 const navItems = [
   {
     title: "Collections",
