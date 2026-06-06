@@ -71,3 +71,9 @@ export type CollectionLowQualityImagesResponse = {
   images: CollectionLowQualityImage[];
   totalLowQualityImages: number;
 };
+
+export type CollectionResultsSummary = {
+  totalPhotos: number;
+  similarGroups: number;
+  lowQualityImages: number;
+};

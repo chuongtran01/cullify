@@ -1,21 +1,32 @@
+"use client";
+
 import { HelpCircle, Sparkles } from "lucide-react";
+import { useParams } from "next/navigation";
 
 import type { ReviewResultsData } from "@/components/results/mock-data";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useCollectionResultsSummary } from "@/features/collections/hooks";
 
 function SummaryStat({
   label,
   value,
   helper,
+  isLoading = false,
 }: {
   label: string;
   value: string | number;
   helper: string;
+  isLoading?: boolean;
 }) {
   return (
     <div className="rounded-lg border border-white/10 bg-white/8 p-4">
       <p className="font-mono text-xs uppercase text-white/55">{label}</p>
-      <p className="mt-2 text-3xl leading-none font-normal text-white">{value}</p>
+      {isLoading ? (
+        <Skeleton className="mt-2 h-8 w-16 bg-white/20" />
+      ) : (
+        <p className="mt-2 text-3xl leading-none font-normal text-white">{value}</p>
+      )}
       <p className="mt-2 text-xs leading-5 text-white/55">{helper}</p>
     </div>
   );
@@ -29,6 +40,15 @@ type ResultsSummaryProps = {
 };
 
 export function ResultsSummary({ data }: ResultsSummaryProps) {
+  const params = useParams<{ collectionId: string }>();
+  const collectionId = params.collectionId ?? "";
+  const summary = useCollectionResultsSummary(collectionId);
+  const isLoading = summary.isPending;
+  const totalPhotos = summary.data?.totalPhotos ?? data.totalPhotos;
+  const similarGroups = summary.data?.similarGroups ?? data.similarGroups.length;
+  const lowQualityImages =
+    summary.data?.lowQualityImages ?? data.rejectedPhotos.length;
+
   return (
     <section className="grid gap-5 rounded-3xl bg-deep-green p-5 text-white lg:grid-cols-[1.15fr_1fr] lg:items-center">
       <div className="max-w-2xl">
@@ -61,14 +81,21 @@ export function ResultsSummary({ data }: ResultsSummaryProps) {
         <SummaryStat
           helper="Visually similar sets"
           label="Similar Groups"
-          value={data.similarGroups.length}
+          value={similarGroups}
+          isLoading={isLoading}
         />
         <SummaryStat
           helper="Flagged for human review"
           label="Photos To Review"
-          value={data.rejectedPhotos.length}
+          value={lowQualityImages}
+          isLoading={isLoading}
         />
-        <SummaryStat helper="Uploaded photos" label="Total Photos" value={data.totalPhotos} />
+        <SummaryStat
+          helper="Uploaded photos"
+          label="Total Photos"
+          value={totalPhotos}
+          isLoading={isLoading}
+        />
       </div>
     </section>
   );

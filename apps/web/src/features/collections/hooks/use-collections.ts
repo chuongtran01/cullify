@@ -4,6 +4,7 @@ import { queryKeys } from "@/lib/query-keys";
 import {
   getCollectionGroup,
   getCollectionLowQualityImages,
+  getCollectionResultsSummary,
   getCollectionsSummary,
   listCollections,
   listCollectionGroups,
@@ -33,6 +34,14 @@ export function useCollectionsSummary() {
   return useQuery({
     queryKey: queryKeys.collections.summary(),
     queryFn: getCollectionsSummary,
+  });
+}
+
+export function useCollectionResultsSummary(collectionId: string) {
+  return useQuery({
+    queryKey: queryKeys.collections.resultsSummary(collectionId),
+    queryFn: () => getCollectionResultsSummary(collectionId),
+    enabled: collectionId.length > 0,
   });
 }
 
