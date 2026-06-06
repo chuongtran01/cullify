@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Images, Settings, Sparkles } from "lucide-react";
+import { CheckCircle2, Images, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -18,6 +18,8 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 type DashboardUser = {
@@ -55,36 +57,51 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+function SidebarBrand() {
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+
+  if (isCollapsed) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarTrigger
+            className="size-8 w-full rounded-md hover:bg-sidebar-accent"
+            aria-label="Expand sidebar"
+          />
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
+
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <div className="flex w-full items-center gap-1">
+          <SidebarMenuButton asChild size="lg" className="min-w-0 flex-1">
+            <Link href="/dashboard">
+              <span className="truncate text-lg font-semibold tracking-tight">
+                Cullify
+              </span>
+            </Link>
+          </SidebarMenuButton>
+          <SidebarTrigger
+            className="size-8 shrink-0 rounded-md hover:bg-sidebar-accent"
+            aria-label="Collapse sidebar"
+          />
+        </div>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
+}
+
 export function AppSidebar({ user }: AppSidebarProps) {
   const pathname = usePathname();
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="gap-3 px-3 py-3 group-data-[collapsible=icon]:px-2">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              size="lg"
-              tooltip="Cullify"
-              className="group-data-[collapsible=icon]:justify-center"
-            >
-              <Link href="/dashboard">
-                <span className="grid size-8 place-items-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Sparkles className="size-4" aria-hidden="true" />
-                </span>
-                <span className="min-w-0 group-data-[collapsible=icon]:hidden">
-                  <span className="block truncate text-sm font-semibold">
-                    Cullify
-                  </span>
-                  <span className="block truncate text-xs text-muted-foreground">
-                    Management
-                  </span>
-                </span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <SidebarBrand />
       </SidebarHeader>
       <SidebarSeparator className="mx-0" />
       <SidebarContent>
