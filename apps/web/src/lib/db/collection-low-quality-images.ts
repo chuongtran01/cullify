@@ -12,6 +12,10 @@ export type CollectionLowQualityImage = {
   objectKey: string;
   mimeType: string;
   imageUrl: string;
+  isSelected: boolean;
+  decisionSource: string | null;
+  decisionReason: string | null;
+  reviewedAt: string | null;
   reasons: string[];
   createdAt: string;
 };
@@ -37,6 +41,10 @@ type LowQualityImageRow = {
   isLowExposure: boolean;
   isHighExposure: boolean;
   hasCompressionArtifacts: boolean;
+  isSelected: boolean | null;
+  decisionSource: string | null;
+  decisionReason: string | null;
+  reviewedAt: Date | null;
   reasonCount: number;
   totalCount: number;
 };
@@ -78,6 +86,10 @@ export async function getCollectionLowQualityImages(
       image_quality_analysis.is_low_exposure AS "isLowExposure",
       image_quality_analysis.is_high_exposure AS "isHighExposure",
       image_quality_analysis.has_compression_artifacts AS "hasCompressionArtifacts",
+      collection_image_review.is_selected AS "isSelected",
+      collection_image_review.decision_source::text AS "decisionSource",
+      collection_image_review.decision_reason::text AS "decisionReason",
+      collection_image_review.reviewed_at AS "reviewedAt",
       (
         image_quality_analysis.is_blurry::int +
         image_quality_analysis.is_out_of_focus::int +
@@ -91,6 +103,8 @@ export async function getCollectionLowQualityImages(
     FROM image
     INNER JOIN image_quality_analysis
       ON image_quality_analysis.image_id = image.id
+    LEFT JOIN collection_image_review
+      ON collection_image_review.image_id = image.id
     WHERE image.collection_id = ${collectionId}::uuid
       AND (
         image_quality_analysis.is_blurry OR
@@ -113,6 +127,10 @@ export async function getCollectionLowQualityImages(
       objectKey: image.objectKey,
       mimeType: image.mimeType,
       imageUrl: await createPresignedDownloadUrl(image.objectKey),
+      isSelected: image.isSelected ?? false,
+      decisionSource: image.decisionSource,
+      decisionReason: image.decisionReason,
+      reviewedAt: image.reviewedAt?.toISOString() ?? null,
       reasons: getLowQualityReasons(image),
       createdAt: image.createdAt.toISOString(),
     })),

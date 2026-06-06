@@ -65,6 +65,10 @@ export type CollectionLowQualityImage = {
   objectKey: string;
   mimeType: string;
   imageUrl: string;
+  isSelected: boolean;
+  decisionSource: string | null;
+  decisionReason: string | null;
+  reviewedAt: string | null;
   reasons: string[];
   createdAt: string;
 };
