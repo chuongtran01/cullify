@@ -1,35 +1,23 @@
-import { Download, Share2 } from "lucide-react";
-
 import type { ReviewResultsData } from "@/components/results/mock-data";
 import { Button } from "@/components/ui/button";
 
 type ResultsHeaderProps = {
-  data: Pick<ReviewResultsData, "collectionId" | "title" | "uploadedAt" | "totalPhotos">;
+  data: Pick<ReviewResultsData, "title">;
 };
 
 export function ResultsHeader({ data }: ResultsHeaderProps) {
   return (
-    <header className="rounded-3xl border border-hairline bg-canvas p-5">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-        <div className="min-w-0">
-          <h1 className="text-4xl leading-tight font-normal text-ink sm:text-5xl">
-            {data.title}
-          </h1>
-          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted">
-            <span>Uploaded {data.uploadedAt}</span>
-          </div>
-        </div>
-        <div className="flex flex-col gap-2 sm:flex-row lg:shrink-0">
-          <Button variant="outline" className="h-11 rounded-full bg-surface-card px-5">
-            <Share2 className="size-4" />
-            Share Results
-          </Button>
-          <Button className="h-11 rounded-full px-5">
-            <Download className="size-4" />
-            Export Picks
-          </Button>
-        </div>
-      </div>
+    <header className="flex items-center justify-between gap-4 pb-4">
+      <h1 className="min-w-0 truncate text-base font-medium text-ink">
+        {data.title}
+      </h1>
+      <Button
+        type="button"
+        variant="outline"
+        className="h-9 shrink-0 rounded-lg px-4"
+      >
+        Share
+      </Button>
     </header>
   );
 }
