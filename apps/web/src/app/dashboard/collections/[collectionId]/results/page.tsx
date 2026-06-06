@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { getMockReviewResults } from "@/components/results/mock-data";
-import { ReviewResultsView } from "@/components/results/review-results-view";
+import { getMockReviewResults } from "@/components/results/overall/mock-data";
+import { ReviewResultsView } from "@/components/results/overall/review-results-view";
 import { isUuid } from "@/services/collections";
 
 type ResultsPageProps = {
