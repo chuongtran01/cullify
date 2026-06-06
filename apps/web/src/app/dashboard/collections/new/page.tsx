@@ -1,4 +1,4 @@
-import { NewCollectionPage } from "@/components/collections/new-collection-page";
+import { NewCollectionPage } from "@/components/collections/new/new-collection-page";
 
 export default function DashboardNewCollectionPage() {
   return (
