@@ -9,6 +9,7 @@ import {
 import type {
   CollectionGroupDetail,
   CollectionGroupsResponse,
+  CollectionLowQualityImagesResponse,
   CollectionUploadProgress,
   CreateCollectionUploadRequest,
   CreateCollectionUploadResponse,
@@ -165,6 +166,31 @@ export async function updateCollectionGroupRepresentative(
   }
 
   return response.json() as Promise<{ ok: true }>;
+}
+
+export async function getCollectionLowQualityImages(
+  collectionId: string,
+): Promise<CollectionLowQualityImagesResponse> {
+  const response = await fetch(
+    `/api/collections/${collectionId}/low-quality-images`,
+    {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    },
+  );
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
+
+    throw new CollectionsServiceError(
+      data.error ?? "Failed to load low quality images",
+      response.status,
+    );
+  }
+
+  return response.json() as Promise<CollectionLowQualityImagesResponse>;
 }
 
 export async function updateCollectionName(

@@ -1,0 +1,43 @@
+import { NextResponse } from "next/server";
+
+import { getRequestUserId } from "@/lib/auth-session";
+import { getCollectionLowQualityImages } from "@/lib/db/collection-low-quality-images";
+import { isUuid } from "@/services/collections/validate";
+
+type RouteContext = {
+  params: Promise<{ collectionId: string }>;
+};
+
+export async function GET(request: Request, context: RouteContext) {
+  const userId = await getRequestUserId(request.headers);
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { collectionId } = await context.params;
+
+  if (!isUuid(collectionId)) {
+    return NextResponse.json({ error: "Invalid collection id" }, { status: 400 });
+  }
+
+  try {
+    const lowQualityImages = await getCollectionLowQualityImages(
+      collectionId,
+      userId,
+    );
+
+    if (!lowQualityImages) {
+      return NextResponse.json({ error: "Collection not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(lowQualityImages);
+  } catch (error) {
+    console.error("Failed to load low quality images", error);
+
+    return NextResponse.json(
+      { error: "Failed to load low quality images" },
+      { status: 500 },
+    );
+  }
+}

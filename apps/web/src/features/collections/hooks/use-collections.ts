@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query-keys";
 import {
   getCollectionGroup,
+  getCollectionLowQualityImages,
   getCollectionsSummary,
   listCollections,
   listCollectionGroups,
@@ -48,6 +49,14 @@ export function useCollectionGroup(collectionId: string, groupId: string) {
     queryKey: queryKeys.collections.group(collectionId, groupId),
     queryFn: () => getCollectionGroup(collectionId, groupId),
     enabled: collectionId.length > 0 && groupId.length > 0,
+  });
+}
+
+export function useCollectionLowQualityImages(collectionId: string) {
+  return useQuery({
+    queryKey: queryKeys.collections.lowQualityImages(collectionId),
+    queryFn: () => getCollectionLowQualityImages(collectionId),
+    enabled: collectionId.length > 0,
   });
 }
 

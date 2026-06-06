@@ -1,13 +1,17 @@
+"use client";
+
 import { ArrowRight } from "lucide-react";
+import { useParams } from "next/navigation";
 
 import type {
-  ReviewPhoto,
   ReviewResultsData,
   SimilarGroup,
 } from "@/components/results/mock-data";
 import { PhotoSurface } from "@/components/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useCollectionLowQualityImages } from "@/features/collections/hooks";
+import type { CollectionLowQualityImage } from "@/services/collections";
 
 function WorkflowSection({
   title,
@@ -65,24 +69,76 @@ function SimilarGroupCard({ group }: { group: SimilarGroup }) {
   );
 }
 
-function RejectedPhotoCard({ photo }: { photo: ReviewPhoto }) {
+function LowQualityPhotoCard({ image }: { image: CollectionLowQualityImage }) {
+  const reason = image.reasons[0] ?? "Low Quality";
+
   return (
     <article className="min-w-48 overflow-hidden rounded-2xl border border-hairline bg-surface-card">
       <div className="relative">
-        <PhotoSurface className="aspect-[4/3]" src={photo.src} title={photo.title} />
+        <PhotoSurface
+          className="aspect-[4/3]"
+          src={image.imageUrl}
+          title={image.fileName}
+        />
         <Badge className="absolute top-3 left-3 h-7 rounded-full border-coral-soft bg-coral/90 px-3 text-white">
-          {photo.reason}
+          {reason}
         </Badge>
       </div>
     </article>
   );
 }
 
+function LowQualityPhotosStrip({
+  images,
+  isPending,
+}: {
+  images: CollectionLowQualityImage[];
+  isPending: boolean;
+}) {
+  if (isPending) {
+    return (
+      <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div
+            key={index}
+            className="min-w-48 overflow-hidden rounded-2xl border border-hairline bg-surface-card"
+          >
+            <div className="aspect-[4/3] animate-pulse bg-muted" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (images.length === 0) {
+    return (
+      <div className="rounded-2xl border border-hairline bg-surface-card p-5 text-sm text-body">
+        No low quality images found.
+      </div>
+    );
+  }
+
+  return (
+    <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
+      {images.map((image) => (
+        <LowQualityPhotoCard key={image.id} image={image} />
+      ))}
+    </div>
+  );
+}
+
 export function ResultsWorkflows({
   data,
 }: {
-  data: Pick<ReviewResultsData, "similarGroups" | "rejectedPhotos">;
+  data: Pick<ReviewResultsData, "similarGroups">;
 }) {
+  const params = useParams<{ collectionId: string }>();
+  const collectionId = params.collectionId ?? "";
+  const lowQualityImages = useCollectionLowQualityImages(collectionId);
+  const lowQualityCount =
+    lowQualityImages.data?.totalLowQualityImages ??
+    (lowQualityImages.isPending ? 0 : 0);
+
   return (
     <div className="grid min-w-0 gap-5">
       <WorkflowSection
@@ -98,15 +154,14 @@ export function ResultsWorkflows({
       </WorkflowSection>
 
       <WorkflowSection
-        count={`${data.rejectedPhotos.length} photos`}
+        count={`${lowQualityCount} photos`}
         description="Check photos flagged for blur, focus issues, closed eyes, poor lighting, or duplication."
-        title="Review Rejected Photos"
+        title="Review Low Quality Photos"
       >
-        <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
-          {data.rejectedPhotos.map((photo) => (
-            <RejectedPhotoCard key={photo.id} photo={photo} />
-          ))}
-        </div>
+        <LowQualityPhotosStrip
+          images={lowQualityImages.data?.images ?? []}
+          isPending={lowQualityImages.isPending}
+        />
       </WorkflowSection>
     </div>
   );

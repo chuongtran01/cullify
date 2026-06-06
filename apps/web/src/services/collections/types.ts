@@ -56,3 +56,18 @@ export type CollectionGroupImage = {
 export type CollectionGroupDetail = CollectionGroupSummary & {
   images: CollectionGroupImage[];
 };
+
+export type CollectionLowQualityImage = {
+  id: string;
+  fileName: string;
+  objectKey: string;
+  mimeType: string;
+  imageUrl: string;
+  reasons: string[];
+  createdAt: string;
+};
+
+export type CollectionLowQualityImagesResponse = {
+  images: CollectionLowQualityImage[];
+  totalLowQualityImages: number;
+};

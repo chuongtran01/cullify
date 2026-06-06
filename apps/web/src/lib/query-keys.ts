@@ -10,5 +10,7 @@ export const queryKeys = {
       [...queryKeys.collections.all, collectionId, "groups"] as const,
     group: (collectionId: string, groupId: string) =>
       [...queryKeys.collections.groups(collectionId), groupId] as const,
+    lowQualityImages: (collectionId: string) =>
+      [...queryKeys.collections.all, collectionId, "low-quality-images"] as const,
   },
 } as const;
