@@ -1,6 +1,6 @@
 import { Check, Images, Layers3, ShieldAlert } from "lucide-react";
 
-import type { CollectionProgressData, ProgressStat } from "@/components/progress/types";
+import type { CollectionProgressData, ProgressStat } from "@/components/collections/progress/types";
 
 export function getMockCollectionProgress(collectionId: string): CollectionProgressData {
   return {

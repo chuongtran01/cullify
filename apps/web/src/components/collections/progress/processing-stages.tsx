@@ -3,7 +3,7 @@ import { Check, Clock3, LoaderCircle, ScanSearch } from "lucide-react";
 import type {
   ProcessingStage,
   ProcessingStageStatus,
-} from "@/components/progress/types";
+} from "@/components/collections/progress/types";
 
 function StageIcon({ status }: { status: ProcessingStageStatus }) {
   if (status === "completed") {

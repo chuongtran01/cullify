@@ -1,4 +1,4 @@
-import type { ProgressStat } from "@/components/progress/types";
+import type { ProgressStat } from "@/components/collections/progress/types";
 import { Card, CardContent } from "@/components/ui/card";
 
 export function ProgressStats({ stats }: { stats: ProgressStat[] }) {

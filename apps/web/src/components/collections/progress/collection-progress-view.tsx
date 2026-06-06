@@ -1,10 +1,10 @@
-import { getProgressStats } from "@/components/progress/mock-data";
-import { ProcessingSummaryCard } from "@/components/progress/processing-summary-card";
-import { ProgressHeader } from "@/components/progress/progress-header";
-import { ProgressStats } from "@/components/progress/progress-stats";
-import { RecentActivityCard } from "@/components/progress/recent-activity-card";
-import { TasksCard } from "@/components/progress/tasks-card";
-import type { CollectionProgressData } from "@/components/progress/types";
+import { getProgressStats } from "@/components/collections/progress/mock-data";
+import { ProcessingSummaryCard } from "@/components/collections/progress/processing-summary-card";
+import { ProgressHeader } from "@/components/collections/progress/progress-header";
+import { ProgressStats } from "@/components/collections/progress/progress-stats";
+import { RecentActivityCard } from "@/components/collections/progress/recent-activity-card";
+import { TasksCard } from "@/components/collections/progress/tasks-card";
+import type { CollectionProgressData } from "@/components/collections/progress/types";
 
 export function CollectionProgressView({ data }: { data: CollectionProgressData }) {
   return (

@@ -2,7 +2,7 @@
 
 import { notFound, useParams } from "next/navigation";
 
-import { CollectionProgressView } from "@/components/progress/collection-progress-view";
+import { CollectionProgressView } from "@/components/collections/progress/collection-progress-view";
 import { useCollectionProgress } from "@/features/collections/hooks";
 import { CollectionsServiceError, isUuid } from "@/services/collections";
 

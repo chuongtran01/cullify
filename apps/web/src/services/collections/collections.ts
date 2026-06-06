@@ -1,5 +1,5 @@
 import type { Collection, CollectionsSummary } from "@/components/collections/types";
-import type { CollectionProgressData } from "@/components/progress/types";
+import type { CollectionProgressData } from "@/components/collections/progress/types";
 
 import {
   CollectionUploadError,

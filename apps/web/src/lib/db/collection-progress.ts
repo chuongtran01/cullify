@@ -2,7 +2,7 @@ import "server-only";
 
 import { CollectionStatus, ImageUploadStatus } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import type { CollectionProgressData, ProcessingStage } from "@/components/progress/types";
+import type { CollectionProgressData, ProcessingStage } from "@/components/collections/progress/types";
 
 const TERMINAL_STATUSES = new Set<string>([
   CollectionStatus.READY_FOR_REVIEW,

@@ -1,8 +1,8 @@
 import { Sparkles } from "lucide-react";
 
-import { ProcessingProgressDonut } from "@/components/progress/processing-progress-donut";
-import { ProcessingStages } from "@/components/progress/processing-stages";
-import type { ProcessingStage } from "@/components/progress/types";
+import { ProcessingProgressDonut } from "@/components/collections/progress/processing-progress-donut";
+import { ProcessingStages } from "@/components/collections/progress/processing-stages";
+import type { ProcessingStage } from "@/components/collections/progress/types";
 import { Progress } from "@/components/ui/progress";
 
 type ProcessingSummaryCardProps = {
