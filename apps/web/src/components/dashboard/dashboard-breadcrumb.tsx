@@ -40,6 +40,14 @@ function getDashboardBreadcrumbs(pathname: string): BreadcrumbSegment[] {
     ];
   }
 
+  if (pathname === "/dashboard/collections/new") {
+    return [
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Collections", href: "/dashboard" },
+      { label: "New collection" },
+    ];
+  }
+
   if (/^\/dashboard\/collections\/[^/]+\/progress$/.test(pathname)) {
     return [
       { label: "Dashboard", href: "/dashboard" },
