@@ -1,4 +1,4 @@
-import { CheckCircle2, Info, Lightbulb } from "lucide-react";
+import { Info } from "lucide-react";
 
 import type {
   ReviewProgressItem,

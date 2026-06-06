@@ -8,7 +8,9 @@ type ResultsPageProps = {
   params: Promise<{ collectionId: string }>;
 };
 
-export default async function ResultsPage({ params }: ResultsPageProps) {
+export default async function DashboardCollectionResultsPage({
+  params,
+}: ResultsPageProps) {
   const { collectionId } = await params;
 
   if (!isUuid(collectionId)) {

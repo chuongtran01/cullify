@@ -67,7 +67,7 @@ export function CollectionsPage() {
   }, [activeFilter, collections, search]);
 
   function handleCollectionUploadCreated(response: CreateCollectionUploadResponse) {
-    router.push(`/collections/${response.collectionId}/progress`);
+    router.push(`/dashboard/collections/${response.collectionId}/progress`);
   }
 
   return (

@@ -38,7 +38,7 @@ export function ProgressHeader({
           aria-label="Back"
           className="size-10 shrink-0 rounded-full cursor-pointer"
         >
-          <Link href="/">
+          <Link href="/dashboard">
             <ArrowLeft className="size-4" />
           </Link>
         </Button>
@@ -57,7 +57,9 @@ export function ProgressHeader({
       <Button
         variant="default"
         disabled={!isComplete}
-        onClick={() => router.push(`/collections/${collectionId}/results`)}
+        onClick={() =>
+          router.push(`/dashboard/collections/${collectionId}/results`)
+        }
         className="h-11 w-full gap-2 rounded-full px-5 sm:w-auto lg:shrink-0 hover:cursor-pointer"
       >
         Review Results

@@ -21,7 +21,7 @@ export default function Home() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   function handleCollectionUploadCreated(response: CreateCollectionUploadResponse) {
-    router.push(`/collections/${response.collectionId}/progress`);
+    router.push(`/dashboard/collections/${response.collectionId}/progress`);
   }
 
   return (

@@ -159,7 +159,7 @@ function CollectionTimeline({ collection }: { collection: Collection }) {
 
 function getCollectionActionHref(collection: Collection) {
   if (collection.status === "PROCESSING" || collection.status === "UPLOADING") {
-    return `/collections/${collection.id}/progress`;
+    return `/dashboard/collections/${collection.id}/progress`;
   }
 
   if (
@@ -167,7 +167,7 @@ function getCollectionActionHref(collection: Collection) {
     collection.status === "IN_REVIEW" ||
     collection.status === "COMPLETED"
   ) {
-    return `/collections/${collection.id}/results`;
+    return `/dashboard/collections/${collection.id}/results`;
   }
 
   return null;
