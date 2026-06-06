@@ -11,6 +11,7 @@ import {
   updateCollectionGroupRepresentative,
   updateCollectionName,
 } from "@/services/collections";
+import type { CollectionResultsSummary } from "@/services/collections";
 
 const ACTIVE_STATUSES = new Set(["UPLOADING", "PROCESSING"]);
 const POLL_INTERVAL_MS = 3_000;
@@ -78,7 +79,14 @@ export function useUpdateCollectionName() {
   return useMutation({
     mutationFn: ({ collectionId, name }: { collectionId: string; name: string }) =>
       updateCollectionName(collectionId, name),
-    onSuccess: () => {
+    onSuccess: (result, variables) => {
+      queryClient.setQueryData<CollectionResultsSummary>(
+        queryKeys.collections.resultsSummary(variables.collectionId),
+        (summary) =>
+          summary
+            ? { ...summary, collectionName: result.collection.name }
+            : summary,
+      );
       void queryClient.invalidateQueries({
         queryKey: queryKeys.collections.list(),
       });
