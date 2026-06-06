@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Images, Settings } from "lucide-react";
+import { CheckCircle2, CirclePlus, Images, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -34,6 +34,11 @@ type AppSidebarProps = {
 export const APP_SIDEBAR_DEFAULT_OPEN = false;
 
 const navItems = [
+  {
+    title: "New collection",
+    icon: CirclePlus,
+    href: "/dashboard/collections/new",
+  },
   {
     title: "Collections",
     href: "/dashboard",
