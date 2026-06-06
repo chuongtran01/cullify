@@ -1,5 +1,7 @@
 "use client";
 
+import { CirclePlus } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import {
@@ -16,6 +18,7 @@ import {
 } from "@/components/collections/collections-summary";
 import { EmptyCollections } from "@/components/collections/empty-collections";
 import type { CollectionFilterValue } from "@/components/collections/types";
+import { Button } from "@/components/ui/button";
 import { useCollections, useCollectionsSummary } from "@/features/collections/hooks";
 
 const emptySummary = {
@@ -60,14 +63,19 @@ export function CollectionsPage() {
   }, [activeFilter, collections, search]);
 
   return (
-    <div className="flex w-full flex-col gap-8">
-      <header>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-normal leading-tight text-ink">
           Collections
         </h1>
-        <p className="mt-2 text-sm leading-6 text-body">
-          Upload, process, and review your photo collections.
-        </p>
+        <Button
+          asChild
+          className="cursor-pointer px-6 sm:self-auto"
+        >
+          <Link href="/dashboard/collections/new">
+            New collection
+          </Link>
+        </Button>
       </header>
 
       {isPending || isSummaryPending ? (
