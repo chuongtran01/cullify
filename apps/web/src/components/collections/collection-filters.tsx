@@ -1,14 +1,7 @@
-import { ChevronDown, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 import { collectionFilters } from "@/components/collections/mock-data";
 import type { CollectionFilterValue } from "@/components/collections/types";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -35,7 +28,7 @@ export function CollectionFilters({
             className={cn(
               "h-8 rounded-full border border-hairline-light px-3 text-sm font-medium text-body transition-colors hover:border-ink hover:text-ink",
               activeFilter === filter.value &&
-                "border-ink bg-ink text-on-primary hover:text-on-primary",
+              "border-ink bg-ink text-on-primary hover:text-on-primary",
             )}
             onClick={() => onFilterChange(filter.value)}
             type="button"
@@ -57,20 +50,6 @@ export function CollectionFilters({
             placeholder="Search collections"
           />
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              className="h-9 justify-between border-hairline bg-surface-card hover:bg-surface-stone"
-              variant="outline"
-            >
-              Newest First
-              <ChevronDown className="size-4" aria-hidden="true" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-40">
-            <DropdownMenuItem>Newest First</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
     </div>
   );
@@ -89,7 +68,6 @@ export function CollectionFiltersSkeleton() {
       </div>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <Skeleton className="h-9 w-full sm:w-64" />
-        <Skeleton className="h-9 w-32" />
       </div>
     </div>
   );
