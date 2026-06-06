@@ -104,7 +104,7 @@ export function ResultsHeader({ summary }: ResultsHeaderProps) {
       : null;
 
   return (
-    <header className="flex items-center justify-between gap-4 pb-4">
+    <header className="flex items-center justify-between gap-4">
       <div className="min-w-0">
         {summary.isPending ? (
           <Skeleton className="h-6 w-48" />
