@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Loader2, Lock, Search, Upload, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useDropzone } from "react-dropzone";
 
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,10 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { useUploadCollection } from "@/features/collections/hooks";
 import { authClient } from "@/lib/auth-client";
-import type { CollectionUploadProgress } from "@/services/collections";
+import type {
+  CollectionUploadProgress,
+  CreateCollectionUploadResponse,
+} from "@/services/collections";
 import { CollectionUploadError, CollectionUploadStorageError } from "@/services/collections";
 import { cn } from "@/lib/utils";
 
@@ -164,6 +168,7 @@ function ManageSelectionDialog({
 }
 
 export function NewCollectionPage() {
+  const router = useRouter();
   const [files, setFiles] = React.useState<File[]>([]);
   const [selectionDialogOpen, setSelectionDialogOpen] = React.useState(false);
   const [fileSearch, setFileSearch] = React.useState("");
@@ -259,12 +264,8 @@ export function NewCollectionPage() {
         onProgress: setUploadProgress,
       },
       {
-        onSuccess: () => {
-          setFiles([]);
-          setUploadProgress(null);
-          setSelectionDialogOpen(false);
-          setFileSearch("");
-          uploadCollection.reset();
+        onSuccess: (response: CreateCollectionUploadResponse) => {
+          router.push(`/dashboard/collections/${response.collectionId}/progress`);
         },
         onError: () => {
           setUploadProgress(null);
