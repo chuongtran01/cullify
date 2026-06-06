@@ -7,6 +7,8 @@ import {
   CollectionsServiceError,
 } from "@/services/collections/errors";
 import type {
+  CollectionGroupDetail,
+  CollectionGroupsResponse,
   CollectionUploadProgress,
   CreateCollectionUploadRequest,
   CreateCollectionUploadResponse,
@@ -87,6 +89,82 @@ export async function getCollectionProgress(
   }
 
   return response.json() as Promise<CollectionProgressData>;
+}
+
+export async function listCollectionGroups(
+  collectionId: string,
+): Promise<CollectionGroupsResponse> {
+  const response = await fetch(`/api/collections/${collectionId}/groups`, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+  });
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
+
+    throw new CollectionsServiceError(
+      data.error ?? "Failed to load collection groups",
+      response.status,
+    );
+  }
+
+  return response.json() as Promise<CollectionGroupsResponse>;
+}
+
+export async function getCollectionGroup(
+  collectionId: string,
+  groupId: string,
+): Promise<CollectionGroupDetail> {
+  const response = await fetch(
+    `/api/collections/${collectionId}/groups/${groupId}`,
+    {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    },
+  );
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
+
+    throw new CollectionsServiceError(
+      data.error ?? "Failed to load collection group",
+      response.status,
+    );
+  }
+
+  return response.json() as Promise<CollectionGroupDetail>;
+}
+
+export async function updateCollectionGroupRepresentative(
+  collectionId: string,
+  groupId: string,
+  representativeImageId: string | null,
+): Promise<{ ok: true }> {
+  const response = await fetch(
+    `/api/collections/${collectionId}/groups/${groupId}/representative`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ representativeImageId }),
+    },
+  );
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
+
+    throw new CollectionsServiceError(
+      data.error ?? "Failed to update group representative",
+      response.status,
+    );
+  }
+
+  return response.json() as Promise<{ ok: true }>;
 }
 
 export async function updateCollectionName(

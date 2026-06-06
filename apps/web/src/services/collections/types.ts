@@ -28,3 +28,31 @@ export type CollectionUploadProgress = {
   total: number;
   fileName: string;
 };
+
+export type CollectionGroupSummary = {
+  id: string;
+  collectionId: string;
+  representativeImageId: string | null;
+  imageCount: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CollectionGroupsResponse = {
+  groups: CollectionGroupSummary[];
+  totalGroups: number;
+  totalImages: number;
+};
+
+export type CollectionGroupImage = {
+  id: string;
+  fileName: string;
+  objectKey: string;
+  mimeType: string;
+  createdAt: string;
+  imageUrl: string;
+};
+
+export type CollectionGroupDetail = CollectionGroupSummary & {
+  images: CollectionGroupImage[];
+};

@@ -1,4 +1,4 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { getR2BucketName, getR2Client } from "@/lib/r2/client";
@@ -8,6 +8,7 @@ import type {
 } from "@/services/collections/types";
 
 export const UPLOAD_URL_EXPIRES_IN_SECONDS = 3600;
+export const DOWNLOAD_URL_EXPIRES_IN_SECONDS = 3600;
 
 export async function createPresignedUpload(
   fileId: string,
@@ -32,4 +33,17 @@ export async function createPresignedUpload(
       "Content-Type": file.type,
     },
   };
+}
+
+export async function createPresignedDownloadUrl(
+  objectKey: string,
+): Promise<string> {
+  const command = new GetObjectCommand({
+    Bucket: getR2BucketName(),
+    Key: objectKey,
+  });
+
+  return getSignedUrl(getR2Client(), command, {
+    expiresIn: DOWNLOAD_URL_EXPIRES_IN_SECONDS,
+  });
 }
