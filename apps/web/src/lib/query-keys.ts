@@ -19,7 +19,7 @@ export const queryKeys = {
       [
         ...queryKeys.collections.all,
         collectionId,
-        "low-quality-images",
+        "low-quality",
         options?.limit ?? null,
         options?.offset ?? null,
       ] as const,

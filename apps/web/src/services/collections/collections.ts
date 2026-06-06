@@ -207,7 +207,7 @@ export async function getCollectionLowQualityImages(
 
   const query = searchParams.size > 0 ? `?${searchParams.toString()}` : "";
   const response = await fetch(
-    `/api/collections/${collectionId}/low-quality-images${query}`,
+    `/api/collections/${collectionId}/low-quality${query}`,
     {
       method: "GET",
       headers: { Accept: "application/json" },
