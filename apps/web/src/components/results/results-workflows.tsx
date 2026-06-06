@@ -48,21 +48,6 @@ function WorkflowSection({
   );
 }
 
-function PicksStrip({ photos }: { photos: ReviewPhoto[] }) {
-  return (
-    <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
-      {photos.map((photo) => (
-        <article
-          key={photo.id}
-          className="min-w-56 overflow-hidden rounded-3xl border border-hairline bg-surface-card"
-        >
-          <PhotoSurface className="aspect-[4/3]" src={photo.src} title={photo.title} />
-        </article>
-      ))}
-    </div>
-  );
-}
-
 function SimilarGroupCard({ group }: { group: SimilarGroup }) {
   return (
     <article className="min-w-60 overflow-hidden rounded-2xl border border-hairline bg-surface-card">
@@ -96,18 +81,10 @@ function RejectedPhotoCard({ photo }: { photo: ReviewPhoto }) {
 export function ResultsWorkflows({
   data,
 }: {
-  data: Pick<ReviewResultsData, "standoutPhotos" | "similarGroups" | "rejectedPhotos">;
+  data: Pick<ReviewResultsData, "similarGroups" | "rejectedPhotos">;
 }) {
   return (
     <div className="grid min-w-0 gap-5">
-      <WorkflowSection
-        count={`${data.standoutPhotos.length} picks`}
-        description="Start with the photos the AI believes are the strongest moments from the collection."
-        title="Review AI Picks"
-      >
-        <PicksStrip photos={data.standoutPhotos} />
-      </WorkflowSection>
-
       <WorkflowSection
         count={`${data.similarGroups.length} groups`}
         description="Compare visually similar photos and keep the best frame from each set."
