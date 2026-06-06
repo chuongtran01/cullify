@@ -151,7 +151,7 @@ function countProcessedImages(images: CollectionImageSignal[]) {
   }).length;
 }
 
-function formatFallbackCollectionName(createdAt: Date): string {
+export function formatFallbackCollectionName(createdAt: Date): string {
   const date = new Intl.DateTimeFormat("en", {
     month: "short",
     day: "numeric",

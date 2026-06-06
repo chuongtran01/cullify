@@ -1,3 +1,5 @@
+import type { CollectionStatus } from "@/components/collections/types";
+
 export type CollectionUploadFileInput = {
   name: string;
   type: string;
@@ -76,6 +78,10 @@ export type CollectionLowQualityImagesResponse = {
 };
 
 export type CollectionResultsSummary = {
+  collectionId: string;
+  collectionName: string;
+  status: CollectionStatus;
+  createdAt: string;
   totalPhotos: number;
   similarGroups: number;
   lowQualityImages: number;

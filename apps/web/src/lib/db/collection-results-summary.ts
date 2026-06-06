@@ -2,14 +2,24 @@ import "server-only";
 
 import { ImageUploadStatus } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { formatFallbackCollectionName } from "@/lib/db/collections";
+import type { CollectionStatus } from "@/components/collections/types";
 
 export type CollectionResultsSummary = {
+  collectionId: string;
+  collectionName: string;
+  status: CollectionStatus;
+  createdAt: string;
   totalPhotos: number;
   similarGroups: number;
   lowQualityImages: number;
 };
 
 type CollectionResultsSummaryRow = {
+  collectionId: string;
+  collectionName: string | null;
+  status: CollectionStatus;
+  createdAt: Date;
   totalPhotos: number | bigint;
   similarGroups: number | bigint;
   lowQualityImages: number | bigint;
@@ -19,20 +29,12 @@ export async function getCollectionResultsSummary(
   collectionId: string,
   userId: string,
 ): Promise<CollectionResultsSummary | null> {
-  const collectionRows = await prisma.$queryRaw<{ id: string }[]>`
-    SELECT id
-    FROM "collection"
-    WHERE id = ${collectionId}::uuid
-      AND user_id = ${userId}
-    LIMIT 1
-  `;
-
-  if (collectionRows.length === 0) {
-    return null;
-  }
-
   const rows = await prisma.$queryRaw<CollectionResultsSummaryRow[]>`
     SELECT
+      collection.id AS "collectionId",
+      collection.name AS "collectionName",
+      collection.status AS "status",
+      collection.created_at AS "createdAt",
       (
         SELECT COUNT(*)::int
         FROM image
@@ -61,19 +63,24 @@ export async function getCollectionResultsSummary(
             image_quality_analysis.has_compression_artifacts
           )
       ) AS "lowQualityImages"
+    FROM collection
+    WHERE collection.id = ${collectionId}::uuid
+      AND collection.user_id = ${userId}
+    LIMIT 1
   `;
 
   const summary = rows[0];
 
   if (!summary) {
-    return {
-      totalPhotos: 0,
-      similarGroups: 0,
-      lowQualityImages: 0,
-    };
+    return null;
   }
 
   return {
+    collectionId: summary.collectionId,
+    collectionName:
+      summary.collectionName ?? formatFallbackCollectionName(summary.createdAt),
+    status: summary.status,
+    createdAt: summary.createdAt.toISOString(),
     totalPhotos: Number(summary.totalPhotos),
     similarGroups: Number(summary.similarGroups),
     lowQualityImages: Number(summary.lowQualityImages),

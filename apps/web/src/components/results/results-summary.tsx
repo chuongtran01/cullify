@@ -1,12 +1,11 @@
 "use client";
 
+import type { UseQueryResult } from "@tanstack/react-query";
 import { HelpCircle, Sparkles } from "lucide-react";
-import { useParams } from "next/navigation";
 
-import type { ReviewResultsData } from "@/components/results/mock-data";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCollectionResultsSummary } from "@/features/collections/hooks";
+import type { CollectionResultsSummary } from "@/services/collections";
 
 function SummaryStat({
   label,
@@ -33,18 +32,14 @@ function SummaryStat({
 }
 
 type ResultsSummaryProps = {
-  data: Pick<ReviewResultsData, "similarGroups" | "rejectedPhotos" | "totalPhotos">;
+  summary: UseQueryResult<CollectionResultsSummary, Error>;
 };
 
-export function ResultsSummary({ data }: ResultsSummaryProps) {
-  const params = useParams<{ collectionId: string }>();
-  const collectionId = params.collectionId ?? "";
-  const summary = useCollectionResultsSummary(collectionId);
+export function ResultsSummary({ summary }: ResultsSummaryProps) {
   const isLoading = summary.isPending;
-  const totalPhotos = summary.data?.totalPhotos ?? data.totalPhotos;
-  const similarGroups = summary.data?.similarGroups ?? data.similarGroups.length;
-  const lowQualityImages =
-    summary.data?.lowQualityImages ?? data.rejectedPhotos.length;
+  const totalPhotos = summary.data?.totalPhotos ?? 0;
+  const similarGroups = summary.data?.similarGroups ?? 0;
+  const lowQualityImages = summary.data?.lowQualityImages ?? 0;
 
   return (
     <section className="grid gap-5 rounded-3xl bg-deep-green p-5 text-white lg:grid-cols-[1.15fr_1fr] lg:items-center">
@@ -60,6 +55,11 @@ export function ResultsSummary({ data }: ResultsSummaryProps) {
           Cullify selected the strongest photos, grouped similar frames, and flagged
           low-quality or duplicate images so you can move through review with a clear path.
         </p>
+        {summary.isError ? (
+          <p className="mt-3 text-sm text-white/70">
+            Unable to refresh the latest result totals.
+          </p>
+        ) : null}
         <Button
           variant="outline"
           className="mt-6 h-11 rounded-full border-white/20 bg-transparent px-5 text-white hover:bg-white/10 hover:text-white"
