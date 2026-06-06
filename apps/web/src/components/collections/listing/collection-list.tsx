@@ -20,8 +20,8 @@ import { useState } from "react";
 import {
   formatCollectionDate,
   getCollectionActionLabel,
-} from "@/components/collections/collection-ui";
-import { EditCollectionDialog } from "@/components/collections/edit-collection-dialog";
+} from "@/components/collections/listing/collection-ui";
+import { EditCollectionDialog } from "@/components/collections/listing/edit-collection-dialog";
 import type { Collection, CollectionStatus } from "@/components/collections/types";
 import { Button } from "@/components/ui/button";
 import {

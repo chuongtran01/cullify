@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 
-import { collectionFilters } from "@/components/collections/mock-data";
+import { collectionFilters } from "@/components/collections/listing/mock-data";
 import type { CollectionFilterValue } from "@/components/collections/types";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";

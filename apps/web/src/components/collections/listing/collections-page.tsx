@@ -6,16 +6,16 @@ import { useMemo, useState } from "react";
 import {
   CollectionFilters,
   CollectionFiltersSkeleton,
-} from "@/components/collections/collection-filters";
+} from "@/components/collections/listing/collection-filters";
 import {
   CollectionList,
   CollectionListSkeleton,
-} from "@/components/collections/collection-list";
+} from "@/components/collections/listing/collection-list";
 import {
   CollectionsSummary,
   CollectionsSummarySkeleton,
-} from "@/components/collections/collections-summary";
-import { EmptyCollections } from "@/components/collections/empty-collections";
+} from "@/components/collections/listing/collections-summary";
+import { EmptyCollections } from "@/components/collections/listing/empty-collections";
 import type { CollectionFilterValue } from "@/components/collections/types";
 import { Button } from "@/components/ui/button";
 import { useCollections, useCollectionsSummary } from "@/features/collections/hooks";
