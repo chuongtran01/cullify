@@ -57,7 +57,6 @@ export async function listUserCollections(userId: string): Promise<Collection[]>
   return collections.map((collection) => {
     const totalImages = collection.images.length;
     const processedImages = countProcessedImages(collection.images);
-    const lowQualityImages = countLowQualityImages(collection.images);
     const status = mapCollectionStatus(collection.status, totalImages, processedImages);
 
     return {
@@ -67,19 +66,9 @@ export async function listUserCollections(userId: string): Promise<Collection[]>
       totalImages,
       processedImages,
       createdAt: collection.createdAt.toISOString(),
-      completedAt:
-        status === "READY_FOR_REVIEW" || status === "COMPLETED"
-          ? collection.updatedAt.toISOString()
-          : undefined,
-      aiPicksCount:
-        status === "READY_FOR_REVIEW"
-          ? Math.max(0, totalImages - lowQualityImages)
-          : undefined,
-      groupsCount: status === "READY_FOR_REVIEW" ? 0 : undefined,
       reviewedImages: status === "IN_REVIEW" ? 0 : undefined,
       keptImages: status === "COMPLETED" ? 0 : undefined,
       rejectedImages: status === "COMPLETED" ? 0 : undefined,
-      thumbnailUrls: [],
       errorMessage:
         status === "FAILED" ? "Processing failed. Retry this collection." : undefined,
     };
@@ -180,27 +169,6 @@ function normalizeCollectionName(name: string): string | null {
   }
 
   return normalized;
-}
-
-function countLowQualityImages(images: CollectionImageSignal[]) {
-  return images.filter((image) => {
-    const analysis = image.qualityAnalysis;
-
-    if (!analysis) {
-      return false;
-    }
-
-    return (
-      analysis.isBlurry ||
-      analysis.isOutOfFocus ||
-      analysis.hasMotionBlur ||
-      analysis.hasEyesClosed ||
-      analysis.isLowExposure ||
-      analysis.isHighExposure ||
-      analysis.hasCompressionArtifacts ||
-      Boolean(analysis.analysisError)
-    );
-  }).length;
 }
 
 function mapCollectionStatus(

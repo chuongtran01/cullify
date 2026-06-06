@@ -112,51 +112,6 @@ function CollectionStatusBlock({ collection }: { collection: Collection }) {
   );
 }
 
-function CollectionTimeline({ collection }: { collection: Collection }) {
-  if (collection.status === "PROCESSING" || collection.status === "UPLOADING") {
-    return (
-      <div className="grid gap-1 text-xs text-body">
-        <span>Started</span>
-        <span>2 min ago</span>
-      </div>
-    );
-  }
-
-  if (collection.status === "READY_FOR_REVIEW") {
-    return (
-      <div className="grid gap-1 text-xs text-body">
-        <span>Ready</span>
-        <span>1 day ago</span>
-      </div>
-    );
-  }
-
-  if (collection.status === "COMPLETED") {
-    return (
-      <div className="grid gap-1 text-xs text-body">
-        <span>Completed</span>
-        <span>{collection.completedAt ? formatCollectionDate(collection.completedAt) : "-"}</span>
-      </div>
-    );
-  }
-
-  if (collection.status === "IN_REVIEW") {
-    return (
-      <div className="grid gap-1 text-xs text-body">
-        <span>In review</span>
-        <span>{formatCollectionDate(collection.createdAt)}</span>
-      </div>
-    );
-  }
-
-  return (
-    <div className="grid gap-1 text-xs text-body">
-      <span>Failed</span>
-      <span>{formatCollectionDate(collection.createdAt)}</span>
-    </div>
-  );
-}
-
 function getCollectionActionHref(collection: Collection) {
   if (collection.status === "PROCESSING" || collection.status === "UPLOADING") {
     return `/dashboard/collections/${collection.id}/progress`;
@@ -234,11 +189,6 @@ const collectionColumns: ColumnDef<Collection>[] = [
     cell: ({ row }) => <CollectionStatusBlock collection={row.original} />,
   },
   {
-    id: "timeline",
-    header: "Timeline",
-    cell: ({ row }) => <CollectionTimeline collection={row.original} />,
-  },
-  {
     id: "primaryAction",
     header: "Action",
     cell: ({ row }) => {
@@ -310,7 +260,7 @@ export function CollectionList({ collections }: CollectionListProps) {
           {table.getRowModel().rows.map((row) => (
             <TableRow
               key={row.id}
-              className="grid gap-4 border-b border-hairline-light px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_120px_180px_32px] lg:items-center"
+              className="grid gap-4 border-b border-hairline-light px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_180px_32px] lg:items-center"
             >
               {row.getVisibleCells().map((cell) => (
                 <TableCell
@@ -341,7 +291,6 @@ export function CollectionListSkeleton({
           <TableRow>
             <TableHead>Collection</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Timeline</TableHead>
             <TableHead>Action</TableHead>
             <TableHead>More actions</TableHead>
           </TableRow>
@@ -350,7 +299,7 @@ export function CollectionListSkeleton({
           {Array.from({ length: rowCount }).map((_, index) => (
             <TableRow
               key={index}
-              className="grid gap-4 border-b border-hairline-light px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_120px_180px_32px] lg:items-center"
+              className="grid gap-4 border-b border-hairline-light px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_180px_32px] lg:items-center"
             >
               <TableCell className="block whitespace-normal p-0">
                 <div className="min-w-0">
@@ -362,12 +311,6 @@ export function CollectionListSkeleton({
                 <div className="flex items-center gap-2">
                   <Skeleton className="size-3.5 rounded-full" />
                   <Skeleton className="h-3 w-32" />
-                </div>
-              </TableCell>
-              <TableCell className="block whitespace-normal p-0">
-                <div className="grid gap-1">
-                  <Skeleton className="h-3 w-16" />
-                  <Skeleton className="h-3 w-20" />
                 </div>
               </TableCell>
               <TableCell className="block whitespace-normal p-0">

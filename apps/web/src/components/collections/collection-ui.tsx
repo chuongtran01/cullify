@@ -84,11 +84,9 @@ export function getCollectionActionLabel(status: CollectionStatus) {
 }
 
 export function ThumbnailCollage({
-  urls,
   name,
   compact = false,
 }: {
-  urls: string[];
   name: string;
   compact?: boolean;
 }) {
@@ -100,17 +98,9 @@ export function ThumbnailCollage({
       )}
       aria-label={`${name} thumbnails`}
     >
-      {urls.slice(0, 3).map((url, index) => (
-        <div
-          key={url}
-          className={cn(
-            "size-full bg-cover bg-center",
-            index === 0 && "row-span-2",
-            index > 0 && "col-start-2",
-          )}
-          style={{ backgroundImage: `url(${url})` }}
-        />
-      ))}
+      <div className="row-span-2 bg-surface-card" />
+      <div className="col-start-2 bg-hairline-light" />
+      <div className="col-start-2 bg-surface-card" />
     </div>
   );
 }
@@ -142,7 +132,7 @@ export function CollectionMetadata({ collection }: { collection: Collection }) {
   if (collection.status === "READY_FOR_REVIEW") {
     return (
       <p className="text-sm text-body">
-        {collection.aiPicksCount} AI picks · {collection.groupsCount} groups
+        Ready to review {collection.totalImages} photos
       </p>
     );
   }

@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronRight, MoreHorizontal, Users } from "lucide-react";
+import { CalendarDays, ChevronRight, MoreHorizontal } from "lucide-react";
 
 import type { Collection } from "@/components/collections/types";
 import { Button } from "@/components/ui/button";
@@ -8,23 +8,15 @@ type ContinueCollectionsProps = {
   collections: Collection[];
 };
 
-function ContinueThumbnailGrid({ collection }: { collection: Collection }) {
-  const urls = Array.from({ length: 4 }, (_, index) => {
-    return collection.thumbnailUrls[index % collection.thumbnailUrls.length];
-  });
-
+function ContinueThumbnailGrid({ name }: { name: string }) {
   return (
     <div
       className="grid size-40 shrink-0 grid-cols-2 grid-rows-2 gap-1 overflow-hidden rounded-md bg-surface-stone"
-      aria-label={`${collection.name} thumbnails`}
+      aria-label={`${name} thumbnails`}
     >
-      {urls.map((url, index) => (
-        <div
-          key={`${url}-${index}`}
-          className="size-full rounded-sm bg-cover bg-center"
-          style={{ backgroundImage: `url(${url})` }}
-        />
-      ))}
+      <div className="row-span-2 rounded-sm bg-surface-card" />
+      <div className="rounded-sm bg-hairline-light" />
+      <div className="rounded-sm bg-surface-card" />
     </div>
   );
 }
@@ -52,17 +44,14 @@ function ContinueProgress({ collection }: { collection: Collection }) {
   const reviewedImages = collection.reviewedImages ?? 0;
   const progress = isInReview
     ? Math.min(100, Math.round((reviewedImages / collection.totalImages) * 100))
-    : Math.min(
-      100,
-      Math.round(((collection.aiPicksCount ?? 0) / collection.totalImages) * 100),
-    );
+    : 0;
 
   return (
     <div className="grid gap-1.5">
       <p className="text-sm text-body">
         {isInReview
           ? `Reviewed ${reviewedImages} / ${collection.totalImages}`
-          : `AI picks: ${collection.aiPicksCount ?? 0}`}
+          : `${collection.totalImages} photos ready`}
       </p>
       <div className="h-1 overflow-hidden rounded-full bg-hairline-light">
         <div
@@ -102,7 +91,7 @@ export function ContinueCollections({ collections }: ContinueCollectionsProps) {
             key={collection.id}
             className="flex gap-4 rounded-md border border-hairline-light bg-surface-card p-3"
           >
-            <ContinueThumbnailGrid collection={collection} />
+            <ContinueThumbnailGrid name={collection.name} />
             <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 py-1">
               <div className="min-w-0">
                 <div className="flex items-start justify-between gap-3">
@@ -124,10 +113,6 @@ export function ContinueCollections({ collections }: ContinueCollectionsProps) {
                   <span className="inline-flex items-center gap-1">
                     <CalendarDays className="size-3.5" aria-hidden="true" />
                     {collection.totalImages} photos
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <Users className="size-3.5" aria-hidden="true" />
-                    {collection.groupsCount ?? 0} groups
                   </span>
                 </div>
               </div>

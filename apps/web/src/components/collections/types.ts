@@ -13,13 +13,9 @@ export type Collection = {
   totalImages: number;
   processedImages: number;
   createdAt: string;
-  completedAt?: string;
-  aiPicksCount?: number;
-  groupsCount?: number;
   reviewedImages?: number;
   keptImages?: number;
   rejectedImages?: number;
-  thumbnailUrls: string[];
   errorMessage?: string;
 };
 
