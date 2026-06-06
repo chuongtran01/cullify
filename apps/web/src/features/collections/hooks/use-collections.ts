@@ -61,10 +61,13 @@ export function useCollectionGroup(collectionId: string, groupId: string) {
   });
 }
 
-export function useCollectionLowQualityImages(collectionId: string) {
+export function useCollectionLowQualityImages(
+  collectionId: string,
+  options: { limit?: number; offset?: number } = {},
+) {
   return useQuery({
-    queryKey: queryKeys.collections.lowQualityImages(collectionId),
-    queryFn: () => getCollectionLowQualityImages(collectionId),
+    queryKey: queryKeys.collections.lowQualityImages(collectionId, options),
+    queryFn: () => getCollectionLowQualityImages(collectionId, options),
     enabled: collectionId.length > 0,
   });
 }

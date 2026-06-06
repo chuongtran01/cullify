@@ -56,6 +56,15 @@ function getDashboardBreadcrumbs(pathname: string): BreadcrumbSegment[] {
     ];
   }
 
+  if (/^\/dashboard\/collections\/[^/]+\/results\/low-quality$/.test(pathname)) {
+    return [
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Collections", href: "/dashboard" },
+      { label: "Results", href: pathname.replace(/\/low-quality$/, "") },
+      { label: "Low Quality" },
+    ];
+  }
+
   return [{ label: "Dashboard" }];
 }
 

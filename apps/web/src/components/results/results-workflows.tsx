@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import type {
@@ -18,11 +19,13 @@ function WorkflowSection({
   count,
   description,
   children,
+  href,
 }: {
   title: string;
   count: string;
   description: string;
   children: React.ReactNode;
+  href?: string;
 }) {
   return (
     <section className="min-w-0 overflow-hidden rounded-3xl border border-hairline bg-canvas p-5">
@@ -36,16 +39,32 @@ function WorkflowSection({
           </div>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-body">{description}</p>
         </div>
-        <Button
-          variant="outline"
-          className="h-10 gap-2 rounded-full border-hairline bg-surface-card px-4 hover:bg-surface-stone hover:cursor-pointer sm:shrink-0"
-        >
-          Review
-          <ArrowRight
-            className="size-4 transition-transform duration-200 group-hover/button:translate-x-1"
-            aria-hidden="true"
-          />
-        </Button>
+        {href ? (
+          <Button
+            asChild
+            variant="outline"
+            className="h-10 gap-2 rounded-full border-hairline bg-surface-card px-4 hover:bg-surface-stone hover:cursor-pointer sm:shrink-0"
+          >
+            <Link href={href}>
+              Review
+              <ArrowRight
+                className="size-4 transition-transform duration-200 group-hover/button:translate-x-1"
+                aria-hidden="true"
+              />
+            </Link>
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            className="h-10 gap-2 rounded-full border-hairline bg-surface-card px-4 hover:bg-surface-stone hover:cursor-pointer sm:shrink-0"
+          >
+            Review
+            <ArrowRight
+              className="size-4 transition-transform duration-200 group-hover/button:translate-x-1"
+              aria-hidden="true"
+            />
+          </Button>
+        )}
       </div>
       {children}
     </section>
@@ -134,7 +153,7 @@ export function ResultsWorkflows({
 }) {
   const params = useParams<{ collectionId: string }>();
   const collectionId = params.collectionId ?? "";
-  const lowQualityImages = useCollectionLowQualityImages(collectionId);
+  const lowQualityImages = useCollectionLowQualityImages(collectionId, { limit: 5 });
   const lowQualityCount =
     lowQualityImages.data?.totalLowQualityImages ??
     (lowQualityImages.isPending ? 0 : 0);
@@ -156,6 +175,7 @@ export function ResultsWorkflows({
       <WorkflowSection
         count={`${lowQualityCount} photos`}
         description="Check photos flagged for blur, focus issues, closed eyes, poor lighting, or duplication."
+        href={`/dashboard/collections/${collectionId}/results/low-quality`}
         title="Review Low Quality Photos"
       >
         <LowQualityPhotosStrip

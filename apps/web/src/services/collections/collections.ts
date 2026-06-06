@@ -193,9 +193,21 @@ export async function updateCollectionGroupRepresentative(
 
 export async function getCollectionLowQualityImages(
   collectionId: string,
+  options: { limit?: number; offset?: number } = {},
 ): Promise<CollectionLowQualityImagesResponse> {
+  const searchParams = new URLSearchParams();
+
+  if (options.limit !== undefined) {
+    searchParams.set("limit", String(options.limit));
+  }
+
+  if (options.offset !== undefined) {
+    searchParams.set("offset", String(options.offset));
+  }
+
+  const query = searchParams.size > 0 ? `?${searchParams.toString()}` : "";
   const response = await fetch(
-    `/api/collections/${collectionId}/low-quality-images`,
+    `/api/collections/${collectionId}/low-quality-images${query}`,
     {
       method: "GET",
       headers: { Accept: "application/json" },

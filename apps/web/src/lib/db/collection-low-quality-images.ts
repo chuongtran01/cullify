@@ -3,7 +3,8 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { createPresignedDownloadUrl } from "@/lib/r2/presign";
 
-const LOW_QUALITY_LIMIT = 5;
+export const DEFAULT_LOW_QUALITY_LIMIT = 50;
+export const MAX_LOW_QUALITY_LIMIT = 100;
 
 export type CollectionLowQualityImage = {
   id: string;
@@ -18,6 +19,9 @@ export type CollectionLowQualityImage = {
 export type CollectionLowQualityImagesResponse = {
   images: CollectionLowQualityImage[];
   totalLowQualityImages: number;
+  limit: number;
+  offset: number;
+  hasMore: boolean;
 };
 
 type LowQualityImageRow = {
@@ -40,6 +44,13 @@ type LowQualityImageRow = {
 export async function getCollectionLowQualityImages(
   collectionId: string,
   userId: string,
+  {
+    limit = DEFAULT_LOW_QUALITY_LIMIT,
+    offset = 0,
+  }: {
+    limit?: number;
+    offset?: number;
+  } = {},
 ): Promise<CollectionLowQualityImagesResponse | null> {
   const collectionRows = await prisma.$queryRaw<{ id: string }[]>`
     SELECT id
@@ -91,7 +102,8 @@ export async function getCollectionLowQualityImages(
         image_quality_analysis.has_compression_artifacts
       )
     ORDER BY "reasonCount" DESC, image.created_at ASC
-    LIMIT ${LOW_QUALITY_LIMIT}
+    LIMIT ${limit}
+    OFFSET ${offset}
   `;
 
   const images = await Promise.all(
@@ -106,9 +118,14 @@ export async function getCollectionLowQualityImages(
     })),
   );
 
+  const totalLowQualityImages = rows[0]?.totalCount ?? 0;
+
   return {
     images,
-    totalLowQualityImages: rows[0]?.totalCount ?? 0,
+    totalLowQualityImages,
+    limit,
+    offset,
+    hasMore: offset + images.length < totalLowQualityImages,
   };
 }
 

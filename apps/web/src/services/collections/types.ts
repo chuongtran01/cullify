@@ -70,6 +70,9 @@ export type CollectionLowQualityImage = {
 export type CollectionLowQualityImagesResponse = {
   images: CollectionLowQualityImage[];
   totalLowQualityImages: number;
+  limit: number;
+  offset: number;
+  hasMore: boolean;
 };
 
 export type CollectionResultsSummary = {
