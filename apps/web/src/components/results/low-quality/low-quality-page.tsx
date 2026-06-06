@@ -8,7 +8,10 @@ import { LowQualityHeader } from "@/components/results/low-quality/low-quality-h
 import { LowQualityImageCard } from "@/components/results/low-quality/low-quality-image-card";
 import { LowQualityState } from "@/components/results/low-quality/low-quality-state";
 import { Button } from "@/components/ui/button";
-import { useCollectionLowQualityImages } from "@/features/collections/hooks";
+import {
+  useCollectionLowQualityImages,
+  useUpdateCollectionImageReview,
+} from "@/features/collections/hooks";
 import { CollectionsServiceError } from "@/services/collections";
 
 const PAGE_SIZE = 50;
@@ -19,10 +22,15 @@ type LowQualityPageProps = {
 
 export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   const [limit, setLimit] = useState(PAGE_SIZE);
-  const { data, error, isPending } = useCollectionLowQualityImages(collectionId, {
+  const queryOptions = {
     limit,
     offset: 0,
-  });
+  };
+  const { data, error, isPending } = useCollectionLowQualityImages(
+    collectionId,
+    queryOptions,
+  );
+  const updateReview = useUpdateCollectionImageReview(collectionId, queryOptions);
   const images = data?.images ?? [];
   const total = data?.totalLowQualityImages ?? 0;
 
@@ -52,7 +60,17 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {images.map((image) => (
-              <LowQualityImageCard key={image.id} image={image} />
+              <LowQualityImageCard
+                key={image.id}
+                image={image}
+                isSelecting={
+                  updateReview.isPending &&
+                  updateReview.variables?.imageId === image.id
+                }
+                onSelect={(imageId) =>
+                  updateReview.mutate({ imageId, isSelected: true })
+                }
+              />
             ))}
           </div>
           {data?.hasMore ? (

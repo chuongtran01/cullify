@@ -14,6 +14,7 @@ import type {
   CollectionUploadProgress,
   CreateCollectionUploadRequest,
   CreateCollectionUploadResponse,
+  UpdateCollectionImageReviewResponse,
 } from "@/services/collections/types";
 
 type ListCollectionsResponse = {
@@ -250,6 +251,34 @@ export async function updateCollectionName(
   }
 
   return response.json() as Promise<UpdateCollectionNameResponse>;
+}
+
+export async function updateCollectionImageReview(
+  collectionId: string,
+  imageId: string,
+  isSelected: boolean,
+): Promise<UpdateCollectionImageReviewResponse> {
+  const response = await fetch(
+    `/api/collections/${collectionId}/images/${imageId}/review`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isSelected }),
+    },
+  );
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
+
+    throw new CollectionsServiceError(
+      data.error ?? "Failed to update image review",
+      response.status,
+    );
+  }
+
+  return response.json() as Promise<UpdateCollectionImageReviewResponse>;
 }
 
 export async function createCollectionUpload(

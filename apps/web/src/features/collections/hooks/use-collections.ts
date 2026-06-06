@@ -8,10 +8,14 @@ import {
   getCollectionsSummary,
   listCollections,
   listCollectionGroups,
+  updateCollectionImageReview,
   updateCollectionGroupRepresentative,
   updateCollectionName,
 } from "@/services/collections";
-import type { CollectionResultsSummary } from "@/services/collections";
+import type {
+  CollectionLowQualityImagesResponse,
+  CollectionResultsSummary,
+} from "@/services/collections";
 
 const ACTIVE_STATUSES = new Set(["UPLOADING", "PROCESSING"]);
 const POLL_INTERVAL_MS = 3_000;
@@ -70,6 +74,45 @@ export function useCollectionLowQualityImages(
     queryKey: queryKeys.collections.lowQualityImages(collectionId, options),
     queryFn: () => getCollectionLowQualityImages(collectionId, options),
     enabled: collectionId.length > 0,
+  });
+}
+
+export function useUpdateCollectionImageReview(
+  collectionId: string,
+  options: { limit?: number; offset?: number } = {},
+) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      imageId,
+      isSelected,
+    }: {
+      imageId: string;
+      isSelected: boolean;
+    }) => updateCollectionImageReview(collectionId, imageId, isSelected),
+    onSuccess: (result) => {
+      queryClient.setQueryData<CollectionLowQualityImagesResponse>(
+        queryKeys.collections.lowQualityImages(collectionId, options),
+        (data) =>
+          data
+            ? {
+                ...data,
+                images: data.images.map((image) =>
+                  image.id === result.review.imageId
+                    ? {
+                        ...image,
+                        isSelected: result.review.isSelected,
+                        decisionSource: result.review.decisionSource,
+                        decisionReason: result.review.decisionReason,
+                        reviewedAt: result.review.reviewedAt,
+                      }
+                    : image,
+                ),
+              }
+            : data,
+      );
+    },
   });
 }
 

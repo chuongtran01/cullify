@@ -81,6 +81,18 @@ export type CollectionLowQualityImagesResponse = {
   hasMore: boolean;
 };
 
+export type CollectionImageReviewState = {
+  imageId: string;
+  isSelected: boolean;
+  decisionSource: string;
+  decisionReason: string;
+  reviewedAt: string;
+};
+
+export type UpdateCollectionImageReviewResponse = {
+  review: CollectionImageReviewState;
+};
+
 export type CollectionResultsSummary = {
   collectionId: string;
   collectionName: string;
