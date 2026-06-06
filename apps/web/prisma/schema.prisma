@@ -24,6 +24,17 @@ enum ImageUploadStatus {
   FAILED
 }
 
+enum ReviewDecisionSource {
+  DEFAULT
+  USER
+}
+
+enum ReviewDecisionReason {
+  GOOD_STANDALONE
+  LOW_QUALITY
+  SIMILAR_GROUP
+}
+
 model Collection {
   id        String           @id @db.Uuid
   userId    String           @map("user_id")
@@ -34,6 +45,7 @@ model Collection {
   updatedAt DateTime         @updatedAt @map("updated_at")
   images    Image[]
   groups    ImageGroup[]
+  imageReviews CollectionImageReview[]
 
   @@index([userId])
   @@map("collection")
@@ -53,6 +65,7 @@ model Image {
   qualityAnalysis ImageQualityAnalysis?
   embedding       ImageEmbedding?
   groupMembership GroupImage?
+  review          CollectionImageReview?
   representativeForGroups ImageGroup[]  @relation("ImageGroupRepresentative")
 
   @@index([collectionId])
@@ -86,6 +99,26 @@ model GroupImage {
 
   @@index([groupId])
   @@map("group_image")
+}
+
+model CollectionImageReview {
+  id             String               @id @default(uuid()) @db.Uuid
+  collectionId   String               @db.Uuid @map("collection_id")
+  collection     Collection           @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  imageId        String               @unique @db.Uuid @map("image_id")
+  image          Image                @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  isSelected     Boolean              @default(false) @map("is_selected")
+  decisionSource ReviewDecisionSource @default(DEFAULT) @map("decision_source")
+  decisionReason ReviewDecisionReason @map("decision_reason")
+  reviewedAt     DateTime?            @map("reviewed_at")
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @updatedAt @map("updated_at")
+
+  @@index([collectionId])
+  @@index([decisionSource])
+  @@index([decisionReason])
+  @@index([isSelected])
+  @@map("collection_image_review")
 }
 
 model ImageQualityAnalysis {

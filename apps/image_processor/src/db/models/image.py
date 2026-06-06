@@ -9,6 +9,7 @@ from image_processor.db.models.enums import ImageUploadStatus
 
 if TYPE_CHECKING:
     from image_processor.db.models.collection import Collection
+    from image_processor.db.models.collection_image_review import CollectionImageReview
     from image_processor.db.models.group_image import GroupImage
     from image_processor.db.models.image_embedding import ImageEmbedding
     from image_processor.db.models.image_group import ImageGroup
@@ -60,6 +61,11 @@ class Image(Base):
         cascade="all, delete-orphan",
     )
     group_membership: Mapped["GroupImage | None"] = relationship(
+        back_populates="image",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+    review: Mapped["CollectionImageReview | None"] = relationship(
         back_populates="image",
         uselist=False,
         cascade="all, delete-orphan",

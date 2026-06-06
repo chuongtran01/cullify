@@ -8,6 +8,7 @@ from image_processor.db.models.base import Base
 from image_processor.db.models.enums import CollectionStatus
 
 if TYPE_CHECKING:
+    from image_processor.db.models.collection_image_review import CollectionImageReview
     from image_processor.db.models.image import Image
     from image_processor.db.models.image_group import ImageGroup
 
@@ -33,6 +34,10 @@ class Collection(Base):
         cascade="all, delete-orphan",
     )
     groups: Mapped[list["ImageGroup"]] = relationship(
+        back_populates="collection",
+        cascade="all, delete-orphan",
+    )
+    image_reviews: Mapped[list["CollectionImageReview"]] = relationship(
         back_populates="collection",
         cascade="all, delete-orphan",
     )

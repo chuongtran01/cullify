@@ -1,4 +1,7 @@
 from image_processor.db.repositories.collection_repo import CollectionRepository
+from image_processor.db.repositories.collection_image_review_repo import (
+    CollectionImageReviewRepository,
+)
 from image_processor.db.repositories.image_embedding_repo import ImageEmbeddingRepository
 from image_processor.db.repositories.image_group_repo import ImageGroupRepository
 from image_processor.db.repositories.image_quality_analysis_repo import (
@@ -7,6 +10,7 @@ from image_processor.db.repositories.image_quality_analysis_repo import (
 from image_processor.db.repositories.image_repo import ImageRepository
 
 __all__ = [
+    "CollectionImageReviewRepository",
     "CollectionRepository",
     "ImageEmbeddingRepository",
     "ImageGroupRepository",
