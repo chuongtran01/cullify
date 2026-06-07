@@ -68,9 +68,20 @@ workflow focused on choosing the best photo from usable alternatives.
 ## Recommended Database Shape
 
 Use separate tables for image records, quality analysis, embeddings, similarity
-groups, group membership, and review decisions.
+groups, and review decisions. Group membership lives on `Image.groupId` so each
+image can belong to at most one similar group without a join table.
 
 ```prisma
+model Image {
+  id           String      @id @default(uuid())
+  collectionId String
+  groupId      String?
+  group        ImageGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  @@index([collectionId])
+  @@index([groupId])
+}
+
 model ImageQualityAnalysis {
   id                       String   @id @default(uuid())
   imageId                  String   @unique
@@ -119,28 +130,15 @@ model ImageEmbedding {
 }
 
 model ImageGroup {
-  id                    String       @id @default(uuid())
-  collectionId          String
-  representativeImageId String?
-  imageCount            Int
-  images                GroupImage[]
+  id           String   @id @default(uuid())
+  collectionId String
+  imageCount   Int
+  images       Image[]
 
-  createdAt             DateTime     @default(now())
-  updatedAt             DateTime     @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([collectionId])
-  @@index([representativeImageId])
-}
-
-model GroupImage {
-  id        String     @id @default(uuid())
-  groupId   String
-  imageId   String     @unique
-  group     ImageGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  image     Image      @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  createdAt DateTime   @default(now())
-
-  @@index([groupId])
 }
 
 model CollectionImageReview {
@@ -306,7 +304,7 @@ process_collection(collectionId)
     no low-quality flags
   group viable images by embedding similarity
   persist ImageGroup rows
-  persist GroupImage rows
+  assign Image.groupId for images in multi-image groups
   create CollectionImageReview defaults:
     good standalone/singleton images -> selected
     low-quality or analysis-error images -> unselected
@@ -376,7 +374,6 @@ Similarity signals:
 - Add `ImageQualityAnalysis`.
 - Add `ImageEmbedding`.
 - Add `ImageGroup`.
-- Add `GroupImage`.
 - Add `CollectionImageReview`.
 - Add a processing job state model if progress needs to persist independently.
 
@@ -393,7 +390,7 @@ Similarity signals:
 - Generate image embeddings.
 - Exclude low-quality and analysis-error images from grouping.
 - Group viable images within a collection.
-- Persist groups and memberships.
+- Persist multi-image groups and assign `Image.groupId` memberships.
 - Render real grouped gallery data.
 
 ### Phase D: Review Decisions
@@ -415,10 +412,11 @@ Similarity signals:
 
 - Do not put low-quality or analysis-error photos into similarity groups.
 - Send low-quality photos to a rescue/review workflow where users can keep exceptions.
-- Treat singleton groups as standalone photos in review, even if singleton rows exist internally.
+- Treat singleton similarity results as standalone photos in review; do not persist
+  singleton `ImageGroup` rows.
 - Keep recommendations explainable with simple labels.
 - Keep raw model outputs out of the main `Image` row.
 - Let the UI depend on stable group/review/flag outputs, not raw ML internals.
 - Keep AI signals separate from user decisions: quality lives in
-  `ImageQualityAnalysis`, grouping lives in `ImageGroup`/`GroupImage`, and final
+  `ImageQualityAnalysis`, grouping lives in `ImageGroup`/`Image.groupId`, and final
   inclusion lives in `CollectionImageReview`.

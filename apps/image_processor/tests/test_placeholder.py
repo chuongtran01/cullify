@@ -209,7 +209,9 @@ class FakeImageGroupRepository:
         collection_id: str,
         image_groups: list[list[str]],
     ) -> None:
-        self.replacements.append((collection_id, image_groups))
+        self.replacements.append(
+            (collection_id, [group for group in image_groups if len(group) > 1])
+        )
 
 
 class FakeCollectionImageReviewRepository:
@@ -377,7 +379,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
         self.assertEqual(pipeline.image_embedding_repository.failures, [])
         self.assertEqual(
             pipeline.image_group_repository.replacements,
-            [("session-1", [["image-1"]])],
+            [("session-1", [])],
         )
         self.assertEqual(
             pipeline.collection_image_review_repository.collection_ids,
@@ -430,7 +432,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
         )
         self.assertEqual(
             pipeline.image_group_repository.replacements,
-            [("session-1", [["image-1"], ["image-3"]])],
+            [("session-1", [])],
         )
         self.assertEqual(
             pipeline.collection_image_review_repository.collection_ids,
@@ -476,7 +478,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
         )
         self.assertEqual(
             pipeline.image_group_repository.replacements,
-            [("session-1", [["image-1"]])],
+            [("session-1", [])],
         )
         self.assertEqual(
             pipeline.collection_image_review_repository.collection_ids,

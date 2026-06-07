@@ -68,20 +68,17 @@ export async function listCollectionGroups(
       },
       include: {
         images: {
-          include: { image: true },
-          orderBy: { image: { createdAt: "asc" } },
+          orderBy: { createdAt: "asc" },
           take: 1,
         },
         _count: {
           select: {
             images: {
               where: {
-                image: {
-                  review: {
-                    is: {
-                      isSelected: true,
-                      decisionReason: "SIMILAR_GROUP",
-                    },
+                review: {
+                  is: {
+                    isSelected: true,
+                    decisionReason: "SIMILAR_GROUP",
                   },
                 },
               },
@@ -97,7 +94,7 @@ export async function listCollectionGroups(
 
   const groups = await Promise.all(
     rows.flatMap((group) => {
-      const firstImage = group.images[0]?.image;
+      const firstImage = group.images[0];
 
       if (!firstImage) {
         return [];
@@ -143,8 +140,7 @@ export async function getCollectionGroup(
     },
     include: {
       images: {
-        include: { image: true },
-        orderBy: { image: { createdAt: "asc" } },
+        orderBy: { createdAt: "asc" },
       },
     },
   });
@@ -154,13 +150,13 @@ export async function getCollectionGroup(
   }
 
   const images = await Promise.all(
-    group.images.map(async (groupImage) => ({
-      id: groupImage.image.id,
-      fileName: groupImage.image.fileName,
-      objectKey: groupImage.image.objectKey,
-      mimeType: groupImage.image.mimeType,
-      createdAt: groupImage.image.createdAt.toISOString(),
-      imageUrl: await createPresignedDownloadUrl(groupImage.image.objectKey),
+    group.images.map(async (image) => ({
+      id: image.id,
+      fileName: image.fileName,
+      objectKey: image.objectKey,
+      mimeType: image.mimeType,
+      createdAt: image.createdAt.toISOString(),
+      imageUrl: await createPresignedDownloadUrl(image.objectKey),
     })),
   );
 

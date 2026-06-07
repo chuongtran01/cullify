@@ -1,10 +1,10 @@
 from datetime import UTC, datetime
 from uuid import uuid4
 
-from sqlalchemy import delete
+from sqlalchemy import delete, update
 from sqlalchemy.orm import sessionmaker
 
-from image_processor.db.models import GroupImage, ImageGroup
+from image_processor.db.models import Image, ImageGroup
 
 
 class ImageGroupRepository:
@@ -20,11 +20,16 @@ class ImageGroupRepository:
 
         with self.session_factory.begin() as session:
             session.execute(
+                update(Image)
+                .where(Image.collection_id == collection_id)
+                .values(group_id=None)
+            )
+            session.execute(
                 delete(ImageGroup).where(ImageGroup.collection_id == collection_id)
             )
 
             for image_ids in image_groups:
-                if not image_ids:
+                if len(image_ids) <= 1:
                     continue
 
                 group = ImageGroup(
@@ -35,13 +40,11 @@ class ImageGroupRepository:
                     updated_at=now,
                 )
                 session.add(group)
+                session.flush()
 
-                for image_id in image_ids:
-                    session.add(
-                        GroupImage(
-                            id=str(uuid4()),
-                            group_id=group.id,
-                            image_id=image_id,
-                            created_at=now,
-                        )
-                    )
+                session.execute(
+                    update(Image)
+                    .where(Image.collection_id == collection_id)
+                    .where(Image.id.in_(image_ids))
+                    .values(group_id=group.id)
+                )

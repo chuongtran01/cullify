@@ -64,10 +64,12 @@ model Image {
   uploadedAt      DateTime?             @map("uploaded_at")
   qualityAnalysis ImageQualityAnalysis?
   embedding       ImageEmbedding?
-  groupMembership GroupImage?
+  groupId         String?               @db.Uuid @map("group_id")
+  group           ImageGroup?           @relation(fields: [groupId], references: [id], onDelete: SetNull)
   review          CollectionImageReview?
 
   @@index([collectionId])
+  @@index([groupId])
   @@index([status])
   @@map("image")
 }
@@ -79,22 +81,10 @@ model ImageGroup {
   imageCount   Int          @map("image_count")
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
-  images       GroupImage[]
+  images       Image[]
 
   @@index([collectionId])
   @@map("image_group")
-}
-
-model GroupImage {
-  id        String     @id @default(uuid()) @db.Uuid
-  groupId   String     @db.Uuid @map("group_id")
-  group     ImageGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  imageId   String     @unique @db.Uuid @map("image_id")
-  image     Image      @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  createdAt DateTime   @default(now()) @map("created_at")
-
-  @@index([groupId])
-  @@map("group_image")
 }
 
 model CollectionImageReview {

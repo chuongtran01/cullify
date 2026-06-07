@@ -8,7 +8,6 @@ from sqlalchemy.orm import sessionmaker
 
 from image_processor.db.models import (
     CollectionImageReview,
-    GroupImage,
     Image,
     ImageGroup,
     ImageQualityAnalysis,
@@ -48,8 +47,7 @@ class CollectionImageReviewRepository:
                         ImageQualityAnalysis.has_compression_artifacts,
                         ImageQualityAnalysis.analysis_error,
                     )
-                    .outerjoin(GroupImage, GroupImage.image_id == Image.id)
-                    .outerjoin(ImageGroup, ImageGroup.id == GroupImage.group_id)
+                    .outerjoin(ImageGroup, ImageGroup.id == Image.group_id)
                     .outerjoin(
                         ImageQualityAnalysis,
                         ImageQualityAnalysis.image_id == Image.id,
@@ -84,7 +82,7 @@ class CollectionImageReviewRepository:
     def _build_default(self, row: tuple) -> ReviewDefault:
         (
             image_id,
-            group_image_count,
+            group_size,
             is_blurry,
             is_out_of_focus,
             has_motion_blur,
@@ -95,7 +93,7 @@ class CollectionImageReviewRepository:
             analysis_error,
         ) = row
 
-        if group_image_count is not None and group_image_count > 1:
+        if group_size is not None and group_size > 1:
             return ReviewDefault(
                 image_id=image_id,
                 is_selected=False,

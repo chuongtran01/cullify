@@ -8,7 +8,7 @@ from image_processor.db.models.base import Base
 
 if TYPE_CHECKING:
     from image_processor.db.models.collection import Collection
-    from image_processor.db.models.group_image import GroupImage
+    from image_processor.db.models.image import Image
 
 
 class ImageGroup(Base):
@@ -28,7 +28,6 @@ class ImageGroup(Base):
     updated_at: Mapped[datetime] = mapped_column("updated_at", DateTime(timezone=True))
 
     collection: Mapped["Collection"] = relationship(back_populates="groups")
-    images: Mapped[list["GroupImage"]] = relationship(
+    images: Mapped[list["Image"]] = relationship(
         back_populates="group",
-        cascade="all, delete-orphan",
     )

@@ -10,8 +10,8 @@ from image_processor.db.models.enums import ImageUploadStatus
 if TYPE_CHECKING:
     from image_processor.db.models.collection import Collection
     from image_processor.db.models.collection_image_review import CollectionImageReview
-    from image_processor.db.models.group_image import GroupImage
     from image_processor.db.models.image_embedding import ImageEmbedding
+    from image_processor.db.models.image_group import ImageGroup
     from image_processor.db.models.image_quality_analysis import ImageQualityAnalysis
 
 
@@ -19,6 +19,7 @@ class Image(Base):
     __tablename__ = "image"
     __table_args__ = (
         Index("image_collection_id_idx", "collection_id"),
+        Index("image_group_id_idx", "group_id"),
         Index("image_status_idx", "status"),
     )
 
@@ -27,6 +28,12 @@ class Image(Base):
         "collection_id",
         Uuid(as_uuid=False),
         ForeignKey("collection.id", ondelete="CASCADE"),
+    )
+    group_id: Mapped[str | None] = mapped_column(
+        "group_id",
+        Uuid(as_uuid=False),
+        ForeignKey("image_group.id", ondelete="SET NULL"),
+        nullable=True,
     )
     file_name: Mapped[str] = mapped_column("file_name", String)
     mime_type: Mapped[str] = mapped_column("mime_type", String)
@@ -59,10 +66,8 @@ class Image(Base):
         uselist=False,
         cascade="all, delete-orphan",
     )
-    group_membership: Mapped["GroupImage | None"] = relationship(
-        back_populates="image",
-        uselist=False,
-        cascade="all, delete-orphan",
+    group: Mapped["ImageGroup | None"] = relationship(
+        back_populates="images",
     )
     review: Mapped["CollectionImageReview | None"] = relationship(
         back_populates="image",
