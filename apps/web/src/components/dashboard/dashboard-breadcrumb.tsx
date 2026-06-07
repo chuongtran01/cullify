@@ -73,6 +73,15 @@ function getDashboardBreadcrumbs(pathname: string): BreadcrumbSegment[] {
     ];
   }
 
+  if (/^\/dashboard\/collections\/[^/]+\/results\/groups$/.test(pathname)) {
+    return [
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Collections", href: "/dashboard" },
+      { label: "Results", href: pathname.replace(/\/groups$/, "") },
+      { label: "Similar Groups" },
+    ];
+  }
+
   return [{ label: "Dashboard" }];
 }
 

@@ -218,6 +218,7 @@ export function ResultsWorkflows({
       <WorkflowSection
         count={`${similarGroupsCount} groups`}
         description="Compare visually similar photos and keep the best frame from each set."
+        href={`/dashboard/collections/${collectionId}/results/groups`}
         title="Similar Groups"
       >
         <SimilarGroupsStrip

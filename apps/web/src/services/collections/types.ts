@@ -40,12 +40,6 @@ export type CollectionGroupSummary = {
   updatedAt: string;
 };
 
-export type CollectionGroupsResponse = {
-  groups: CollectionGroupSummary[];
-  totalGroups: number;
-  totalImages: number;
-};
-
 export type CollectionGroupImage = {
   id: string;
   fileName: string;
@@ -59,16 +53,22 @@ export type CollectionGroupDetail = CollectionGroupSummary & {
   images: CollectionGroupImage[];
 };
 
+export type CollectionGroupSelectionStatus = "SELECTED" | "NEEDS_SELECTION";
+
 export type CollectionGroupPreview = CollectionGroupSummary & {
   previewImage: CollectionGroupImage;
+  selectionStatus: CollectionGroupSelectionStatus;
 };
 
 export type CollectionGroupPreviewsResponse = {
   groups: CollectionGroupPreview[];
   totalSimilarGroups: number;
+  totalImages: number;
   limit: number;
   hasMore: boolean;
 };
+
+export type CollectionGroupsResponse = CollectionGroupPreviewsResponse;
 
 export type CollectionLowQualityImage = {
   id: string;

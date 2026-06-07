@@ -12,12 +12,6 @@ export type CollectionGroupSummary = {
   updatedAt: string;
 };
 
-export type CollectionGroupsResponse = {
-  groups: CollectionGroupSummary[];
-  totalGroups: number;
-  totalImages: number;
-};
-
 export type CollectionGroupImage = {
   id: string;
   fileName: string;
@@ -31,13 +25,17 @@ export type CollectionGroupDetail = CollectionGroupSummary & {
   images: CollectionGroupImage[];
 };
 
+export type CollectionGroupSelectionStatus = "SELECTED" | "NEEDS_SELECTION";
+
 export type CollectionGroupPreview = CollectionGroupSummary & {
   previewImage: CollectionGroupImage;
+  selectionStatus: CollectionGroupSelectionStatus;
 };
 
 export type CollectionGroupPreviewsResponse = {
   groups: CollectionGroupPreview[];
   totalSimilarGroups: number;
+  totalImages: number;
   limit: number;
   hasMore: boolean;
 };
@@ -45,33 +43,14 @@ export type CollectionGroupPreviewsResponse = {
 export async function listCollectionGroups(
   collectionId: string,
   userId: string,
-): Promise<CollectionGroupsResponse | null> {
-  const collection = await prisma.collection.findFirst({
-    where: { id: collectionId, userId },
-    select: { id: true },
-  });
-
-  if (!collection) {
-    return null;
-  }
-
-  const rows = await prisma.imageGroup.findMany({
-    where: { collectionId },
-    orderBy: [{ imageCount: "desc" }, { createdAt: "asc" }],
-  });
-  const groups = rows.map(formatGroupSummary);
-
-  return {
-    groups,
-    totalGroups: groups.length,
-    totalImages: groups.reduce((total, group) => total + group.imageCount, 0),
-  };
+): Promise<CollectionGroupPreviewsResponse | null> {
+  return getCollectionGroupPreviews(collectionId, userId);
 }
 
 export async function getCollectionGroupPreviews(
   collectionId: string,
   userId: string,
-  { limit = 5 }: { limit?: number } = {},
+  { limit }: { limit?: number } = {},
 ): Promise<CollectionGroupPreviewsResponse | null> {
   const collection = await prisma.collection.findFirst({
     where: { id: collectionId, userId },
@@ -117,6 +96,8 @@ export async function getCollectionGroupPreviews(
       return [
         (async (): Promise<CollectionGroupPreview> => ({
           ...formatGroupSummary(group),
+          selectionStatus:
+            group.representativeImageId === null ? "NEEDS_SELECTION" : "SELECTED",
           previewImage: {
             id: firstImage.id,
             fileName: firstImage.fileName,
@@ -133,7 +114,8 @@ export async function getCollectionGroupPreviews(
   return {
     groups,
     totalSimilarGroups,
-    limit,
+    totalImages: groups.reduce((total, group) => total + group.imageCount, 0),
+    limit: limit ?? groups.length,
     hasMore: groups.length < totalSimilarGroups,
   };
 }
