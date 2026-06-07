@@ -61,7 +61,7 @@ const listStatusMeta: Record<
   UPLOADING: {
     label: "Uploading",
     icon: Loader2,
-    className: "text-action-blue",
+    className: "text-text-link",
   },
   PROCESSING: {
     label: "Processing",
@@ -71,12 +71,12 @@ const listStatusMeta: Record<
   READY_FOR_REVIEW: {
     label: "Ready for Review",
     icon: Sparkles,
-    className: "text-coral",
+    className: "text-accent-preview",
   },
   IN_REVIEW: {
     label: "In Review",
     icon: Clock3,
-    className: "text-action-blue",
+    className: "text-text-link",
   },
   COMPLETED: {
     label: "Completed",
@@ -99,7 +99,7 @@ function CollectionStatusBlock({ collection }: { collection: Collection }) {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide",
+        "inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wide",
         meta.className,
       )}
     >
@@ -174,8 +174,8 @@ const collectionColumns: ColumnDef<Collection>[] = [
 
       return (
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-ink">{collection.name}</p>
-          <p className="mt-1 text-xs text-body">
+          <p className="truncate text-base font-semibold text-ink">{collection.name}</p>
+          <p className="mt-1 text-sm font-normal leading-normal text-body">
             {collection.totalImages} photos <span className="px-1">·</span> Created{" "}
             {formatCollectionDate(collection.createdAt)}
           </p>
@@ -200,7 +200,7 @@ const collectionColumns: ColumnDef<Collection>[] = [
           {actionHref ? (
             <Button
               asChild
-              className="h-9 min-w-36 cursor-pointer"
+              className="h-10 min-w-36 cursor-pointer rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
               size="sm"
               variant="outline"
             >
@@ -210,7 +210,7 @@ const collectionColumns: ColumnDef<Collection>[] = [
             </Button>
           ) : (
             <Button
-              className="h-9 min-w-36 cursor-pointer"
+              className="h-10 min-w-36 cursor-pointer rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
               size="sm"
               variant="outline"
             >
@@ -238,7 +238,7 @@ export function CollectionList({ collections }: CollectionListProps) {
   });
 
   return (
-    <div className="overflow-hidden rounded-md border border-hairline-light bg-surface-card">
+    <div className="overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
       <Table className="min-w-0">
         <TableHeader className="sr-only">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -260,7 +260,7 @@ export function CollectionList({ collections }: CollectionListProps) {
           {table.getRowModel().rows.map((row) => (
             <TableRow
               key={row.id}
-              className="grid gap-4 border-b border-hairline-light px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_180px_32px] lg:items-center"
+              className="grid gap-4 border-b border-hairline px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_180px_32px] lg:items-center"
             >
               {row.getVisibleCells().map((cell) => (
                 <TableCell
@@ -283,7 +283,7 @@ export function CollectionListSkeleton({
 }: CollectionListSkeletonProps) {
   return (
     <div
-      className="overflow-hidden rounded-md border border-hairline-light bg-surface-card"
+      className="overflow-hidden rounded-lg border border-hairline-strong bg-surface-card"
       aria-label="Loading collections"
     >
       <Table className="min-w-0">
@@ -299,7 +299,7 @@ export function CollectionListSkeleton({
           {Array.from({ length: rowCount }).map((_, index) => (
             <TableRow
               key={index}
-              className="grid gap-4 border-b border-hairline-light px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_180px_32px] lg:items-center"
+              className="grid gap-4 border-b border-hairline px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_180px_32px] lg:items-center"
             >
               <TableCell className="block whitespace-normal p-0">
                 <div className="min-w-0">

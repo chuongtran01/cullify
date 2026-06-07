@@ -91,11 +91,11 @@ export function EditCollectionDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="rounded-2xl border border-hairline bg-surface-card p-0 shadow-none sm:max-w-md">
+      <DialogContent className="rounded-lg border border-hairline-strong bg-surface-card p-0 shadow-none sm:max-w-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <DialogHeader className="border-b border-hairline px-6 py-5">
-              <DialogTitle className="text-lg font-normal text-ink">
+              <DialogTitle className="text-lg font-semibold text-ink">
                 Edit collection
               </DialogTitle>
               <DialogDescription>
@@ -112,7 +112,7 @@ export function EditCollectionDialog({
                     <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input
-                        className="h-10"
+                        className="h-11 rounded-md border-hairline-strong"
                         maxLength={100}
                         autoFocus
                         {...field}
@@ -132,18 +132,18 @@ export function EditCollectionDialog({
               ) : null}
             </div>
 
-            <div className="flex items-center justify-end gap-2 rounded-b-2xl border-t border-hairline bg-surface-card px-6 py-4">
+            <div className="flex items-center justify-end gap-2 rounded-b-lg border-t border-hairline bg-surface-card px-6 py-4">
               <Button
                 type="button"
                 variant="outline"
-                className="cursor-pointer"
+                className="h-10 cursor-pointer rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
                 onClick={() => onOpenChange(false)}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="cursor-pointer"
+                className="h-10 cursor-pointer rounded-md px-4.5 text-sm font-medium"
                 disabled={!isValid || updateCollectionName.isPending}
               >
                 {updateCollectionName.isPending ? "Saving..." : "Save"}

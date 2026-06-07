@@ -22,27 +22,27 @@ const statusMeta: Record<
 > = {
   UPLOADING: {
     label: "Uploading",
-    badgeClassName: "border-action-blue/20 bg-surface-blue-wash text-action-blue",
+    badgeClassName: "border-hairline-strong bg-canvas-soft text-text-link",
     icon: Upload,
   },
   PROCESSING: {
     label: "Processing",
-    badgeClassName: "border-action-blue/20 bg-surface-blue-wash text-action-blue",
+    badgeClassName: "border-hairline-strong bg-canvas-soft text-text-link",
     icon: Clock3,
   },
   READY_FOR_REVIEW: {
     label: "Ready for Review",
-    badgeClassName: "border-deep-green/15 bg-surface-green-wash text-deep-green",
+    badgeClassName: "border-hairline-strong bg-canvas-soft text-accent-preview",
     icon: Sparkles,
   },
   IN_REVIEW: {
     label: "In Review",
-    badgeClassName: "border-coral/25 bg-coral-soft/20 text-ink",
+    badgeClassName: "border-hairline-strong bg-surface-strong text-ink",
     icon: Images,
   },
   COMPLETED: {
     label: "Completed",
-    badgeClassName: "border-deep-green/15 bg-white text-deep-green",
+    badgeClassName: "border-hairline-strong bg-surface-card text-semantic-success",
     icon: CheckCircle2,
   },
   FAILED: {
@@ -93,13 +93,13 @@ export function ThumbnailCollage({
   return (
     <div
       className={cn(
-        "grid shrink-0 grid-cols-2 grid-rows-2 overflow-hidden rounded-md bg-surface-stone",
+        "grid shrink-0 grid-cols-2 grid-rows-2 overflow-hidden rounded-md bg-surface-strong",
         compact ? "size-14" : "h-20 w-28",
       )}
       aria-label={`${name} thumbnails`}
     >
       <div className="row-span-2 bg-surface-card" />
-      <div className="col-start-2 bg-hairline-light" />
+      <div className="col-start-2 bg-hairline-soft" />
       <div className="col-start-2 bg-surface-card" />
     </div>
   );
@@ -110,7 +110,7 @@ export function StatusBadge({ status }: { status: CollectionStatus }) {
   const Icon = meta.icon;
 
   return (
-    <Badge variant="outline" className={cn("gap-1", meta.badgeClassName)}>
+    <Badge variant="outline" className={cn("gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px]", meta.badgeClassName)}>
       <Icon className="size-3" aria-hidden="true" />
       {meta.label}
     </Badge>

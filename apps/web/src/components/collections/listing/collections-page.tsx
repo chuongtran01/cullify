@@ -62,14 +62,14 @@ export function CollectionsPage() {
   }, [activeFilter, collections, search]);
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
+    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-8">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-3xl font-normal leading-tight text-ink">
+        <h1 className="text-3xl font-semibold leading-snug tracking-tight text-ink">
           Collections
         </h1>
         <Button
           asChild
-          className="cursor-pointer px-6 sm:self-auto"
+          className="h-10 cursor-pointer rounded-md px-4.5 text-sm font-medium sm:self-auto"
         >
           <Link href="/dashboard/collections/new">
             New collection
@@ -86,11 +86,11 @@ export function CollectionsPage() {
           </section>
         </>
       ) : loadError || error || summaryError ? (
-        <section className="rounded-md border border-hairline-light bg-surface-card p-8 text-center">
-          <h2 className="text-lg font-normal text-ink">
+        <section className="rounded-lg border border-hairline-strong bg-surface-card p-8 text-center">
+          <h2 className="text-lg font-semibold text-ink">
             Could not load collections
           </h2>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-body">
+          <p className="mx-auto mt-2 max-w-md text-base font-normal leading-normal text-body">
             {loadError?.message ?? "Refresh the page and try again."}
           </p>
         </section>
@@ -107,11 +107,11 @@ export function CollectionsPage() {
               onSearchChange={setSearch}
             />
             {filteredCollections.length === 0 ? (
-              <section className="rounded-md border border-hairline-light bg-surface-card p-8 text-center">
-                <h2 className="text-lg font-normal text-ink">
+              <section className="rounded-lg border border-hairline-strong bg-surface-card p-8 text-center">
+                <h2 className="text-lg font-semibold text-ink">
                   No matching collections
                 </h2>
-                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-body">
+                <p className="mx-auto mt-2 max-w-md text-base font-normal leading-normal text-body">
                   {collections.length === 0
                     ? "No collection rows are available yet."
                     : "Try another search term or filter."}

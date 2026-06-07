@@ -25,12 +25,12 @@ export function CollectionsSummary({
       {stats.map(([label, value]) => (
         <div
           key={label}
-          className="rounded-md border border-hairline-light bg-surface-card p-4"
+          className="rounded-lg border border-hairline-strong bg-surface-card p-4"
         >
-          <p className="font-mono text-xs font-normal uppercase tracking-wide text-slate">
+          <p className="font-mono text-xs uppercase tracking-wide text-muted">
             {label}
           </p>
-          <p className="mt-3 text-2xl font-normal text-ink">{value}</p>
+          <p className="mt-3 text-2xl font-semibold text-ink">{value}</p>
         </div>
       ))}
     </section>
@@ -46,7 +46,7 @@ export function CollectionsSummarySkeleton() {
       {Array.from({ length: 4 }).map((_, index) => (
         <div
           key={index}
-          className="rounded-md border border-hairline-light bg-surface-card p-4"
+          className="rounded-lg border border-hairline-strong bg-surface-card p-4"
         >
           <Skeleton className="h-3 w-28" />
           <Skeleton className="mt-3 h-8 w-12" />

@@ -5,6 +5,7 @@ import type { CollectionFilterValue } from "@/components/collections/types";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 type CollectionFiltersProps = {
   activeFilter: CollectionFilterValue;
@@ -23,18 +24,18 @@ export function CollectionFilters({
     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex flex-wrap gap-2">
         {collectionFilters.map((filter) => (
-          <button
+          <Button
+            variant="outline"
             key={filter.value}
             className={cn(
-              "h-8 rounded-full border border-hairline-light px-3 text-sm font-medium text-body transition-colors hover:border-ink hover:text-ink",
-              activeFilter === filter.value &&
-              "border-ink bg-ink text-on-primary hover:text-on-primary",
+              "h-8 rounded-full px-3",
+              activeFilter === filter.value && "border-ink bg-ink text-on-primary hover:bg-ink hover:text-on-primary",
             )}
             onClick={() => onFilterChange(filter.value)}
             type="button"
           >
             {filter.label}
-          </button>
+          </Button>
         ))}
       </div>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -44,7 +45,7 @@ export function CollectionFilters({
             aria-hidden="true"
           />
           <Input
-            className="h-9 w-full pl-9 sm:w-64"
+            className="h-11 w-full rounded-md border-hairline-strong pl-9 sm:w-64"
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder="Search collections"
@@ -67,7 +68,7 @@ export function CollectionFiltersSkeleton() {
         ))}
       </div>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <Skeleton className="h-9 w-full sm:w-64" />
+        <Skeleton className="h-11 w-full rounded-md sm:w-64" />
       </div>
     </div>
   );

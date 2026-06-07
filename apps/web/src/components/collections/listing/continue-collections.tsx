@@ -11,11 +11,11 @@ type ContinueCollectionsProps = {
 function ContinueThumbnailGrid({ name }: { name: string }) {
   return (
     <div
-      className="grid size-40 shrink-0 grid-cols-2 grid-rows-2 gap-1 overflow-hidden rounded-md bg-surface-stone"
+      className="grid size-40 shrink-0 grid-cols-2 grid-rows-2 gap-1 overflow-hidden rounded-md bg-surface-strong"
       aria-label={`${name} thumbnails`}
     >
       <div className="row-span-2 rounded-sm bg-surface-card" />
-      <div className="rounded-sm bg-hairline-light" />
+      <div className="rounded-sm bg-hairline-soft" />
       <div className="rounded-sm bg-surface-card" />
     </div>
   );
@@ -27,13 +27,13 @@ function ContinueStatusPill({ collection }: { collection: Collection }) {
   return (
     <span
       className={cn(
-        "inline-flex h-5 w-fit items-center gap-1 rounded-full px-2 text-xs font-semibold uppercase",
+        "inline-flex h-5 w-fit items-center gap-1 rounded-full px-2 font-mono text-xs uppercase tracking-wide",
         isInReview
-          ? "bg-action-blue/10 text-action-blue"
-          : "border border-coral/20 bg-coral-soft/20 text-ink",
+          ? "bg-surface-strong text-text-link"
+          : "border border-hairline-strong bg-surface-strong text-ink",
       )}
     >
-      {!isInReview ? <span className="size-1.5 rounded-full bg-coral" /> : null}
+      {!isInReview ? <span className="size-1.5 rounded-full bg-accent-preview" /> : null}
       {isInReview ? "In Review" : "Ready for Review"}
     </span>
   );
@@ -53,11 +53,11 @@ function ContinueProgress({ collection }: { collection: Collection }) {
           ? `Reviewed ${reviewedImages} / ${collection.totalImages}`
           : `${collection.totalImages} photos ready`}
       </p>
-      <div className="h-1 overflow-hidden rounded-full bg-hairline-light">
+      <div className="h-1 overflow-hidden rounded-full bg-hairline-soft">
         <div
           className={cn(
             "h-full rounded-full",
-            isInReview ? "bg-action-blue" : "bg-primary",
+            isInReview ? "bg-text-link" : "bg-primary",
           )}
           style={{ width: `${progress}%` }}
         />
@@ -74,7 +74,7 @@ export function ContinueCollections({ collections }: ContinueCollectionsProps) {
   return (
     <section className="grid gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-base font-semibold text-ink">
+        <h2 className="text-lg font-semibold text-ink">
           Continue where you left off
         </h2>
         <button
@@ -89,17 +89,17 @@ export function ContinueCollections({ collections }: ContinueCollectionsProps) {
         {collections.map((collection) => (
           <article
             key={collection.id}
-            className="flex gap-4 rounded-md border border-hairline-light bg-surface-card p-3"
+            className="flex gap-4 rounded-lg border border-hairline-strong bg-surface-card p-3"
           >
             <ContinueThumbnailGrid name={collection.name} />
             <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 py-1">
               <div className="min-w-0">
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="truncate text-sm font-semibold text-ink">
+                  <h3 className="truncate text-base font-semibold text-ink">
                     {collection.name}
                   </h3>
                   <button
-                    className="grid size-7 shrink-0 place-items-center rounded-md text-body transition-colors hover:bg-surface-stone hover:text-ink"
+                    className="grid size-7 shrink-0 place-items-center rounded-md text-body transition-colors hover:bg-surface-strong hover:text-ink"
                     type="button"
                     aria-label={`More actions for ${collection.name}`}
                   >
@@ -118,7 +118,7 @@ export function ContinueCollections({ collections }: ContinueCollectionsProps) {
               </div>
               <ContinueProgress collection={collection} />
               <Button
-                className="h-9 justify-between border-hairline bg-surface-card text-ink hover:bg-surface-stone"
+                className="h-10 justify-between rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink hover:bg-surface-strong"
                 size="sm"
                 variant="outline"
               >
