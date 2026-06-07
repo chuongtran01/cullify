@@ -34,7 +34,6 @@ export type CollectionUploadProgress = {
 export type CollectionGroupSummary = {
   id: string;
   collectionId: string;
-  representativeImageId: string | null;
   imageCount: number;
   createdAt: string;
   updatedAt: string;

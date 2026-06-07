@@ -30,7 +30,6 @@ class ImageGroupRepository:
                 group = ImageGroup(
                     id=str(uuid4()),
                     collection_id=collection_id,
-                    representative_image_id=None,
                     image_count=len(image_ids),
                     created_at=now,
                     updated_at=now,

@@ -66,7 +66,6 @@ model Image {
   embedding       ImageEmbedding?
   groupMembership GroupImage?
   review          CollectionImageReview?
-  representativeForGroups ImageGroup[]  @relation("ImageGroupRepresentative")
 
   @@index([collectionId])
   @@index([status])
@@ -74,18 +73,15 @@ model Image {
 }
 
 model ImageGroup {
-  id                    String       @id @default(uuid()) @db.Uuid
-  collectionId          String       @db.Uuid @map("collection_id")
-  collection            Collection   @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  representativeImageId String?      @db.Uuid @map("representative_image_id")
-  representativeImage   Image?       @relation("ImageGroupRepresentative", fields: [representativeImageId], references: [id], onDelete: SetNull)
-  imageCount            Int          @map("image_count")
-  createdAt             DateTime     @default(now()) @map("created_at")
-  updatedAt             DateTime     @updatedAt @map("updated_at")
-  images                GroupImage[]
+  id           String       @id @default(uuid()) @db.Uuid
+  collectionId String       @db.Uuid @map("collection_id")
+  collection   Collection   @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  imageCount   Int          @map("image_count")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  images       GroupImage[]
 
   @@index([collectionId])
-  @@index([representativeImageId])
   @@map("image_group")
 }
 

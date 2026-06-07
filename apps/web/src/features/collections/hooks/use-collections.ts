@@ -15,7 +15,6 @@ import {
   listCollections,
   listCollectionGroups,
   updateCollectionImageReview,
-  updateCollectionGroupRepresentative,
   updateCollectionName,
 } from "@/services/collections";
 import type {
@@ -194,41 +193,6 @@ export function useUpdateCollectionName() {
               }
             : overall,
       );
-      void queryClient.invalidateQueries({
-        queryKey: queryKeys.collections.list(),
-      });
-    },
-  });
-}
-
-export function useUpdateCollectionGroupRepresentative() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({
-      collectionId,
-      groupId,
-      representativeImageId,
-    }: {
-      collectionId: string;
-      groupId: string;
-      representativeImageId: string | null;
-    }) =>
-      updateCollectionGroupRepresentative(
-        collectionId,
-        groupId,
-        representativeImageId,
-      ),
-    onSuccess: (_result, variables) => {
-      void queryClient.invalidateQueries({
-        queryKey: queryKeys.collections.groups(variables.collectionId),
-      });
-      void queryClient.invalidateQueries({
-        queryKey: queryKeys.collections.group(
-          variables.collectionId,
-          variables.groupId,
-        ),
-      });
       void queryClient.invalidateQueries({
         queryKey: queryKeys.collections.list(),
       });

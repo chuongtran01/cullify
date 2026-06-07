@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from image_processor.db.models.collection_image_review import CollectionImageReview
     from image_processor.db.models.group_image import GroupImage
     from image_processor.db.models.image_embedding import ImageEmbedding
-    from image_processor.db.models.image_group import ImageGroup
     from image_processor.db.models.image_quality_analysis import ImageQualityAnalysis
 
 
@@ -69,7 +68,4 @@ class Image(Base):
         back_populates="image",
         uselist=False,
         cascade="all, delete-orphan",
-    )
-    representative_for_groups: Mapped[list["ImageGroup"]] = relationship(
-        back_populates="representative_image",
     )

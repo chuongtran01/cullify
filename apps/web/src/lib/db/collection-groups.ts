@@ -6,7 +6,6 @@ import { createPresignedDownloadUrl } from "@/lib/r2/presign";
 export type CollectionGroupSummary = {
   id: string;
   collectionId: string;
-  representativeImageId: string | null;
   imageCount: number;
   createdAt: string;
   updatedAt: string;
@@ -73,6 +72,22 @@ export async function listCollectionGroups(
           orderBy: { image: { createdAt: "asc" } },
           take: 1,
         },
+        _count: {
+          select: {
+            images: {
+              where: {
+                image: {
+                  review: {
+                    is: {
+                      isSelected: true,
+                      decisionReason: "SIMILAR_GROUP",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
       orderBy: [{ imageCount: "desc" }, { createdAt: "asc" }],
       skip: offset,
@@ -91,8 +106,7 @@ export async function listCollectionGroups(
       return [
         (async (): Promise<CollectionGroupPreview> => ({
           ...formatGroupSummary(group),
-          selectionStatus:
-            group.representativeImageId === null ? "NEEDS_SELECTION" : "SELECTED",
+          selectionStatus: group._count.images === 1 ? "SELECTED" : "NEEDS_SELECTION",
           previewImage: {
             id: firstImage.id,
             fileName: firstImage.fileName,
@@ -156,51 +170,9 @@ export async function getCollectionGroup(
   };
 }
 
-export async function updateCollectionGroupRepresentative(
-  collectionId: string,
-  groupId: string,
-  userId: string,
-  representativeImageId: string | null,
-): Promise<boolean> {
-  const group = await prisma.imageGroup.findFirst({
-    where: {
-      id: groupId,
-      collectionId,
-      collection: { userId },
-    },
-    select: { id: true },
-  });
-
-  if (!group) {
-    return false;
-  }
-
-  if (representativeImageId !== null) {
-    const membership = await prisma.groupImage.findFirst({
-      where: {
-        groupId,
-        imageId: representativeImageId,
-      },
-      select: { id: true },
-    });
-
-    if (!membership) {
-      return false;
-    }
-  }
-
-  await prisma.imageGroup.update({
-    where: { id: groupId },
-    data: { representativeImageId },
-  });
-
-  return true;
-}
-
 type GroupSummaryFields = {
   id: string;
   collectionId: string;
-  representativeImageId: string | null;
   imageCount: number;
   createdAt: Date;
   updatedAt: Date;
@@ -210,7 +182,6 @@ function formatGroupSummary(group: GroupSummaryFields): CollectionGroupSummary {
   return {
     id: group.id,
     collectionId: group.collectionId,
-    representativeImageId: group.representativeImageId,
     imageCount: group.imageCount,
     createdAt: group.createdAt.toISOString(),
     updatedAt: group.updatedAt.toISOString(),

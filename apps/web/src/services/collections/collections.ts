@@ -179,34 +179,6 @@ export async function getCollectionGroup(
   return response.json() as Promise<CollectionGroupDetail>;
 }
 
-export async function updateCollectionGroupRepresentative(
-  collectionId: string,
-  groupId: string,
-  representativeImageId: string | null,
-): Promise<{ ok: true }> {
-  const response = await fetch(
-    `/api/collections/${collectionId}/groups/${groupId}/representative`,
-    {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ representativeImageId }),
-    },
-  );
-
-  if (!response.ok) {
-    const data = (await response.json().catch(() => ({}))) as {
-      error?: string;
-    };
-
-    throw new CollectionsServiceError(
-      data.error ?? "Failed to update group representative",
-      response.status,
-    );
-  }
-
-  return response.json() as Promise<{ ok: true }>;
-}
-
 export async function getCollectionLowQualityImages(
   collectionId: string,
   options: { limit?: number; offset?: number; isSelected?: boolean } = {},
