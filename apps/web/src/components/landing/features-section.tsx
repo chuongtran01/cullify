@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 export function FeaturesSection() {
   return (
     <section id="features" className="bg-canvas-soft">
-      <div className="mx-auto max-w-[1200px] px-5 py-24">
+      <div className="mx-auto max-w-7xl px-5 py-24">
         <SectionHeader
           eyebrow="Core features"
           title="Everything built around faster photo selection."
@@ -22,7 +22,7 @@ export function FeaturesSection() {
                   <div className="grid size-8 place-items-center rounded-md bg-primary text-on-primary">
                     <feature.icon className="size-4" />
                   </div>
-                  <Badge className="h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink">
+                  <Badge className="h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-ink">
                     {feature.preview}
                   </Badge>
                 </div>

@@ -10,7 +10,7 @@ import {
 export function FaqSection() {
   return (
     <section className="border-t border-hairline bg-canvas-soft">
-      <div className="mx-auto max-w-[1200px] px-5 py-24">
+      <div className="mx-auto max-w-7xl px-5 py-24">
         <div className="mx-auto max-w-3xl">
           <SectionHeader
             eyebrow="FAQ"
@@ -23,7 +23,7 @@ export function FaqSection() {
           >
             {faqs.map((faq) => (
               <AccordionItem key={faq.question} value={faq.question}>
-                <AccordionTrigger className="px-5 py-5 text-lg font-semibold leading-snug tracking-[-0.02em] text-ink">
+                <AccordionTrigger className="px-5 py-5 text-lg font-semibold leading-snug tracking-tight text-ink">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="px-5 pb-5 text-sm leading-normal text-body">

@@ -10,7 +10,7 @@ const footerGroups = [
 export function Footer() {
   return (
     <footer className="border-t border-hairline bg-canvas text-body">
-      <div className="mx-auto max-w-[1200px] px-5 py-16">
+      <div className="mx-auto max-w-7xl px-5 py-16">
         <div className="grid gap-10 md:grid-cols-[1.2fr_repeat(4,1fr)]">
           <div>
             <Logo />

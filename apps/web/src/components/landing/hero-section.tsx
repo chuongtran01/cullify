@@ -17,19 +17,19 @@ export function HeroSection({
     <section className="relative overflow-hidden bg-canvas">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[min(560px,72%)] bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,var(--gradient-sky-light)_0%,color-mix(in_srgb,var(--gradient-sky-mid)_55%,transparent)_48%,transparent_78%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-3/4 min-h-96 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,var(--gradient-sky-light)_0%,color-mix(in_srgb,var(--gradient-sky-mid)_55%,transparent)_48%,transparent_78%)]"
       />
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="relative mx-auto max-w-[1200px] px-5 pt-24 pb-12 text-center"
+        className="relative mx-auto max-w-7xl px-5 pt-24 pb-12 text-center"
       >
-        <Badge className="mb-6 h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink">
+        <Badge className="mb-6 h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-ink">
           AI culling for high-volume review
         </Badge>
-        <h1 className="mx-auto max-w-4xl text-[32px] font-semibold leading-[1.05] tracking-[-0.03em] text-ink sm:text-[48px] lg:text-[64px]">
+        <h1 className="mx-auto max-w-4xl text-3xl font-semibold leading-none tracking-tight text-ink sm:text-5xl lg:text-6xl">
           AI photo culling for cleaner first-pass decisions.
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-normal text-body">
@@ -39,7 +39,7 @@ export function HeroSection({
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5">
           <Button
-            className="h-10 cursor-pointer gap-2 rounded-md px-[18px] text-sm font-medium"
+            className="h-10 cursor-pointer gap-2 rounded-md px-4.5 text-sm font-medium"
             onClick={onUploadClick}
           >
             <Upload className="size-4" />

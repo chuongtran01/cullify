@@ -7,7 +7,7 @@ import { Logo } from "@/components/layout/logo";
 export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/95 backdrop-blur-sm">
-      <nav className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-5">
+      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5">
         <Logo />
         <div className="hidden items-center gap-9 md:flex">
           {navLinks.map((link) => (

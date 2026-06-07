@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 export function PricingSection() {
   return (
     <section id="pricing" className="border-y border-hairline bg-canvas">
-      <div className="mx-auto max-w-[1200px] px-5 py-24">
+      <div className="mx-auto max-w-7xl px-5 py-24">
         <SectionHeader
           eyebrow="Pricing"
           title="Start small, then scale into larger photo collections."
@@ -25,7 +25,7 @@ export function PricingSection() {
                   : "border-hairline-strong bg-surface-card text-ink",
               )}
             >
-              <h3 className="text-[22px] font-semibold leading-snug tracking-[-0.02em]">
+              <h3 className="text-2xl font-semibold leading-snug tracking-tight">
                 {tier.name}
               </h3>
               <p
@@ -37,7 +37,7 @@ export function PricingSection() {
                 {tier.description}
               </p>
               <div className="mt-6 flex items-end gap-2">
-                <span className="text-5xl font-semibold leading-none tracking-[-0.03em]">
+                <span className="text-5xl font-semibold leading-none tracking-tight">
                   {tier.price}
                 </span>
                 <span
@@ -65,8 +65,8 @@ export function PricingSection() {
                       variant: tier.featured ? "default" : "outline",
                     }),
                     tier.featured
-                      ? "h-10 rounded-md px-[18px] text-sm font-medium"
-                      : "h-10 rounded-md border-hairline-strong bg-surface-card px-[18px] text-sm font-medium text-ink",
+                      ? "h-10 cursor-pointer rounded-md px-4.5 text-sm font-medium"
+                      : "h-10 cursor-pointer rounded-md border border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink",
                   )}
                 >
                   Get Started

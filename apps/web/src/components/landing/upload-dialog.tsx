@@ -218,7 +218,7 @@ export function UploadDialog({
                 <Sparkles className="size-5" />
               </div>
               <div className="space-y-2">
-                <DialogTitle className="text-[22px] font-semibold leading-snug tracking-[-0.02em] text-ink">
+                <DialogTitle className="text-2xl font-semibold leading-snug tracking-tight text-ink">
                   Upload a collection to Cullify
                 </DialogTitle>
                 <DialogDescription className="max-w-prose text-sm leading-6 text-body">
@@ -338,7 +338,7 @@ export function UploadDialog({
                     <Button
                       type="button"
                       disabled={isSubmitting}
-                      className="mt-6 h-10 cursor-pointer rounded-md px-[18px] text-sm font-medium"
+                      className="mt-6 h-10 cursor-pointer rounded-md px-4.5 text-sm font-medium"
                       onClick={openFilePicker}
                     >
                       <Upload className="size-4" />
@@ -514,14 +514,14 @@ export function UploadDialog({
             <div className="flex flex-col-reverse gap-2 sm:flex-row">
               <Button
                 variant="outline"
-                className="h-10 cursor-pointer rounded-md border-hairline-strong bg-surface-card px-[18px] text-sm font-medium"
+                className="h-10 cursor-pointer rounded-md border border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
                 disabled={isSubmitting}
                 onClick={() => handleOpenChange(false)}
               >
                 Cancel
               </Button>
               <Button
-                className="h-10 cursor-pointer rounded-md px-[18px] text-sm font-medium"
+                className="h-10 cursor-pointer rounded-md px-4.5 text-sm font-medium"
                 onClick={handleContinue}
                 disabled={files.length === 0 || isSubmitting}
               >

@@ -6,12 +6,12 @@ import { Badge } from "@/components/ui/badge";
 export function BenefitsSection() {
   return (
     <section className="bg-canvas">
-      <div className="mx-auto grid max-w-[1200px] gap-10 px-5 py-24 lg:grid-cols-2 lg:items-center">
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-24 lg:grid-cols-2 lg:items-center">
         <div>
-          <Badge className="h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink">
+          <Badge className="h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-ink">
             Benefits
           </Badge>
-          <h2 className="mt-4 text-[28px] font-semibold leading-[1.15] tracking-[-0.03em] text-ink sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-semibold leading-snug tracking-tight text-ink sm:text-4xl">
             Spend your attention on the final choice, not the messy first pass.
           </h2>
           <div className="mt-10 grid border-y border-hairline">
@@ -29,10 +29,10 @@ export function BenefitsSection() {
         <div className="rounded-lg border border-hairline-strong bg-surface-strong p-4">
           <div className="rounded-lg border border-hairline bg-surface-card p-5">
             <div className="mb-5 flex items-center justify-between">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.88px] text-muted">
+              <span className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Review queue
               </span>
-              <Badge className="h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink">
+              <Badge className="h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-ink">
                 73% complete
               </Badge>
             </div>

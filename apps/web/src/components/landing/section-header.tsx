@@ -1,18 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const badgeClassName =
-  "h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink";
-
-const invertedBadgeClassName =
-  "h-auto rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-on-dark-soft";
-
-const titleClassName =
-  "mt-4 text-[28px] font-semibold leading-[1.15] tracking-[-0.03em] text-ink sm:text-4xl";
-
-const invertedTitleClassName =
-  "mt-4 text-[28px] font-semibold leading-[1.15] tracking-[-0.03em] text-on-dark sm:text-4xl";
-
 export function SectionHeader({
   eyebrow,
   title,
@@ -32,10 +20,22 @@ export function SectionHeader({
         align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl",
       )}
     >
-      <Badge className={inverted ? invertedBadgeClassName : badgeClassName}>
+      <Badge
+        className={
+          inverted
+            ? "h-auto rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-on-dark-soft"
+            : "h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-ink"
+        }
+      >
         {eyebrow}
       </Badge>
-      <h2 className={inverted ? invertedTitleClassName : titleClassName}>
+      <h2
+        className={
+          inverted
+            ? "mt-4 text-3xl font-semibold leading-snug tracking-tight text-on-dark sm:text-4xl"
+            : "mt-4 text-3xl font-semibold leading-snug tracking-tight text-ink sm:text-4xl"
+        }
+      >
         {title}
       </h2>
       {description ? (

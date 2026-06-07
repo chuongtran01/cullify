@@ -120,7 +120,7 @@ export function AuthNavActions() {
           Sign In
         </button>
         <Button
-          className="h-10 rounded-md px-4 text-sm font-medium"
+          className="h-10 gap-2 rounded-md px-4.5 text-sm font-medium"
           onClick={() => openAuth("sign-up")}
         >
           Get Started

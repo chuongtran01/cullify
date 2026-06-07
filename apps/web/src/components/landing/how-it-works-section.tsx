@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/landing/section-header";
 export function HowItWorksSection() {
   return (
     <section id="how-it-works" className="border-b border-hairline bg-canvas">
-      <div className="mx-auto max-w-[1200px] px-5 py-24">
+      <div className="mx-auto max-w-7xl px-5 py-24">
         <SectionHeader
           eyebrow="How it works"
           title="One upload becomes a smaller set of confident decisions."
@@ -20,7 +20,7 @@ export function HowItWorksSection() {
                 <span className="grid size-8 place-items-center rounded-md bg-surface-strong">
                   <step.icon className="size-4 text-ink" />
                 </span>
-                <span className="font-mono text-xs uppercase tracking-[0.88px] text-muted">
+                <span className="font-mono text-xs uppercase tracking-wide text-muted">
                   0{index + 1}
                 </span>
               </div>

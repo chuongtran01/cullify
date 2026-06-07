@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/landing/section-header";
 export function UseCasesSection() {
   return (
     <section className="border-y border-hairline bg-canvas-soft">
-      <div className="mx-auto max-w-[1200px] px-5 py-24">
+      <div className="mx-auto max-w-7xl px-5 py-24">
         <SectionHeader
           eyebrow="Use cases"
           title="Built for anyone buried in near-identical photos."
