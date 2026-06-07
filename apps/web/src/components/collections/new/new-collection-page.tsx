@@ -102,14 +102,15 @@ function ManageSelectionDialog({
 
         <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-6 pb-6">
           <div className="flex items-center justify-end">
-            <button
-              type="button"
+            <Button
+              variant="link"
               disabled={isSubmitting}
-              className="text-sm font-medium text-text-link disabled:pointer-events-none disabled:opacity-50"
+              className="cursor-pointer text-sm font-medium text-destructive disabled:pointer-events-none disabled:opacity-50"
               onClick={onClearFiles}
+              type="button"
             >
               Clear all
-            </button>
+            </Button>
           </div>
 
           <label className="flex h-11 items-center gap-3 rounded-md border border-hairline-strong bg-canvas px-4">
@@ -332,14 +333,15 @@ export function NewCollectionPage() {
               <p className="mt-1 text-sm text-body">{intakeMessage}</p>
             </div>
             {files.length > 0 ? (
-              <button
-                type="button"
+              <Button
+                variant="link"
                 disabled={isSubmitting}
-                className="shrink-0 text-sm font-medium text-text-link disabled:pointer-events-none disabled:opacity-50"
+                className="shrink-0 text-sm font-medium text-text-link disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
                 onClick={() => setSelectionDialogOpen(true)}
+                type="button"
               >
                 Manage selection
-              </button>
+              </Button>
             ) : null}
           </div>
         </div>
