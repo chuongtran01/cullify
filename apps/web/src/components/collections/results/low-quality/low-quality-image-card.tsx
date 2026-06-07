@@ -31,7 +31,6 @@ export function LowQualityImageCard({
       <div className="grid gap-3 p-3">
         <div className="min-w-0">
           <h2 className="truncate text-sm font-medium text-ink">{image.fileName}</h2>
-          <p className="mt-1 text-xs text-muted">Flagged for review</p>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {image.reasons.map((reason) => (
