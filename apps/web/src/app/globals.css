@@ -31,7 +31,7 @@
   --accent-warning: #ab6400;
   --accent-preview: #8145b5;
   --semantic-success: #16a34a;
-  --semantic-error: #eb8e90;
+  --semantic-error: #dc2626;
   --on-primary: #ffffff;
   --on-dark: #ffffff;
   --on-dark-soft: #b0b4ba;
@@ -49,7 +49,7 @@
   --action-blue: var(--text-link);
   --focus-blue: var(--text-link);
   --coral: var(--semantic-error);
-  --coral-soft: #f4c6c7;
+  --coral-soft: #fecaca;
   --timeline-thinking: var(--semantic-error);
   --timeline-grep: var(--canvas-soft);
   --timeline-read: var(--gradient-sky-light);
