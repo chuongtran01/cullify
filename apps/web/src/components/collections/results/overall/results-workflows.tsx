@@ -2,16 +2,13 @@
 
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 
-import type {
-  ReviewResultsData,
-  SimilarGroup,
-} from "@/components/collections/results/overall/mock-data";
 import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type {
+  CollectionGroupPreview,
+  CollectionGroupPreviewsResponse,
   CollectionLowQualityImage,
   CollectionLowQualityImagesResponse,
 } from "@/services/collections";
@@ -73,20 +70,64 @@ function WorkflowSection({
   );
 }
 
-function SimilarGroupCard({ group }: { group: SimilarGroup }) {
+function SimilarGroupCard({ group }: { group: CollectionGroupPreview }) {
   return (
     <article className="min-w-60 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
-      <div className="relative">
-        <PhotoSurface className="aspect-[4/3]" src={group.src} title={group.name} />
-        <Badge className="absolute top-3 left-3 h-7 rounded-full bg-primary px-3 text-on-primary">
-          AI Pick
-        </Badge>
-      </div>
-      <div className="p-4">
-        <h3 className="text-base font-semibold text-ink">{group.name}</h3>
-        <p className="mt-1 text-sm text-body">{group.photoCount} photos in group</p>
-      </div>
+      <PhotoSurface
+        className="aspect-[4/3]"
+        src={group.previewImage.imageUrl}
+        title={group.previewImage.fileName}
+      />
     </article>
+  );
+}
+
+function SimilarGroupsStrip({
+  groups,
+  isError,
+  isPending,
+}: {
+  groups: CollectionGroupPreview[];
+  isError: boolean;
+  isPending: boolean;
+}) {
+  if (isPending) {
+    return (
+      <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div
+            key={index}
+            className="min-w-60 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card"
+          >
+            <div className="aspect-[4/3] animate-pulse bg-surface-strong" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
+        Unable to load similar groups.
+      </div>
+    );
+  }
+
+  if (groups.length === 0) {
+    return (
+      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
+        No similar groups found.
+      </div>
+    );
+  }
+
+  return (
+    <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
+      {groups.map((group) => (
+        <SimilarGroupCard group={group} key={group.id} />
+      ))}
+    </div>
   );
 }
 
@@ -159,32 +200,37 @@ function LowQualityPhotosStrip({
 }
 
 export function ResultsWorkflows({
-  data,
+  collectionId,
   lowQuality,
+  similarGroups,
   isLowQualityError,
   isLowQualityPending,
+  isSimilarGroupsError,
+  isSimilarGroupsPending,
 }: {
-  data: Pick<ReviewResultsData, "similarGroups">;
+  collectionId: string;
   lowQuality?: CollectionLowQualityImagesResponse;
+  similarGroups?: CollectionGroupPreviewsResponse;
   isLowQualityError: boolean;
   isLowQualityPending: boolean;
+  isSimilarGroupsError: boolean;
+  isSimilarGroupsPending: boolean;
 }) {
-  const params = useParams<{ collectionId: string }>();
-  const collectionId = params.collectionId ?? "";
+  const similarGroupsCount = similarGroups?.totalSimilarGroups ?? 0;
   const lowQualityCount = lowQuality?.totalLowQualityImages ?? 0;
 
   return (
     <div className="grid min-w-0 gap-5">
       <WorkflowSection
-        count={`${data.similarGroups.length} groups`}
+        count={`${similarGroupsCount} groups`}
         description="Compare visually similar photos and keep the best frame from each set."
         title="Similar Groups"
       >
-        <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
-          {data.similarGroups.map((group) => (
-            <SimilarGroupCard group={group} key={group.id} />
-          ))}
-        </div>
+        <SimilarGroupsStrip
+          groups={similarGroups?.groups ?? []}
+          isError={isSimilarGroupsError}
+          isPending={isSimilarGroupsPending}
+        />
       </WorkflowSection>
 
       <WorkflowSection

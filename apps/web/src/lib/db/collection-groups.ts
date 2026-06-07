@@ -31,6 +31,17 @@ export type CollectionGroupDetail = CollectionGroupSummary & {
   images: CollectionGroupImage[];
 };
 
+export type CollectionGroupPreview = CollectionGroupSummary & {
+  previewImage: CollectionGroupImage;
+};
+
+export type CollectionGroupPreviewsResponse = {
+  groups: CollectionGroupPreview[];
+  totalSimilarGroups: number;
+  limit: number;
+  hasMore: boolean;
+};
+
 export async function listCollectionGroups(
   collectionId: string,
   userId: string,
@@ -54,6 +65,76 @@ export async function listCollectionGroups(
     groups,
     totalGroups: groups.length,
     totalImages: groups.reduce((total, group) => total + group.imageCount, 0),
+  };
+}
+
+export async function getCollectionGroupPreviews(
+  collectionId: string,
+  userId: string,
+  { limit = 5 }: { limit?: number } = {},
+): Promise<CollectionGroupPreviewsResponse | null> {
+  const collection = await prisma.collection.findFirst({
+    where: { id: collectionId, userId },
+    select: { id: true },
+  });
+
+  if (!collection) {
+    return null;
+  }
+
+  const [totalSimilarGroups, rows] = await Promise.all([
+    prisma.imageGroup.count({
+      where: {
+        collectionId,
+        imageCount: { gt: 1 },
+      },
+    }),
+    prisma.imageGroup.findMany({
+      where: {
+        collectionId,
+        imageCount: { gt: 1 },
+      },
+      include: {
+        images: {
+          include: { image: true },
+          orderBy: { image: { createdAt: "asc" } },
+          take: 1,
+        },
+      },
+      orderBy: [{ imageCount: "desc" }, { createdAt: "asc" }],
+      take: limit,
+    }),
+  ]);
+
+  const groups = await Promise.all(
+    rows.flatMap((group) => {
+      const firstImage = group.images[0]?.image;
+
+      if (!firstImage) {
+        return [];
+      }
+
+      return [
+        (async (): Promise<CollectionGroupPreview> => ({
+          ...formatGroupSummary(group),
+          previewImage: {
+            id: firstImage.id,
+            fileName: firstImage.fileName,
+            objectKey: firstImage.objectKey,
+            mimeType: firstImage.mimeType,
+            createdAt: firstImage.createdAt.toISOString(),
+            imageUrl: await createPresignedDownloadUrl(firstImage.objectKey),
+          },
+        }))(),
+      ];
+    }),
+  );
+
+  return {
+    groups,
+    totalSimilarGroups,
+    limit,
+    hasMore: groups.length < totalSimilarGroups,
   };
 }
 

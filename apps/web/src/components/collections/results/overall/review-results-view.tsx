@@ -1,13 +1,12 @@
 "use client";
 
-import type { ReviewResultsData } from "@/components/collections/results/overall/mock-data";
 import { ResultsHeader } from "@/components/collections/results/overall/results-header";
 import { ResultsSummary } from "@/components/collections/results/overall/results-summary";
 import { ResultsWorkflows } from "@/components/collections/results/overall/results-workflows";
 import { useCollectionResultsOverall } from "@/features/collections/hooks";
 
-export function ReviewResultsView({ data }: { data: ReviewResultsData }) {
-  const overall = useCollectionResultsOverall(data.collectionId);
+export function ReviewResultsView({ collectionId }: { collectionId: string }) {
+  const overall = useCollectionResultsOverall(collectionId);
 
   return (
     <div className="flex w-full flex-col gap-5">
@@ -24,10 +23,13 @@ export function ReviewResultsView({ data }: { data: ReviewResultsData }) {
           isPending={overall.isPending}
         />
         <ResultsWorkflows
-          data={data}
+          collectionId={collectionId}
           lowQuality={overall.data?.lowQuality}
+          similarGroups={overall.data?.similarGroups}
           isLowQualityError={overall.isError}
           isLowQualityPending={overall.isPending}
+          isSimilarGroupsError={overall.isError}
+          isSimilarGroupsPending={overall.isPending}
         />
       </div>
     </div>

@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 
-import { getMockReviewResults } from "@/components/collections/results/overall/mock-data";
 import { ReviewResultsView } from "@/components/collections/results/overall/review-results-view";
 import { isUuid } from "@/services/collections";
 
@@ -17,7 +16,5 @@ export default async function DashboardCollectionResultsPage({
     notFound();
   }
 
-  const data = getMockReviewResults(collectionId);
-
-  return <ReviewResultsView data={data} />;
+  return <ReviewResultsView collectionId={collectionId} />;
 }

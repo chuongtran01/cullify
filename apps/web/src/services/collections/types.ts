@@ -59,6 +59,17 @@ export type CollectionGroupDetail = CollectionGroupSummary & {
   images: CollectionGroupImage[];
 };
 
+export type CollectionGroupPreview = CollectionGroupSummary & {
+  previewImage: CollectionGroupImage;
+};
+
+export type CollectionGroupPreviewsResponse = {
+  groups: CollectionGroupPreview[];
+  totalSimilarGroups: number;
+  limit: number;
+  hasMore: boolean;
+};
+
 export type CollectionLowQualityImage = {
   id: string;
   fileName: string;
@@ -105,5 +116,6 @@ export type CollectionResultsSummary = {
 
 export type CollectionResultsOverall = {
   summary: CollectionResultsSummary;
+  similarGroups: CollectionGroupPreviewsResponse;
   lowQuality: CollectionLowQualityImagesResponse;
 };
