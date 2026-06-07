@@ -9,18 +9,18 @@ export function ProgressStats({ stats }: { stats: ProgressStat[] }) {
         return (
           <Card
             key={stat.label}
-            className="rounded-2xl border border-card-border bg-canvas py-0 ring-0"
+            className="rounded-lg border border-hairline-strong bg-surface-card py-0 ring-0"
           >
-            <CardContent className="flex items-center justify-between gap-3 p-5">
+            <CardContent className="flex items-center justify-between gap-3 p-4">
               <div>
                 <div className="font-mono text-xs uppercase tracking-wide text-muted">
                   {stat.label}
                 </div>
-                <div className="mt-2 text-3xl font-normal tracking-tight">
+                <div className="mt-3 text-2xl font-semibold text-ink">
                   {stat.value}
                 </div>
               </div>
-              <span className="flex size-10 items-center justify-center rounded-full bg-surface-stone text-primary">
+              <span className="flex size-10 items-center justify-center rounded-md bg-surface-strong text-ink">
                 <Icon className="size-4" />
               </span>
             </CardContent>

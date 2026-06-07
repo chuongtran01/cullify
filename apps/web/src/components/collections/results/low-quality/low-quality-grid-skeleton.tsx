@@ -6,7 +6,7 @@ export function LowQualityGridSkeleton() {
       {Array.from({ length: 6 }).map((_, index) => (
         <div
           key={index}
-          className="overflow-hidden rounded-md border border-hairline bg-surface-card"
+          className="overflow-hidden rounded-lg border border-hairline-strong bg-surface-card"
         >
           <Skeleton className="aspect-[4/3] rounded-none" />
           <div className="grid gap-3 p-3">
@@ -25,7 +25,7 @@ export function LowQualityGridSkeleton() {
 export function LowQualityPageSkeleton() {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-      <div className="flex flex-col gap-4 rounded-md border border-hairline bg-surface-card p-5 sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-card p-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-1 flex-col gap-3">
           <Skeleton className="h-4 w-40" />
           <Skeleton className="h-9 w-72 max-w-full" />

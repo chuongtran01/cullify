@@ -155,7 +155,7 @@ export function ResultsHeader({ summary }: ResultsHeaderProps) {
             variant="ghost"
             type="button"
             disabled={!canEdit}
-            className="block max-w-full cursor-text text-left text-base font-medium disabled:cursor-default"
+            className="block max-w-full cursor-text text-left text-base font-semibold text-ink disabled:cursor-default"
             onClick={startEditing}
           >
             <span className="truncate">{title}</span>
@@ -170,7 +170,7 @@ export function ResultsHeader({ summary }: ResultsHeaderProps) {
       <Button
         type="button"
         variant="outline"
-        className="h-9 shrink-0 rounded-lg px-4"
+        className="h-10 shrink-0 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
       >
         Share
       </Button>

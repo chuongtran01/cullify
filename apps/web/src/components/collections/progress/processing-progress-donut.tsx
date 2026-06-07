@@ -42,10 +42,10 @@ export function ProcessingProgressDonut({
         />
       </svg>
       <div className="text-center">
-        <div className="text-4xl font-normal leading-none text-white">
+        <div className="text-4xl font-semibold leading-none text-on-dark">
           {processed}%
         </div>
-        <div className="mt-1 text-xs text-white/50">complete</div>
+        <div className="mt-1 text-xs text-on-dark-soft">complete</div>
       </div>
     </div>
   );

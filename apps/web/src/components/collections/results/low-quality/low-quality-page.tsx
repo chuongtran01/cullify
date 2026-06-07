@@ -118,7 +118,7 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
           {data?.hasMore ? (
             <div className="flex justify-center">
               <Button
-                className="h-10 rounded-full px-5"
+                className="h-10 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
                 variant="outline"
                 onClick={() => setLimit((currentLimit) => currentLimit + PAGE_SIZE)}
               >

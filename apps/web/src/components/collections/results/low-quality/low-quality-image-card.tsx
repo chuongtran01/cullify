@@ -15,7 +15,7 @@ export function LowQualityImageCard({
   onSelect,
 }: LowQualityImageCardProps) {
   return (
-    <article className="overflow-hidden rounded-md border border-hairline bg-surface-card">
+    <article className="overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
       <div className="relative">
         <PhotoSurface
           className="aspect-[4/3]"
@@ -30,13 +30,13 @@ export function LowQualityImageCard({
       </div>
       <div className="grid gap-3 p-3">
         <div className="min-w-0">
-          <h2 className="truncate text-sm font-medium text-ink">{image.fileName}</h2>
+          <h2 className="truncate text-sm font-semibold text-ink">{image.fileName}</h2>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {image.reasons.map((reason) => (
             <Badge
               key={reason}
-              className="rounded-full border-coral-soft bg-coral/90 px-2.5 text-white"
+              className="rounded-full border-semantic-error/20 bg-semantic-error/10 px-2.5 text-semantic-error"
             >
               {reason}
             </Badge>
@@ -45,6 +45,11 @@ export function LowQualityImageCard({
         <Button
           type="button"
           variant={image.isSelected ? "outline" : "default"}
+          className={
+            image.isSelected
+              ? "h-10 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
+              : "h-10 rounded-md px-4.5 text-sm font-medium"
+          }
           disabled={image.isSelected || isSelecting}
           onClick={() => onSelect(image.id)}
         >

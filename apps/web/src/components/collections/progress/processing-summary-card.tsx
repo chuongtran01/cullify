@@ -21,19 +21,19 @@ export function ProcessingSummaryCard({
   stages,
 }: ProcessingSummaryCardProps) {
   return (
-    <section className="grid gap-5 rounded-3xl bg-deep-green p-3 text-white lg:grid-cols-[1.4fr_0.9fr]">
-      <div className="grid gap-5 rounded-2xl border border-white/10 bg-surface-dark p-5 sm:grid-cols-[176px_1fr] sm:items-center">
+    <section className="grid gap-5 rounded-lg bg-surface-dark p-3 text-on-dark lg:grid-cols-[1.4fr_0.9fr]">
+      <div className="grid gap-5 rounded-lg border border-white/10 bg-surface-dark-elevated p-5 sm:grid-cols-[176px_1fr] sm:items-center">
         <ProcessingProgressDonut progress={progress} />
 
         <div className="min-w-0">
-          <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-white/60">
+          <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-on-dark-soft">
             <Sparkles className="size-4" />
             AI processing
           </div>
-          <h2 className="mt-3 text-3xl leading-tight font-normal tracking-tight text-white">
+          <h2 className="mt-3 text-3xl font-semibold leading-snug tracking-tight text-on-dark">
             Analyzing your photos
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/65">
+          <p className="mt-3 max-w-2xl text-sm font-normal leading-normal text-on-dark-soft">
             AI is finding the best photos, filtering low-quality shots, and
             organizing similar images so review is faster when processing
             completes.
@@ -42,19 +42,19 @@ export function ProcessingSummaryCard({
           <div className="mt-6 space-y-2">
             <Progress
               value={progress}
-              className="h-2 bg-white/10 [&_[data-slot=progress-indicator]]:bg-white"
+              className="h-2 bg-white/10 [&_[data-slot=progress-indicator]]:bg-on-dark"
             />
             <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-              <span className="text-white">
+              <span className="text-on-dark">
                 {processedPhotos} of {totalPhotos} photos processed
               </span>
-              <span className="text-white/55">
+              <span className="text-on-dark-soft">
                 About {estimatedRemaining} remaining
               </span>
             </div>
           </div>
 
-          <p className="mt-4 max-w-xl text-sm leading-6 text-white/55">
+          <p className="mt-4 max-w-xl text-sm font-normal leading-normal text-on-dark-soft">
             You can leave this page. Processing will continue in the
             background.
           </p>

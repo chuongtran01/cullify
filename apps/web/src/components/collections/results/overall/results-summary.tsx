@@ -18,14 +18,18 @@ function SummaryStat({
   isLoading?: boolean;
 }) {
   return (
-    <div className="rounded-lg border border-white/10 bg-white/8 p-4">
-      <p className="font-mono text-xs uppercase text-white/55">{label}</p>
+    <div className="rounded-lg border border-hairline-strong bg-surface-dark-elevated p-4">
+      <p className="font-mono text-xs uppercase tracking-wide text-on-dark-soft">
+        {label}
+      </p>
       {isLoading ? (
-        <Skeleton className="mt-2 h-8 w-16 bg-white/20" />
+        <Skeleton className="mt-2 h-8 w-16 bg-on-dark/20" />
       ) : (
-        <p className="mt-2 text-3xl leading-none font-normal text-white">{value}</p>
+        <p className="mt-2 text-2xl font-semibold leading-none text-on-dark">
+          {value}
+        </p>
       )}
-      <p className="mt-2 text-xs leading-5 text-white/55">{helper}</p>
+      <p className="mt-2 text-xs leading-5 text-on-dark-soft">{helper}</p>
     </div>
   );
 }
@@ -41,17 +45,17 @@ export function ResultsSummary({ summary }: ResultsSummaryProps) {
   const lowQualityImages = summary.data?.lowQualityImages ?? 0;
 
   return (
-    <section className="grid gap-5 rounded-3xl bg-deep-green p-5 text-white">
+    <section className="grid gap-5 rounded-lg bg-surface-dark p-5 text-on-dark">
       <div>
-        <div className="flex items-center gap-2 font-mono text-xs uppercase text-white/60">
+        <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-on-dark-soft">
           <Sparkles className="size-4" />
           Analysis complete
         </div>
-        <h2 className="mt-3 text-2xl leading-tight font-normal text-white">
+        <h2 className="mt-3 text-2xl font-semibold leading-tight text-on-dark">
           Review summary
         </h2>
         {summary.isError ? (
-          <p className="mt-3 text-sm text-white/70">
+          <p className="mt-3 text-sm text-on-dark-soft">
             Unable to refresh the latest result totals.
           </p>
         ) : null}

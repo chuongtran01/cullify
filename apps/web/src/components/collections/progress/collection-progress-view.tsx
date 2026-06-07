@@ -8,7 +8,7 @@ import type { CollectionProgressData } from "@/components/collections/progress/t
 
 export function CollectionProgressView({ data }: { data: CollectionProgressData }) {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-8">
       <ProgressHeader
         title={data.title}
         uploadedAt={data.uploadedAt}

@@ -9,13 +9,13 @@ type LowQualityHeaderProps = {
 
 export function LowQualityHeader({ isPending, total }: LowQualityHeaderProps) {
   return (
-    <header className="flex flex-col gap-4 rounded-md border border-hairline bg-surface-card p-5 sm:flex-row sm:items-start sm:justify-between">
+    <header className="flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-card p-5 sm:flex-row sm:items-start sm:justify-between">
       <div>
-        <div className="flex items-center gap-2 font-mono text-xs uppercase text-muted">
+        <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-muted">
           <AlertTriangle className="size-4" aria-hidden="true" />
           Low quality review
         </div>
-        <h1 className="mt-3 text-3xl font-normal leading-tight text-ink">
+        <h1 className="mt-3 text-3xl font-semibold leading-tight text-ink">
           Low Quality Photos
         </h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-body">

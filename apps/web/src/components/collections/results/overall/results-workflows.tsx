@@ -28,11 +28,11 @@ function WorkflowSection({
   href?: string;
 }) {
   return (
-    <section className="min-w-0 overflow-hidden rounded-3xl border border-hairline bg-canvas p-5">
+    <section className="min-w-0 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card p-5">
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <h2 className="text-2xl leading-tight font-normal text-ink">{title}</h2>
+            <h2 className="text-2xl font-semibold leading-tight text-ink">{title}</h2>
             <Badge variant="outline" className="h-7 rounded-full px-3 text-xs text-body">
               {count}
             </Badge>
@@ -43,7 +43,7 @@ function WorkflowSection({
           <Button
             asChild
             variant="outline"
-            className="h-10 gap-2 rounded-full border-hairline bg-surface-card px-4 hover:bg-surface-stone hover:cursor-pointer sm:shrink-0"
+            className="h-10 gap-2 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink hover:cursor-pointer sm:shrink-0"
           >
             <Link href={href}>
               Review
@@ -56,7 +56,7 @@ function WorkflowSection({
         ) : (
           <Button
             variant="outline"
-            className="h-10 gap-2 rounded-full border-hairline bg-surface-card px-4 hover:bg-surface-stone hover:cursor-pointer sm:shrink-0"
+            className="h-10 gap-2 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink hover:cursor-pointer sm:shrink-0"
           >
             Review
             <ArrowRight
@@ -73,7 +73,7 @@ function WorkflowSection({
 
 function SimilarGroupCard({ group }: { group: SimilarGroup }) {
   return (
-    <article className="min-w-60 overflow-hidden rounded-2xl border border-hairline bg-surface-card">
+    <article className="min-w-60 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
       <div className="relative">
         <PhotoSurface className="aspect-[4/3]" src={group.src} title={group.name} />
         <Badge className="absolute top-3 left-3 h-7 rounded-full bg-primary px-3 text-on-primary">
@@ -81,7 +81,7 @@ function SimilarGroupCard({ group }: { group: SimilarGroup }) {
         </Badge>
       </div>
       <div className="p-4">
-        <h3 className="text-base font-medium text-ink">{group.name}</h3>
+        <h3 className="text-base font-semibold text-ink">{group.name}</h3>
         <p className="mt-1 text-sm text-body">{group.photoCount} photos in group</p>
       </div>
     </article>
@@ -92,14 +92,14 @@ function LowQualityPhotoCard({ image }: { image: CollectionLowQualityImage }) {
   const reason = image.reasons[0] ?? "Low Quality";
 
   return (
-    <article className="min-w-48 overflow-hidden rounded-2xl border border-hairline bg-surface-card">
+    <article className="min-w-48 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
       <div className="relative">
         <PhotoSurface
           className="aspect-[4/3]"
           src={image.imageUrl}
           title={image.fileName}
         />
-        <Badge className="absolute top-3 left-3 h-7 rounded-full border-coral-soft bg-coral/90 px-3 text-white">
+        <Badge className="absolute top-3 left-3 h-7 rounded-full border-semantic-error/20 bg-semantic-error/10 px-3 text-semantic-error">
           {reason}
         </Badge>
       </div>
@@ -120,9 +120,9 @@ function LowQualityPhotosStrip({
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}
-            className="min-w-48 overflow-hidden rounded-2xl border border-hairline bg-surface-card"
+            className="min-w-48 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card"
           >
-            <div className="aspect-[4/3] animate-pulse bg-muted" />
+            <div className="aspect-[4/3] animate-pulse bg-surface-strong" />
           </div>
         ))}
       </div>
@@ -131,7 +131,7 @@ function LowQualityPhotosStrip({
 
   if (images.length === 0) {
     return (
-      <div className="rounded-2xl border border-hairline bg-surface-card p-5 text-sm text-body">
+      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
         No low quality images found.
       </div>
     );

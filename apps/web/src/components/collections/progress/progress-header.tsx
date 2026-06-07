@@ -28,13 +28,13 @@ export function ProgressHeader({
     status === "COMPLETED";
 
   return (
-    <header className="flex flex-col gap-5 rounded-3xl border border-hairline bg-canvas p-5 lg:flex-row lg:items-center lg:justify-between">
+    <header className="flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-card p-5 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex items-start gap-3">
         <div>
           <div className="mb-2 font-mono text-xs uppercase tracking-wide text-muted">
             Collection {collectionId}
           </div>
-          <h1 className="text-3xl leading-tight font-normal tracking-tight sm:text-4xl">
+          <h1 className="text-3xl font-semibold leading-snug tracking-tight text-ink sm:text-4xl">
             {title}
           </h1>
           <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted">
@@ -48,7 +48,7 @@ export function ProgressHeader({
         onClick={() =>
           router.push(`/dashboard/collections/${collectionId}/results`)
         }
-        className="h-11 w-full gap-2 rounded-full px-5 sm:w-auto lg:shrink-0 hover:cursor-pointer"
+        className="h-10 w-full gap-2 rounded-md px-4.5 text-sm font-medium sm:w-auto lg:shrink-0 hover:cursor-pointer"
       >
         Review Results
         <ArrowRight

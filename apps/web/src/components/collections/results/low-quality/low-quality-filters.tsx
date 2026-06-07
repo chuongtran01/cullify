@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export type LowQualityFilterValue = "ALL" | "NEEDS_REVIEW" | "SELECTED";
 
@@ -49,18 +50,19 @@ export function LowQualityFilters({
   return (
     <div className="flex flex-wrap gap-2">
       {lowQualityFilters.map((filter) => (
-        <button
+        <Button
+          variant="outline"
           key={filter.value}
           className={cn(
-            "h-8 rounded-full border border-hairline-light px-3 text-sm font-medium text-body transition-colors hover:border-ink hover:text-ink",
+            "h-8 rounded-full px-3",
             activeFilter === filter.value &&
-              "border-ink bg-ink text-on-primary hover:text-on-primary",
+              "border-ink bg-ink text-on-primary hover:bg-ink hover:text-on-primary",
           )}
           onClick={() => onFilterChange(filter.value)}
           type="button"
         >
           {filter.label}
-        </button>
+        </Button>
       ))}
     </div>
   );
