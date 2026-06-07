@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
-import { LowQualityGridSkeleton } from "@/components/collections/results/low-quality/low-quality-grid-skeleton";
+import { LowQualityPageSkeleton } from "@/components/collections/results/low-quality/low-quality-grid-skeleton";
 import { LowQualityPage } from "@/components/collections/results/low-quality/low-quality-page";
 import { isUuid } from "@/services/collections";
 
@@ -19,7 +19,7 @@ export default async function LowQualityImagesPage({
   }
 
   return (
-    <Suspense fallback={<LowQualityGridSkeleton />}>
+    <Suspense fallback={<LowQualityPageSkeleton />}>
       <LowQualityPage collectionId={collectionId} />
     </Suspense>
   );
