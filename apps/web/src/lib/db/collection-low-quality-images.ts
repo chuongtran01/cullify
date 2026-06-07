@@ -47,9 +47,46 @@ type LowQualityImageRow = {
   decisionSource: string | null;
   decisionReason: string | null;
   reviewedAt: Date | null;
-  reasonCount: number;
-  totalCount: number;
 };
+
+const lowQualityAnalysisWhere = {
+  OR: [
+    { isBlurry: true },
+    { isOutOfFocus: true },
+    { hasMotionBlur: true },
+    { hasEyesClosed: true },
+    { isLowExposure: true },
+    { isHighExposure: true },
+    { hasCompressionArtifacts: true },
+  ],
+};
+
+function buildLowQualityImageWhere(
+  collectionId: string,
+  isSelected?: boolean,
+): Prisma.ImageWhereInput {
+  const where: Prisma.ImageWhereInput = {
+    collectionId,
+    qualityAnalysis: {
+      is: lowQualityAnalysisWhere,
+    },
+  };
+
+  if (isSelected === true) {
+    where.review = { is: { isSelected: true } };
+  } else if (isSelected === false) {
+    where.AND = [
+      {
+        OR: [
+          { review: { is: null } },
+          { review: { is: { isSelected: false } } },
+        ],
+      },
+    ];
+  }
+
+  return where;
+}
 
 export async function getCollectionLowQualityImages(
   collectionId: string,
@@ -64,15 +101,12 @@ export async function getCollectionLowQualityImages(
     isSelected?: boolean;
   } = {},
 ): Promise<CollectionLowQualityImagesResponse | null> {
-  const collectionRows = await prisma.$queryRaw<{ id: string }[]>`
-    SELECT id
-    FROM "collection"
-    WHERE id = ${collectionId}::uuid
-      AND user_id = ${userId}
-    LIMIT 1
-  `;
+  const collection = await prisma.collection.findFirst({
+    where: { id: collectionId, userId },
+    select: { id: true },
+  });
 
-  if (collectionRows.length === 0) {
+  if (!collection) {
     return null;
   }
 
@@ -81,25 +115,46 @@ export async function getCollectionLowQualityImages(
       ? Prisma.empty
       : Prisma.sql`AND COALESCE(collection_image_review.is_selected, false) = ${isSelected}`;
 
-  const rows = await prisma.$queryRaw<LowQualityImageRow[]>`
-    SELECT
-      image.id::text,
-      image.file_name AS "fileName",
-      image.object_key AS "objectKey",
-      image.mime_type AS "mimeType",
-      image.created_at AS "createdAt",
-      image_quality_analysis.is_blurry AS "isBlurry",
-      image_quality_analysis.is_out_of_focus AS "isOutOfFocus",
-      image_quality_analysis.has_motion_blur AS "hasMotionBlur",
-      image_quality_analysis.has_eyes_closed AS "hasEyesClosed",
-      image_quality_analysis.is_low_exposure AS "isLowExposure",
-      image_quality_analysis.is_high_exposure AS "isHighExposure",
-      image_quality_analysis.has_compression_artifacts AS "hasCompressionArtifacts",
-      collection_image_review.is_selected AS "isSelected",
-      collection_image_review.decision_source::text AS "decisionSource",
-      collection_image_review.decision_reason::text AS "decisionReason",
-      collection_image_review.reviewed_at AS "reviewedAt",
-      (
+  const [totalLowQualityImages, rows] = await Promise.all([
+    prisma.image.count({
+      where: buildLowQualityImageWhere(collectionId, isSelected),
+    }),
+    // Raw SQL retained: ORDER BY computed reasonCount (sum of quality flags) is not expressible in Prisma orderBy.
+    prisma.$queryRaw<LowQualityImageRow[]>`
+      SELECT
+        image.id::text,
+        image.file_name AS "fileName",
+        image.object_key AS "objectKey",
+        image.mime_type AS "mimeType",
+        image.created_at AS "createdAt",
+        image_quality_analysis.is_blurry AS "isBlurry",
+        image_quality_analysis.is_out_of_focus AS "isOutOfFocus",
+        image_quality_analysis.has_motion_blur AS "hasMotionBlur",
+        image_quality_analysis.has_eyes_closed AS "hasEyesClosed",
+        image_quality_analysis.is_low_exposure AS "isLowExposure",
+        image_quality_analysis.is_high_exposure AS "isHighExposure",
+        image_quality_analysis.has_compression_artifacts AS "hasCompressionArtifacts",
+        collection_image_review.is_selected AS "isSelected",
+        collection_image_review.decision_source::text AS "decisionSource",
+        collection_image_review.decision_reason::text AS "decisionReason",
+        collection_image_review.reviewed_at AS "reviewedAt"
+      FROM image
+      INNER JOIN image_quality_analysis
+        ON image_quality_analysis.image_id = image.id
+      LEFT JOIN collection_image_review
+        ON collection_image_review.image_id = image.id
+      WHERE image.collection_id = ${collectionId}::uuid
+        AND (
+          image_quality_analysis.is_blurry OR
+          image_quality_analysis.is_out_of_focus OR
+          image_quality_analysis.has_motion_blur OR
+          image_quality_analysis.has_eyes_closed OR
+          image_quality_analysis.is_low_exposure OR
+          image_quality_analysis.is_high_exposure OR
+          image_quality_analysis.has_compression_artifacts
+        )
+        ${isSelectedCondition}
+      ORDER BY (
         image_quality_analysis.is_blurry::int +
         image_quality_analysis.is_out_of_focus::int +
         image_quality_analysis.has_motion_blur::int +
@@ -107,28 +162,11 @@ export async function getCollectionLowQualityImages(
         image_quality_analysis.is_low_exposure::int +
         image_quality_analysis.is_high_exposure::int +
         image_quality_analysis.has_compression_artifacts::int
-      ) AS "reasonCount",
-      COUNT(*) OVER()::int AS "totalCount"
-    FROM image
-    INNER JOIN image_quality_analysis
-      ON image_quality_analysis.image_id = image.id
-    LEFT JOIN collection_image_review
-      ON collection_image_review.image_id = image.id
-    WHERE image.collection_id = ${collectionId}::uuid
-      AND (
-        image_quality_analysis.is_blurry OR
-        image_quality_analysis.is_out_of_focus OR
-        image_quality_analysis.has_motion_blur OR
-        image_quality_analysis.has_eyes_closed OR
-        image_quality_analysis.is_low_exposure OR
-        image_quality_analysis.is_high_exposure OR
-        image_quality_analysis.has_compression_artifacts
-      )
-      ${isSelectedCondition}
-    ORDER BY "reasonCount" DESC, image.created_at ASC
-    LIMIT ${limit}
-    OFFSET ${offset}
-  `;
+      ) DESC, image.created_at ASC
+      LIMIT ${limit}
+      OFFSET ${offset}
+    `,
+  ]);
 
   const images = await Promise.all(
     rows.map(async (image) => ({
@@ -145,8 +183,6 @@ export async function getCollectionLowQualityImages(
       createdAt: image.createdAt.toISOString(),
     })),
   );
-
-  const totalLowQualityImages = rows[0]?.totalCount ?? 0;
 
   return {
     images,

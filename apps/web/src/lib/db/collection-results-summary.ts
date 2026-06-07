@@ -15,74 +15,67 @@ export type CollectionResultsSummary = {
   lowQualityImages: number;
 };
 
-type CollectionResultsSummaryRow = {
-  collectionId: string;
-  collectionName: string | null;
-  status: CollectionStatus;
-  createdAt: Date;
-  totalPhotos: number | bigint;
-  similarGroups: number | bigint;
-  lowQualityImages: number | bigint;
+const lowQualityAnalysisWhere = {
+  OR: [
+    { isBlurry: true },
+    { isOutOfFocus: true },
+    { hasMotionBlur: true },
+    { hasEyesClosed: true },
+    { isLowExposure: true },
+    { isHighExposure: true },
+    { hasCompressionArtifacts: true },
+  ],
 };
 
 export async function getCollectionResultsSummary(
   collectionId: string,
   userId: string,
 ): Promise<CollectionResultsSummary | null> {
-  const rows = await prisma.$queryRaw<CollectionResultsSummaryRow[]>`
-    SELECT
-      collection.id AS "collectionId",
-      collection.name AS "collectionName",
-      collection.status AS "status",
-      collection.created_at AS "createdAt",
-      (
-        SELECT COUNT(*)::int
-        FROM image
-        WHERE image.collection_id = ${collectionId}::uuid
-          AND image.status = ${ImageUploadStatus.UPLOADED}::"ImageUploadStatus"
-      ) AS "totalPhotos",
-      (
-        SELECT COUNT(*)::int
-        FROM image_group
-        WHERE image_group.collection_id = ${collectionId}::uuid
-          AND image_group.image_count > 1
-      ) AS "similarGroups",
-      (
-        SELECT COUNT(*)::int
-        FROM image
-        INNER JOIN image_quality_analysis
-          ON image_quality_analysis.image_id = image.id
-        WHERE image.collection_id = ${collectionId}::uuid
-          AND (
-            image_quality_analysis.is_blurry OR
-            image_quality_analysis.is_out_of_focus OR
-            image_quality_analysis.has_motion_blur OR
-            image_quality_analysis.has_eyes_closed OR
-            image_quality_analysis.is_low_exposure OR
-            image_quality_analysis.is_high_exposure OR
-            image_quality_analysis.has_compression_artifacts
-          )
-      ) AS "lowQualityImages"
-    FROM collection
-    WHERE collection.id = ${collectionId}::uuid
-      AND collection.user_id = ${userId}
-    LIMIT 1
-  `;
+  const collection = await prisma.collection.findFirst({
+    where: { id: collectionId, userId },
+    select: {
+      id: true,
+      name: true,
+      status: true,
+      createdAt: true,
+    },
+  });
 
-  const summary = rows[0];
-
-  if (!summary) {
+  if (!collection) {
     return null;
   }
 
+  const [totalPhotos, similarGroups, lowQualityImages] = await Promise.all([
+    prisma.image.count({
+      where: {
+        collectionId,
+        status: ImageUploadStatus.UPLOADED,
+      },
+    }),
+    prisma.imageGroup.count({
+      where: {
+        collectionId,
+        imageCount: { gt: 1 },
+      },
+    }),
+    prisma.image.count({
+      where: {
+        collectionId,
+        qualityAnalysis: {
+          is: lowQualityAnalysisWhere,
+        },
+      },
+    }),
+  ]);
+
   return {
-    collectionId: summary.collectionId,
+    collectionId: collection.id,
     collectionName:
-      summary.collectionName ?? formatFallbackCollectionName(summary.createdAt),
-    status: summary.status,
-    createdAt: summary.createdAt.toISOString(),
-    totalPhotos: Number(summary.totalPhotos),
-    similarGroups: Number(summary.similarGroups),
-    lowQualityImages: Number(summary.lowQualityImages),
+      collection.name ?? formatFallbackCollectionName(collection.createdAt),
+    status: collection.status,
+    createdAt: collection.createdAt.toISOString(),
+    totalPhotos,
+    similarGroups,
+    lowQualityImages,
   };
 }

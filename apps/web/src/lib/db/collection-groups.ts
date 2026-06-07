@@ -35,30 +35,19 @@ export async function listCollectionGroups(
   collectionId: string,
   userId: string,
 ): Promise<CollectionGroupsResponse | null> {
-  const collectionRows = await prisma.$queryRaw<{ id: string }[]>`
-    SELECT id
-    FROM "collection"
-    WHERE id = ${collectionId}::uuid
-      AND user_id = ${userId}
-    LIMIT 1
-  `;
+  const collection = await prisma.collection.findFirst({
+    where: { id: collectionId, userId },
+    select: { id: true },
+  });
 
-  if (collectionRows.length === 0) {
+  if (!collection) {
     return null;
   }
 
-  const rows = await prisma.$queryRaw<GroupSummaryRow[]>`
-    SELECT
-      id::text,
-      collection_id::text AS "collectionId",
-      representative_image_id::text AS "representativeImageId",
-      image_count AS "imageCount",
-      created_at AS "createdAt",
-      updated_at AS "updatedAt"
-    FROM image_group
-    WHERE collection_id = ${collectionId}::uuid
-    ORDER BY image_count DESC, created_at ASC
-  `;
+  const rows = await prisma.imageGroup.findMany({
+    where: { collectionId },
+    orderBy: [{ imageCount: "desc" }, { createdAt: "asc" }],
+  });
   const groups = rows.map(formatGroupSummary);
 
   return {
@@ -73,49 +62,32 @@ export async function getCollectionGroup(
   groupId: string,
   userId: string,
 ): Promise<CollectionGroupDetail | null> {
-  const groupRows = await prisma.$queryRaw<GroupSummaryRow[]>`
-    SELECT
-      image_group.id::text,
-      image_group.collection_id::text AS "collectionId",
-      image_group.representative_image_id::text AS "representativeImageId",
-      image_group.image_count AS "imageCount",
-      image_group.created_at AS "createdAt",
-      image_group.updated_at AS "updatedAt"
-    FROM image_group
-    INNER JOIN "collection"
-      ON "collection".id = image_group.collection_id
-    WHERE image_group.id = ${groupId}::uuid
-      AND image_group.collection_id = ${collectionId}::uuid
-      AND "collection".user_id = ${userId}
-    LIMIT 1
-  `;
+  const group = await prisma.imageGroup.findFirst({
+    where: {
+      id: groupId,
+      collectionId,
+      collection: { userId },
+    },
+    include: {
+      images: {
+        include: { image: true },
+        orderBy: { image: { createdAt: "asc" } },
+      },
+    },
+  });
 
-  if (groupRows.length === 0) {
+  if (!group) {
     return null;
   }
 
-  const group = groupRows[0];
-  const imageRows = await prisma.$queryRaw<GroupImageRow[]>`
-    SELECT
-      image.id::text,
-      image.file_name AS "fileName",
-      image.object_key AS "objectKey",
-      image.mime_type AS "mimeType",
-      image.created_at AS "createdAt"
-    FROM group_image
-    INNER JOIN image
-      ON image.id = group_image.image_id
-    WHERE group_image.group_id = ${groupId}::uuid
-    ORDER BY image.created_at ASC
-  `;
   const images = await Promise.all(
-    imageRows.map(async (image) => ({
-      id: image.id,
-      fileName: image.fileName,
-      objectKey: image.objectKey,
-      mimeType: image.mimeType,
-      createdAt: image.createdAt.toISOString(),
-      imageUrl: await createPresignedDownloadUrl(image.objectKey),
+    group.images.map(async (groupImage) => ({
+      id: groupImage.image.id,
+      fileName: groupImage.image.fileName,
+      objectKey: groupImage.image.objectKey,
+      mimeType: groupImage.image.mimeType,
+      createdAt: groupImage.image.createdAt.toISOString(),
+      imageUrl: await createPresignedDownloadUrl(groupImage.image.objectKey),
     })),
   );
 
@@ -131,47 +103,42 @@ export async function updateCollectionGroupRepresentative(
   userId: string,
   representativeImageId: string | null,
 ): Promise<boolean> {
-  const groupRows = await prisma.$queryRaw<{ id: string }[]>`
-    SELECT image_group.id::text
-    FROM image_group
-    INNER JOIN "collection"
-      ON "collection".id = image_group.collection_id
-    WHERE image_group.id = ${groupId}::uuid
-      AND image_group.collection_id = ${collectionId}::uuid
-      AND "collection".user_id = ${userId}
-    LIMIT 1
-  `;
+  const group = await prisma.imageGroup.findFirst({
+    where: {
+      id: groupId,
+      collectionId,
+      collection: { userId },
+    },
+    select: { id: true },
+  });
 
-  if (groupRows.length === 0) {
+  if (!group) {
     return false;
   }
 
   if (representativeImageId !== null) {
-    const membershipRows = await prisma.$queryRaw<{ id: string }[]>`
-      SELECT id::text
-      FROM group_image
-      WHERE group_id = ${groupId}::uuid
-        AND image_id = ${representativeImageId}::uuid
-      LIMIT 1
-    `;
+    const membership = await prisma.groupImage.findFirst({
+      where: {
+        groupId,
+        imageId: representativeImageId,
+      },
+      select: { id: true },
+    });
 
-    if (membershipRows.length === 0) {
+    if (!membership) {
       return false;
     }
   }
 
-  await prisma.$executeRaw`
-    UPDATE image_group
-    SET
-      representative_image_id = ${representativeImageId}::uuid,
-      updated_at = CURRENT_TIMESTAMP
-    WHERE id = ${groupId}::uuid
-  `;
+  await prisma.imageGroup.update({
+    where: { id: groupId },
+    data: { representativeImageId },
+  });
 
   return true;
 }
 
-type GroupSummaryRow = {
+type GroupSummaryFields = {
   id: string;
   collectionId: string;
   representativeImageId: string | null;
@@ -180,15 +147,7 @@ type GroupSummaryRow = {
   updatedAt: Date;
 };
 
-type GroupImageRow = {
-  id: string;
-  fileName: string;
-  objectKey: string;
-  mimeType: string;
-  createdAt: Date;
-};
-
-function formatGroupSummary(group: GroupSummaryRow): CollectionGroupSummary {
+function formatGroupSummary(group: GroupSummaryFields): CollectionGroupSummary {
   return {
     id: group.id,
     collectionId: group.collectionId,
