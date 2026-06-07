@@ -34,7 +34,6 @@ export type CollectionGroupPreview = CollectionGroupSummary & {
 export type CollectionGroupPreviewsResponse = {
   groups: CollectionGroupPreview[];
   totalSimilarGroups: number;
-  totalImages: number;
   limit: number;
   offset: number;
   hasMore: boolean;
@@ -120,7 +119,6 @@ export async function listCollectionGroups(
   return {
     groups,
     totalSimilarGroups,
-    totalImages: groups.reduce((total, group) => total + group.imageCount, 0),
     limit: limit ?? groups.length,
     offset,
     hasMore: offset + groups.length < totalSimilarGroups,
