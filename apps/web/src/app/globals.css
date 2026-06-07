@@ -5,44 +5,56 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Cullify brand tokens from DESIGN.md */
+  /* Expo-inspired brand tokens from DESIGN.md */
   --canvas: #ffffff;
-  --canvas-soft: #f1f5ff;
+  --canvas-soft: #fafafa;
   --surface-card: #ffffff;
-  --surface-stone: #eeece7;
-  --surface-green-wash: #edfce9;
-  --surface-blue-wash: #f1f5ff;
-  --surface-dark: #17171c;
-  --surface-dark-soft: #24302f;
-  --surface-strong: #eeece7;
-  --hairline: #d9d9dd;
-  --hairline-light: #e5e7eb;
-  --hairline-soft: #e5e7eb;
-  --hairline-strong: #d9d9dd;
-  --card-border: #f2f2f2;
+  --surface-strong: #f0f0f3;
+  --surface-dark: #171717;
+  --surface-dark-elevated: #1a1a1a;
+  --gradient-sky-light: #cfe7ff;
+  --gradient-sky-mid: #a8c8e8;
+  --hairline: #f0f0f3;
+  --hairline-soft: #f5f5f7;
+  --hairline-strong: #dcdee0;
   --black: #000000;
-  --ink: #212121;
-  --body: #616161;
-  --body-strong: #212121;
-  --muted: #93939f;
-  --muted-soft: #75758a;
-  --slate: #75758a;
-  --primary: #17171c;
-  --primary-active: #000000;
-  --deep-green: #003c33;
-  --dark-navy: #071829;
-  --action-blue: #1863dc;
-  --focus-blue: #4c6ee6;
-  --coral: #ff7759;
-  --coral-soft: #ffad9b;
+  --ink: #171717;
+  --body: #60646c;
+  --body-strong: #171717;
+  --muted: #999999;
+  --muted-soft: #cccccc;
+  --primary: #000000;
+  --primary-active: #1a1a1a;
+  --text-link: #0d74ce;
+  --text-link-secondary: #476cff;
+  --accent-link-bright: #47c2ff;
+  --accent-warning: #ab6400;
+  --accent-preview: #8145b5;
+  --semantic-success: #16a34a;
+  --semantic-error: #eb8e90;
   --on-primary: #ffffff;
-  --timeline-thinking: #ffad9b;
-  --timeline-grep: #edfce9;
-  --timeline-read: #f1f5ff;
-  --timeline-edit: #eeece7;
-  --timeline-done: #003c33;
-  --semantic-success: #1f8a65;
-  --semantic-error: #b30000;
+  --on-dark: #ffffff;
+  --on-dark-soft: #b0b4ba;
+
+  /* Compatibility aliases for existing app components. */
+  --surface-stone: var(--surface-strong);
+  --surface-green-wash: var(--canvas-soft);
+  --surface-blue-wash: var(--canvas-soft);
+  --surface-dark-soft: var(--surface-dark-elevated);
+  --hairline-light: var(--hairline-soft);
+  --card-border: var(--hairline);
+  --slate: var(--muted);
+  --deep-green: var(--surface-dark);
+  --dark-navy: var(--surface-dark);
+  --action-blue: var(--text-link);
+  --focus-blue: var(--text-link);
+  --coral: var(--semantic-error);
+  --coral-soft: #f4c6c7;
+  --timeline-thinking: var(--semantic-error);
+  --timeline-grep: var(--canvas-soft);
+  --timeline-read: var(--gradient-sky-light);
+  --timeline-edit: var(--surface-strong);
+  --timeline-done: var(--surface-dark);
 
   /* shadcn-compatible aliases mapped to Cullify tokens */
   --background: var(--canvas);
@@ -71,7 +83,7 @@
   --sidebar-foreground: var(--ink);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--on-primary);
-  --sidebar-accent: var(--surface-stone);
+  --sidebar-accent: var(--surface-strong);
   --sidebar-accent-foreground: var(--ink);
   --sidebar-border: var(--hairline);
   --sidebar-ring: var(--focus-blue);
@@ -87,8 +99,11 @@
   --color-surface-green-wash: var(--surface-green-wash);
   --color-surface-blue-wash: var(--surface-blue-wash);
   --color-surface-dark: var(--surface-dark);
+  --color-surface-dark-elevated: var(--surface-dark-elevated);
   --color-surface-dark-soft: var(--surface-dark-soft);
   --color-surface-strong: var(--surface-strong);
+  --color-gradient-sky-light: var(--gradient-sky-light);
+  --color-gradient-sky-mid: var(--gradient-sky-mid);
   --color-hairline: var(--hairline);
   --color-hairline-light: var(--hairline-light);
   --color-hairline-soft: var(--hairline-soft);
@@ -103,6 +118,11 @@
   --color-slate: var(--slate);
   --color-primary: var(--primary);
   --color-primary-active: var(--primary-active);
+  --color-text-link: var(--text-link);
+  --color-text-link-secondary: var(--text-link-secondary);
+  --color-accent-link-bright: var(--accent-link-bright);
+  --color-accent-warning: var(--accent-warning);
+  --color-accent-preview: var(--accent-preview);
   --color-deep-green: var(--deep-green);
   --color-dark-navy: var(--dark-navy);
   --color-action-blue: var(--action-blue);
@@ -110,6 +130,8 @@
   --color-coral: var(--coral);
   --color-coral-soft: var(--coral-soft);
   --color-on-primary: var(--on-primary);
+  --color-on-dark: var(--on-dark);
+  --color-on-dark-soft: var(--on-dark-soft);
   --color-timeline-thinking: var(--timeline-thinking);
   --color-timeline-grep: var(--timeline-grep);
   --color-timeline-read: var(--timeline-read);
@@ -117,9 +139,9 @@
   --color-timeline-done: var(--timeline-done);
   --color-semantic-success: var(--semantic-success);
   --color-semantic-error: var(--semantic-error);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
+  --font-sans: Inter, -apple-system, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-heading: Inter, -apple-system, system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -148,13 +170,13 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
-  --radius-xl: 30px;
-  --radius-2xl: 22px;
-  --radius-3xl: 30px;
-  --radius-4xl: 32px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-3xl: 24px;
+  --radius-4xl: 24px;
 }
 
 button,
@@ -179,8 +201,7 @@ a {
   body {
     @apply bg-background text-foreground;
     min-height: 100vh;
-    font-family: var(--font-geist-sans), Inter, Arial, ui-sans-serif,
-      system-ui, sans-serif;
+    font-family: Inter, -apple-system, system-ui, sans-serif;
     font-size: 16px;
     line-height: 1.5;
     letter-spacing: 0;
@@ -192,19 +213,19 @@ a {
   h3,
   h4 {
     color: var(--ink);
-    font-weight: 400;
+    font-weight: 600;
   }
 
   h1,
   h2 {
-    line-height: 1;
-    letter-spacing: -0.02em;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
   }
 
   h3,
   h4 {
     line-height: 1.2;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
 
   p {
@@ -215,8 +236,8 @@ a {
   kbd,
   samp,
   pre {
-    font-family: var(--font-geist-mono), "JetBrains Mono", ui-monospace,
-      SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
+      Monaco, Consolas, "Liberation Mono", monospace;
   }
 
   a,
