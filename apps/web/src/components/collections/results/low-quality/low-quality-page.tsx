@@ -1,7 +1,7 @@
 "use client";
 
 import { notFound, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   LowQualityFilters,
@@ -36,12 +36,10 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
     searchParams.get(LOW_QUALITY_FILTER_SEARCH_PARAM),
   );
 
-  useEffect(() => {
-    setLimit(PAGE_SIZE);
-  }, [activeFilter]);
-
   function handleFilterChange(filter: LowQualityFilterValue) {
     const params = new URLSearchParams(searchParams.toString());
+
+    setLimit(PAGE_SIZE);
 
     if (filter === "ALL") {
       params.delete(LOW_QUALITY_FILTER_SEARCH_PARAM);

@@ -2,7 +2,6 @@
 
 import type { ReviewResultsData } from "@/components/collections/results/overall/mock-data";
 import { ResultsHeader } from "@/components/collections/results/overall/results-header";
-import { ResultsSidebar } from "@/components/collections/results/overall/results-sidebar";
 import { ResultsSummary } from "@/components/collections/results/overall/results-summary";
 import { ResultsWorkflows } from "@/components/collections/results/overall/results-workflows";
 import { useCollectionResultsSummary } from "@/features/collections/hooks";
@@ -15,11 +14,8 @@ export function ReviewResultsView({ data }: { data: ReviewResultsData }) {
       <ResultsHeader summary={summary} />
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">
-        <ResultsSummary summary={summary} />
-        <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
-          <ResultsWorkflows data={data} />
-          <ResultsSidebar progress={data.progress} />
-        </div>
+        <ResultsSummary summary={summary} progress={data.progress} />
+        <ResultsWorkflows data={data} />
       </div>
     </div>
   );
