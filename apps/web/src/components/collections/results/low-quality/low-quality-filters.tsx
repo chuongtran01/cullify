@@ -14,6 +14,20 @@ export function parseLowQualityFilter(
   return "ALL";
 }
 
+export function lowQualityFilterToIsSelected(
+  filter: LowQualityFilterValue,
+): boolean | undefined {
+  if (filter === "SELECTED") {
+    return true;
+  }
+
+  if (filter === "NEEDS_REVIEW") {
+    return false;
+  }
+
+  return undefined;
+}
+
 const lowQualityFilters: Array<{
   label: string;
   value: LowQualityFilterValue;

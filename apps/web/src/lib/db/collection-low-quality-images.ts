@@ -1,5 +1,7 @@
 import "server-only";
 
+import { Prisma } from "@/generated/prisma/client";
+
 import { prisma } from "@/lib/prisma";
 import { createPresignedDownloadUrl } from "@/lib/r2/presign";
 
@@ -55,9 +57,11 @@ export async function getCollectionLowQualityImages(
   {
     limit = DEFAULT_LOW_QUALITY_LIMIT,
     offset = 0,
+    isSelected,
   }: {
     limit?: number;
     offset?: number;
+    isSelected?: boolean;
   } = {},
 ): Promise<CollectionLowQualityImagesResponse | null> {
   const collectionRows = await prisma.$queryRaw<{ id: string }[]>`
@@ -71,6 +75,11 @@ export async function getCollectionLowQualityImages(
   if (collectionRows.length === 0) {
     return null;
   }
+
+  const isSelectedCondition =
+    isSelected === undefined
+      ? Prisma.empty
+      : Prisma.sql`AND COALESCE(collection_image_review.is_selected, false) = ${isSelected}`;
 
   const rows = await prisma.$queryRaw<LowQualityImageRow[]>`
     SELECT
@@ -115,6 +124,7 @@ export async function getCollectionLowQualityImages(
         image_quality_analysis.is_high_exposure OR
         image_quality_analysis.has_compression_artifacts
       )
+      ${isSelectedCondition}
     ORDER BY "reasonCount" DESC, image.created_at ASC
     LIMIT ${limit}
     OFFSET ${offset}

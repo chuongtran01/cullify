@@ -68,7 +68,7 @@ export function useCollectionGroup(collectionId: string, groupId: string) {
 
 export function useCollectionLowQualityImages(
   collectionId: string,
-  options: { limit?: number; offset?: number } = {},
+  options: { limit?: number; offset?: number; isSelected?: boolean } = {},
 ) {
   return useQuery({
     queryKey: queryKeys.collections.lowQualityImages(collectionId, options),
@@ -79,7 +79,7 @@ export function useCollectionLowQualityImages(
 
 export function useUpdateCollectionImageReview(
   collectionId: string,
-  options: { limit?: number; offset?: number } = {},
+  options: { limit?: number; offset?: number; isSelected?: boolean } = {},
 ) {
   const queryClient = useQueryClient();
 
@@ -94,23 +94,39 @@ export function useUpdateCollectionImageReview(
     onSuccess: (result) => {
       queryClient.setQueryData<CollectionLowQualityImagesResponse>(
         queryKeys.collections.lowQualityImages(collectionId, options),
-        (data) =>
-          data
-            ? {
-                ...data,
-                images: data.images.map((image) =>
-                  image.id === result.review.imageId
-                    ? {
-                        ...image,
-                        isSelected: result.review.isSelected,
-                        decisionSource: result.review.decisionSource,
-                        decisionReason: result.review.decisionReason,
-                        reviewedAt: result.review.reviewedAt,
-                      }
-                    : image,
-                ),
-              }
-            : data,
+        (data) => {
+          if (!data) {
+            return data;
+          }
+
+          const { imageId, isSelected } = result.review;
+          const matchesFilter =
+            options.isSelected === undefined ||
+            options.isSelected === isSelected;
+
+          if (!matchesFilter) {
+            return {
+              ...data,
+              images: data.images.filter((image) => image.id !== imageId),
+              totalLowQualityImages: Math.max(0, data.totalLowQualityImages - 1),
+            };
+          }
+
+          return {
+            ...data,
+            images: data.images.map((image) =>
+              image.id === imageId
+                ? {
+                    ...image,
+                    isSelected: result.review.isSelected,
+                    decisionSource: result.review.decisionSource,
+                    decisionReason: result.review.decisionReason,
+                    reviewedAt: result.review.reviewedAt,
+                  }
+                : image,
+            ),
+          };
+        },
       );
     },
   });

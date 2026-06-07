@@ -14,7 +14,7 @@ export const queryKeys = {
       [...queryKeys.collections.groups(collectionId), groupId] as const,
     lowQualityImages: (
       collectionId: string,
-      options?: { limit?: number; offset?: number },
+      options?: { limit?: number; offset?: number; isSelected?: boolean },
     ) =>
       [
         ...queryKeys.collections.all,
@@ -22,6 +22,7 @@ export const queryKeys = {
         "low-quality",
         options?.limit ?? null,
         options?.offset ?? null,
+        options?.isSelected ?? null,
       ] as const,
   },
 } as const;

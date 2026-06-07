@@ -153,7 +153,10 @@ export function ResultsWorkflows({
 }) {
   const params = useParams<{ collectionId: string }>();
   const collectionId = params.collectionId ?? "";
-  const lowQualityImages = useCollectionLowQualityImages(collectionId, { limit: 5 });
+  const lowQualityImages = useCollectionLowQualityImages(collectionId, {
+    limit: 5,
+    isSelected: false,
+  });
   const lowQualityCount =
     lowQualityImages.data?.totalLowQualityImages ??
     (lowQualityImages.isPending ? 0 : 0);

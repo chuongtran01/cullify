@@ -31,6 +31,18 @@ function parseBoundedInteger(
   return Math.min(Math.max(Math.floor(parsed), min), max);
 }
 
+function parseBooleanParam(value: string | null): boolean | undefined {
+  if (value === "true") {
+    return true;
+  }
+
+  if (value === "false") {
+    return false;
+  }
+
+  return undefined;
+}
+
 export async function GET(request: Request, context: RouteContext) {
   const userId = await getRequestUserId(request.headers);
 
@@ -57,12 +69,13 @@ export async function GET(request: Request, context: RouteContext) {
     0,
     Number.MAX_SAFE_INTEGER,
   );
+  const isSelected = parseBooleanParam(url.searchParams.get("isSelected"));
 
   try {
     const lowQualityImages = await getCollectionLowQualityImages(
       collectionId,
       userId,
-      { limit, offset },
+      { limit, offset, isSelected },
     );
 
     if (!lowQualityImages) {

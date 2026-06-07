@@ -194,7 +194,7 @@ export async function updateCollectionGroupRepresentative(
 
 export async function getCollectionLowQualityImages(
   collectionId: string,
-  options: { limit?: number; offset?: number } = {},
+  options: { limit?: number; offset?: number; isSelected?: boolean } = {},
 ): Promise<CollectionLowQualityImagesResponse> {
   const searchParams = new URLSearchParams();
 
@@ -204,6 +204,10 @@ export async function getCollectionLowQualityImages(
 
   if (options.offset !== undefined) {
     searchParams.set("offset", String(options.offset));
+  }
+
+  if (options.isSelected !== undefined) {
+    searchParams.set("isSelected", String(options.isSelected));
   }
 
   const query = searchParams.size > 0 ? `?${searchParams.toString()}` : "";

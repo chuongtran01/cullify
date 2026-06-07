@@ -1,11 +1,12 @@
 "use client";
 
 import { notFound, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   LowQualityFilters,
   LOW_QUALITY_FILTER_SEARCH_PARAM,
+  lowQualityFilterToIsSelected,
   parseLowQualityFilter,
   type LowQualityFilterValue,
 } from "@/components/collections/results/low-quality/low-quality-filters";
@@ -35,6 +36,10 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
     searchParams.get(LOW_QUALITY_FILTER_SEARCH_PARAM),
   );
 
+  useEffect(() => {
+    setLimit(PAGE_SIZE);
+  }, [activeFilter]);
+
   function handleFilterChange(filter: LowQualityFilterValue) {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -51,6 +56,7 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   const queryOptions = {
     limit,
     offset: 0,
+    isSelected: lowQualityFilterToIsSelected(activeFilter),
   };
   const { data, error, isPending } = useCollectionLowQualityImages(
     collectionId,
@@ -58,17 +64,6 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   );
   const updateReview = useUpdateCollectionImageReview(collectionId, queryOptions);
   const images = data?.images ?? [];
-  const filteredImages = images.filter((image) => {
-    if (activeFilter === "SELECTED") {
-      return image.isSelected;
-    }
-
-    if (activeFilter === "NEEDS_REVIEW") {
-      return !image.isSelected;
-    }
-
-    return true;
-  });
   const total = data?.totalLowQualityImages ?? 0;
 
   if (error instanceof CollectionsServiceError && error.status === 404) {
@@ -94,18 +89,21 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
         />
       ) : images.length === 0 ? (
         <LowQualityState
-          title="No low quality photos found"
-          description="Nothing in this collection has been flagged by the quality analysis."
-        />
-      ) : filteredImages.length === 0 ? (
-        <LowQualityState
-          title="No photos match this filter"
-          description="Try another review filter to see more photos."
+          title={
+            activeFilter === "ALL"
+              ? "No low quality photos found"
+              : "No photos match this filter"
+          }
+          description={
+            activeFilter === "ALL"
+              ? "Nothing in this collection has been flagged by the quality analysis."
+              : "Try another review filter to see more photos."
+          }
         />
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredImages.map((image) => (
+            {images.map((image) => (
               <LowQualityImageCard
                 key={image.id}
                 image={image}
