@@ -211,14 +211,14 @@ export function UploadDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="flex max-h-[calc(100dvh-2rem)] !max-w-3xl flex-col overflow-hidden rounded-3xl border border-hairline bg-surface-card p-0 text-ink shadow-none sm:!max-w-3xl">
+        <DialogContent className="flex max-h-[calc(100dvh-2rem)] !max-w-3xl flex-col overflow-hidden rounded-lg border border-hairline-strong bg-surface-card p-0 text-ink shadow-none sm:!max-w-3xl">
           <DialogHeader className="gap-4 border-b border-hairline px-6 pt-7 pb-6 sm:px-8">
             <div className="flex items-start gap-4">
-              <div className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-on-primary">
+              <div className="grid size-11 shrink-0 place-items-center rounded-md bg-primary text-on-primary">
                 <Sparkles className="size-5" />
               </div>
               <div className="space-y-2">
-                <DialogTitle className="text-2xl font-normal leading-tight tracking-tight text-ink">
+                <DialogTitle className="text-[22px] font-semibold leading-snug tracking-[-0.02em] text-ink">
                   Upload a collection to Cullify
                 </DialogTitle>
                 <DialogDescription className="max-w-prose text-sm leading-6 text-body">
@@ -231,12 +231,12 @@ export function UploadDialog({
 
           <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-6 py-6 sm:px-8 sm:py-8">
             {isManagingSelection ? (
-              <div className="rounded-2xl border border-hairline bg-surface-card p-5">
+              <div className="rounded-lg border border-hairline-strong bg-surface-card p-5">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <button
                       type="button"
-                      className="mb-4 inline-flex items-center gap-2 text-sm text-ink underline-offset-4 hover:text-action-blue hover:underline"
+                      className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-text-link"
                       onClick={() => setIsManagingSelection(false)}
                     >
                       <ArrowLeft className="size-4" />
@@ -253,14 +253,14 @@ export function UploadDialog({
                   <button
                     type="button"
                     disabled={isSubmitting}
-                    className="w-fit text-sm text-ink underline-offset-4 hover:text-action-blue hover:underline disabled:pointer-events-none disabled:opacity-50"
+                    className="w-fit text-sm font-medium text-text-link disabled:pointer-events-none disabled:opacity-50"
                     onClick={clearFiles}
                   >
                     Clear all
                   </button>
                 </div>
 
-                <label className="mt-5 flex h-11 items-center gap-3 rounded-full border border-hairline bg-canvas px-4">
+                <label className="mt-5 flex h-11 items-center gap-3 rounded-md border border-hairline-strong bg-canvas px-4">
                   <Search className="size-4 text-muted" />
                   <span className="sr-only">Search selected files</span>
                   <input
@@ -314,19 +314,19 @@ export function UploadDialog({
                 <div
                   {...getRootProps()}
                   className={cn(
-                    "rounded-3xl border border-dashed bg-surface-blue-wash p-6 transition-colors outline-none focus-visible:border-focus-blue focus-visible:ring-3 focus-visible:ring-focus-blue/20 sm:p-8",
+                    "rounded-lg border border-dashed bg-canvas-soft p-6 transition-colors outline-none focus-visible:border-ink focus-visible:ring-3 focus-visible:ring-ink/10 sm:p-8",
                     isDragActive
-                      ? "border-action-blue bg-action-blue/5"
-                      : "border-hairline",
+                      ? "border-text-link bg-gradient-sky-light/20"
+                      : "border-hairline-strong",
                   )}
                 >
                   <input {...getInputProps()} />
 
                   <div className="flex flex-col items-center text-center">
-                    <div className="grid size-14 place-items-center rounded-full border border-hairline bg-surface-card text-primary">
+                    <div className="grid size-14 place-items-center rounded-md border border-hairline-strong bg-surface-card text-primary">
                       <ImagePlus className="size-6" />
                     </div>
-                    <h3 className="mt-4 text-lg font-normal tracking-tight text-ink">
+                    <h3 className="mt-4 text-lg font-semibold leading-snug text-ink">
                       {isDragActive
                         ? "Drop your photos here"
                         : "Drag and drop your photos here"}
@@ -338,7 +338,7 @@ export function UploadDialog({
                     <Button
                       type="button"
                       disabled={isSubmitting}
-                      className="mt-6 h-11 cursor-pointer rounded-full px-6"
+                      className="mt-6 h-10 cursor-pointer rounded-md px-[18px] text-sm font-medium"
                       onClick={openFilePicker}
                     >
                       <Upload className="size-4" />
@@ -347,7 +347,7 @@ export function UploadDialog({
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-hairline bg-surface-card p-5">
+                <div className="rounded-lg border border-hairline-strong bg-surface-card p-5">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <p className="font-mono text-xs uppercase tracking-wide text-muted">
@@ -364,7 +364,7 @@ export function UploadDialog({
                         <button
                           type="button"
                           disabled={isSubmitting}
-                          className="text-sm text-ink underline-offset-4 hover:text-action-blue hover:underline disabled:pointer-events-none disabled:opacity-50"
+                          className="text-sm font-medium text-text-link disabled:pointer-events-none disabled:opacity-50"
                           onClick={() => setIsManagingSelection(true)}
                         >
                           Manage selection
@@ -372,7 +372,7 @@ export function UploadDialog({
                         <button
                           type="button"
                           disabled={isSubmitting}
-                          className="text-sm text-ink underline-offset-4 hover:text-action-blue hover:underline disabled:pointer-events-none disabled:opacity-50"
+                          className="text-sm font-medium text-text-link disabled:pointer-events-none disabled:opacity-50"
                           onClick={clearFiles}
                         >
                           Clear all
@@ -403,7 +403,7 @@ export function UploadDialog({
                         ].map(([label, value, helper]) => (
                           <div
                             key={label}
-                            className="rounded-2xl border border-card-border bg-surface-stone/60 p-4"
+                            className="rounded-lg border border-hairline bg-canvas-soft p-4"
                           >
                             <p className="font-mono text-xs uppercase tracking-wide text-muted">
                               {label}
@@ -446,7 +446,7 @@ export function UploadDialog({
                         {files.length > 4 ? (
                           <button
                             type="button"
-                            className="w-full py-3 text-left text-sm text-body underline-offset-4 hover:text-action-blue hover:underline"
+                            className="w-full py-3 text-left text-sm font-medium text-text-link"
                             onClick={() => setIsManagingSelection(true)}
                           >
                             +{files.length - 4} more files. Manage full
@@ -464,7 +464,7 @@ export function UploadDialog({
               <div
                 role="status"
                 aria-live="polite"
-                className="flex gap-3 rounded-2xl border border-hairline bg-surface-stone px-4 py-3"
+                className="flex gap-3 rounded-lg border border-hairline bg-canvas-soft px-4 py-3"
               >
                 <Loader2
                   className="mt-0.5 size-4 shrink-0 animate-spin text-primary"
@@ -499,14 +499,14 @@ export function UploadDialog({
             {error ? (
               <p
                 role="alert"
-                className="rounded-2xl border border-semantic-error/30 bg-semantic-error/10 px-4 py-3 text-sm text-semantic-error"
+                className="rounded-lg border border-semantic-error/30 bg-semantic-error/10 px-4 py-3 text-sm text-semantic-error"
               >
                 {error}
               </p>
             ) : null}
           </div>
 
-          <DialogFooter className="rounded-b-3xl border-hairline bg-surface-stone/70 px-6 py-5 sm:justify-between sm:px-8">
+          <DialogFooter className="rounded-b-lg border-hairline bg-canvas-soft px-6 py-5 sm:justify-between sm:px-8">
             <p className="text-xs leading-5 text-muted">
               Processing begins after confirmation. Files stay private to your
               review project.
@@ -514,14 +514,14 @@ export function UploadDialog({
             <div className="flex flex-col-reverse gap-2 sm:flex-row">
               <Button
                 variant="outline"
-                className="h-11 cursor-pointer rounded-full border-hairline bg-surface-card px-5"
+                className="h-10 cursor-pointer rounded-md border-hairline-strong bg-surface-card px-[18px] text-sm font-medium"
                 disabled={isSubmitting}
                 onClick={() => handleOpenChange(false)}
               >
                 Cancel
               </Button>
               <Button
-                className="h-11 cursor-pointer rounded-full px-6"
+                className="h-10 cursor-pointer rounded-md px-[18px] text-sm font-medium"
                 onClick={handleContinue}
                 disabled={files.length === 0 || isSubmitting}
               >

@@ -1,17 +1,11 @@
 import { features } from "@/components/landing/content";
 import { SectionHeader } from "@/components/landing/section-header";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="bg-surface-stone">
-      <div className="mx-auto max-w-6xl px-5 py-20">
+    <section id="features" className="bg-canvas-soft">
+      <div className="mx-auto max-w-[1200px] px-5 py-24">
         <SectionHeader
           eyebrow="Core features"
           title="Everything built around faster photo selection."
@@ -19,32 +13,27 @@ export function FeaturesSection() {
         />
         <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => (
-            <Card
+            <article
               key={feature.title}
-              className="rounded-sm border border-card-border bg-white py-0 ring-0"
+              className="rounded-lg border border-hairline-strong bg-surface-card p-6"
             >
-              <CardHeader className="p-6">
-                <div className="mb-6 h-32 rounded-sm border border-hairline bg-canvas p-3">
-                  <div className="flex h-full items-end justify-between gap-2">
-                    <div className="grid size-10 place-items-center rounded-full bg-primary text-on-primary">
-                      <feature.icon className="size-5" />
-                    </div>
-                    <Badge
-                      variant="secondary"
-                      className="rounded-full bg-surface-stone font-mono font-normal uppercase text-ink"
-                    >
-                      {feature.preview}
-                    </Badge>
+              <div className="mb-6 h-32 rounded-lg border border-hairline bg-canvas p-3">
+                <div className="flex h-full items-end justify-between gap-2">
+                  <div className="grid size-8 place-items-center rounded-md bg-primary text-on-primary">
+                    <feature.icon className="size-4" />
                   </div>
+                  <Badge className="h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink">
+                    {feature.preview}
+                  </Badge>
                 </div>
-                <CardTitle className="text-2xl font-normal tracking-tight">
-                  {feature.title}
-                </CardTitle>
-                <CardDescription className="mt-3 leading-6">
-                  {feature.description}
-                </CardDescription>
-              </CardHeader>
-            </Card>
+              </div>
+              <h3 className="text-lg font-semibold leading-snug text-ink">
+                {feature.title}
+              </h3>
+              <p className="mt-3 text-base leading-normal text-body">
+                {feature.description}
+              </p>
+            </article>
           ))}
         </div>
       </div>

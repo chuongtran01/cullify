@@ -19,23 +19,20 @@ export function HeroMockup() {
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.55, ease: "easeOut" }}
-      className="mx-auto w-full max-w-6xl"
+      className="mx-auto w-full max-w-[1200px]"
     >
-      <Card className="grid gap-3 rounded-3xl border border-white/10 bg-surface-dark p-3 text-white ring-0 lg:grid-cols-[1.15fr_0.85fr]">
-        <Card className="gap-0 rounded-2xl border border-white/10 bg-white/5 py-0 ring-0">
+      <Card className="grid gap-3 rounded-xl border border-white/10 bg-surface-dark p-3 text-on-dark ring-0 lg:grid-cols-[1.15fr_0.85fr]">
+        <Card className="gap-0 rounded-lg border border-white/10 bg-surface-dark-elevated py-0 ring-0">
           <CardHeader className="gap-2 p-4 pb-0">
-            <p className="font-mono text-xs uppercase tracking-wide text-white/55">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.88px] text-on-dark-soft">
               Collection review
             </p>
-            <CardTitle className="text-xl font-normal tracking-tight text-white">
+            <CardTitle className="text-lg font-semibold leading-snug tracking-[-0.02em] text-on-dark">
               284 photos grouped into 42 decisions
             </CardTitle>
             <CardAction>
-              <Badge
-                variant="outline"
-                className="hidden h-auto gap-2 border-white/15 bg-white/5 px-3 py-1.5 font-mono font-normal text-white/80 sm:inline-flex"
-              >
-                <span className="size-2 rounded-full bg-surface-green-wash" />
+              <Badge className="hidden h-auto rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-on-dark-soft sm:inline-flex">
+                <span className="mr-2 size-2 rounded-full bg-semantic-success" />
                 Live analysis
               </Badge>
             </CardAction>
@@ -59,21 +56,21 @@ export function HeroMockup() {
           </CardContent>
         </Card>
 
-        <Card className="gap-0 rounded-2xl border border-white/10 bg-black/20 py-0 ring-0">
+        <Card className="gap-0 rounded-lg border border-white/10 bg-surface-dark-elevated py-0 ring-0">
           <CardHeader className="gap-2 p-5 pb-0">
-            <p className="font-mono text-xs uppercase tracking-wide text-white/55">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.88px] text-on-dark-soft">
               Agent console
             </p>
-            <CardTitle className="text-3xl font-normal leading-tight tracking-tight text-white">
+            <CardTitle className="text-[22px] font-semibold leading-snug tracking-[-0.02em] text-on-dark">
               Quality signals stay attached to every recommendation.
             </CardTitle>
-            <CardDescription className="mt-2 text-sm leading-6 text-white/65">
+            <CardDescription className="mt-2 text-sm leading-normal text-on-dark-soft">
               Sharpness, duplicate distance, expression quality, and rejection
               reasons are shown as compact evidence instead of hidden scores.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-5 pt-4">
-            <div className="grid gap-3 font-mono text-xs text-white/75">
+            <div className="grid gap-3 font-mono text-xs text-on-dark-soft">
               <Card
                 size="sm"
                 className="gap-3 rounded-lg border border-white/10 bg-white/5 py-3 ring-0"
@@ -81,12 +78,12 @@ export function HeroMockup() {
                 <CardContent className="px-3 py-0">
                   <div className="flex items-center justify-between">
                     <span>Thinking</span>
-                    <Badge className="bg-coral-soft font-mono uppercase text-ink">
+                    <Badge className="h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink">
                       blur scan
                     </Badge>
                   </div>
                   <div className="mt-3 h-1.5 rounded-full bg-white/10">
-                    <div className="h-1.5 w-4/5 rounded-full bg-white" />
+                    <div className="h-1.5 w-4/5 rounded-full bg-on-dark" />
                   </div>
                 </CardContent>
               </Card>
@@ -96,7 +93,7 @@ export function HeroMockup() {
               >
                 <CardContent className="flex items-center justify-between px-3 py-0">
                   <span>Grouping</span>
-                  <Badge className="bg-surface-green-wash font-mono uppercase text-ink">
+                  <Badge className="h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink">
                     12 similar
                   </Badge>
                 </CardContent>
@@ -107,7 +104,7 @@ export function HeroMockup() {
               >
                 <CardContent className="flex items-center justify-between px-3 py-0">
                   <span>Done</span>
-                  <Badge className="bg-white font-mono uppercase text-primary">
+                  <Badge className="h-auto rounded-full border-transparent bg-on-dark px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-on-primary">
                     best shot
                   </Badge>
                 </CardContent>
@@ -124,8 +121,8 @@ export function HeroMockup() {
                     className="rounded-lg bg-white/5 py-3 ring-0"
                   >
                     <CardContent className="px-3 py-0 text-center">
-                      <p className="text-lg text-white">{value}</p>
-                      <p className="mt-1 text-xs uppercase tracking-widest text-white/45">
+                      <p className="text-lg text-on-dark">{value}</p>
+                      <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-on-dark-soft">
                         {label}
                       </p>
                     </CardContent>

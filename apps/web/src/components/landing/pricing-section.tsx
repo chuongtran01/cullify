@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 export function PricingSection() {
   return (
     <section id="pricing" className="border-y border-hairline bg-canvas">
-      <div className="mx-auto max-w-6xl px-5 py-20">
+      <div className="mx-auto max-w-[1200px] px-5 py-24">
         <SectionHeader
           eyebrow="Pricing"
           title="Start small, then scale into larger photo collections."
@@ -19,40 +19,40 @@ export function PricingSection() {
             <article
               key={tier.name}
               className={cn(
-                "rounded-2xl border p-8",
+                "rounded-lg border p-8",
                 tier.featured
-                  ? "border-primary bg-primary text-on-primary"
-                  : "border-hairline bg-surface-card text-ink",
+                  ? "border-transparent bg-surface-dark text-on-dark"
+                  : "border-hairline-strong bg-surface-card text-ink",
               )}
             >
-              <h3 className="text-2xl font-normal tracking-tight">
+              <h3 className="text-[22px] font-semibold leading-snug tracking-[-0.02em]">
                 {tier.name}
               </h3>
               <p
                 className={cn(
-                  "mt-3 text-sm leading-6",
-                  tier.featured ? "text-white/70" : "text-body",
+                  "mt-3 text-sm leading-normal",
+                  tier.featured ? "text-on-dark-soft" : "text-body",
                 )}
               >
                 {tier.description}
               </p>
               <div className="mt-6 flex items-end gap-2">
-                <span className="text-5xl font-normal leading-none">
+                <span className="text-5xl font-semibold leading-none tracking-[-0.03em]">
                   {tier.price}
                 </span>
                 <span
                   className={cn(
                     "text-sm",
-                    tier.featured ? "text-white/70" : "text-muted",
+                    tier.featured ? "text-on-dark-soft" : "text-muted",
                   )}
                 >
                   / month
                 </span>
               </div>
-              <ul className="mt-8 grid gap-3 text-sm">
+              <ul className="mt-8 grid gap-3 text-sm leading-normal">
                 {tier.items.map((item) => (
                   <li key={item} className="flex items-center gap-2">
-                    <Check className="size-4" />
+                    <Check className="size-4 shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -65,8 +65,8 @@ export function PricingSection() {
                       variant: tier.featured ? "default" : "outline",
                     }),
                     tier.featured
-                      ? "h-11 rounded-full border-white bg-white px-5 text-primary hover:bg-white/90"
-                      : "h-11 rounded-full border-hairline bg-surface-card px-5 text-ink hover:bg-surface-stone",
+                      ? "h-10 rounded-md px-[18px] text-sm font-medium"
+                      : "h-10 rounded-md border-hairline-strong bg-surface-card px-[18px] text-sm font-medium text-ink",
                   )}
                 >
                   Get Started

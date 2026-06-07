@@ -1,4 +1,17 @@
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+
+const badgeClassName =
+  "h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink";
+
+const invertedBadgeClassName =
+  "h-auto rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-on-dark-soft";
+
+const titleClassName =
+  "mt-4 text-[28px] font-semibold leading-[1.15] tracking-[-0.03em] text-ink sm:text-4xl";
+
+const invertedTitleClassName =
+  "mt-4 text-[28px] font-semibold leading-[1.15] tracking-[-0.03em] text-on-dark sm:text-4xl";
 
 export function SectionHeader({
   eyebrow,
@@ -15,36 +28,22 @@ export function SectionHeader({
 }) {
   return (
     <div
-      className={
-        align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl"
-      }
+      className={cn(
+        align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl",
+      )}
     >
-      <Badge
-        variant="outline"
-        className={
-          inverted
-            ? "border-white/20 bg-white/5 font-mono font-normal uppercase tracking-wide text-white/70"
-            : "border-hairline bg-transparent font-mono font-normal uppercase tracking-wide text-muted"
-        }
-      >
+      <Badge className={inverted ? invertedBadgeClassName : badgeClassName}>
         {eyebrow}
       </Badge>
-      <h2
-        className={
-          inverted
-            ? "mt-4 text-4xl font-normal leading-none tracking-tight text-white sm:text-5xl"
-            : "mt-4 text-4xl font-normal leading-none tracking-tight text-ink sm:text-5xl"
-        }
-      >
+      <h2 className={inverted ? invertedTitleClassName : titleClassName}>
         {title}
       </h2>
       {description ? (
         <p
-          className={
-            inverted
-              ? "mt-5 text-base leading-7 text-white/70"
-              : "mt-5 text-base leading-7 text-body"
-          }
+          className={cn(
+            "mt-5 text-base leading-normal",
+            inverted ? "text-on-dark-soft" : "text-body",
+          )}
         >
           {description}
         </p>
