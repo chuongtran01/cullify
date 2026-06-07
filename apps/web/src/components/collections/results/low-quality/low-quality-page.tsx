@@ -1,7 +1,6 @@
 "use client";
 
 import { notFound, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 
 import {
   LowQualityFilters,
@@ -31,15 +30,12 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [limit, setLimit] = useState(PAGE_SIZE);
   const activeFilter = parseLowQualityFilter(
     searchParams.get(LOW_QUALITY_FILTER_SEARCH_PARAM),
   );
 
   function handleFilterChange(filter: LowQualityFilterValue) {
     const params = new URLSearchParams(searchParams.toString());
-
-    setLimit(PAGE_SIZE);
 
     if (filter === "ALL") {
       params.delete(LOW_QUALITY_FILTER_SEARCH_PARAM);
@@ -52,17 +48,21 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   }
 
   const queryOptions = {
-    limit,
+    limit: PAGE_SIZE,
     offset: 0,
     isSelected: lowQualityFilterToIsSelected(activeFilter),
   };
-  const { data, error, isPending } = useCollectionLowQualityImages(
-    collectionId,
-    queryOptions,
-  );
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isPending,
+  } = useCollectionLowQualityImages(collectionId, queryOptions);
   const updateReview = useUpdateCollectionImageReview(collectionId, queryOptions);
-  const images = data?.images ?? [];
-  const total = data?.totalLowQualityImages ?? 0;
+  const images = data?.pages.flatMap((page) => page.images) ?? [];
+  const total = data?.pages[0]?.totalLowQualityImages ?? 0;
 
   if (error instanceof CollectionsServiceError && error.status === 404) {
     notFound();
@@ -115,14 +115,15 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
               />
             ))}
           </div>
-          {data?.hasMore ? (
+          {hasNextPage ? (
             <div className="flex justify-center">
               <Button
                 className="h-10 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
                 variant="outline"
-                onClick={() => setLimit((currentLimit) => currentLimit + PAGE_SIZE)}
+                disabled={isFetchingNextPage}
+                onClick={() => void fetchNextPage()}
               >
-                Load More
+                {isFetchingNextPage ? "Loading..." : "Load More"}
               </Button>
             </div>
           ) : null}

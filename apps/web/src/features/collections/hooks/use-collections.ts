@@ -1,4 +1,5 @@
 import {
+  type InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -88,9 +89,20 @@ export function useCollectionLowQualityImages(
   collectionId: string,
   options: { limit?: number; offset?: number; isSelected?: boolean } = {},
 ) {
-  return useQuery({
+  const { isSelected, limit } = options;
+  const initialOffset = options.offset ?? 0;
+
+  return useInfiniteQuery({
     queryKey: queryKeys.collections.lowQualityImages(collectionId, options),
-    queryFn: () => getCollectionLowQualityImages(collectionId, options),
+    queryFn: ({ pageParam }) =>
+      getCollectionLowQualityImages(collectionId, {
+        isSelected,
+        limit,
+        offset: pageParam,
+      }),
+    initialPageParam: initialOffset,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.offset + lastPage.limit : undefined,
     enabled: collectionId.length > 0,
   });
 }
@@ -110,7 +122,7 @@ export function useUpdateCollectionImageReview(
       isSelected: boolean;
     }) => updateCollectionImageReview(collectionId, imageId, isSelected),
     onSuccess: (result) => {
-      queryClient.setQueryData<CollectionLowQualityImagesResponse>(
+      queryClient.setQueryData<InfiniteData<CollectionLowQualityImagesResponse>>(
         queryKeys.collections.lowQualityImages(collectionId, options),
         (data) => {
           if (!data) {
@@ -125,24 +137,33 @@ export function useUpdateCollectionImageReview(
           if (!matchesFilter) {
             return {
               ...data,
-              images: data.images.filter((image) => image.id !== imageId),
-              totalLowQualityImages: Math.max(0, data.totalLowQualityImages - 1),
+              pages: data.pages.map((page) => ({
+                ...page,
+                images: page.images.filter((image) => image.id !== imageId),
+                totalLowQualityImages: Math.max(
+                  0,
+                  page.totalLowQualityImages - 1,
+                ),
+              })),
             };
           }
 
           return {
             ...data,
-            images: data.images.map((image) =>
-              image.id === imageId
-                ? {
-                    ...image,
-                    isSelected: result.review.isSelected,
-                    decisionSource: result.review.decisionSource,
-                    decisionReason: result.review.decisionReason,
-                    reviewedAt: result.review.reviewedAt,
-                  }
-                : image,
-            ),
+            pages: data.pages.map((page) => ({
+              ...page,
+              images: page.images.map((image) =>
+                image.id === imageId
+                  ? {
+                      ...image,
+                      isSelected: result.review.isSelected,
+                      decisionSource: result.review.decisionSource,
+                      decisionReason: result.review.decisionReason,
+                      reviewedAt: result.review.reviewedAt,
+                    }
+                  : image,
+              ),
+            })),
           };
         },
       );
