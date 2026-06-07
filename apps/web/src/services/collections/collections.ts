@@ -121,8 +121,20 @@ export async function getCollectionProgress(
 
 export async function listCollectionGroups(
   collectionId: string,
+  options: { limit?: number; offset?: number } = {},
 ): Promise<CollectionGroupsResponse> {
-  const response = await fetch(`/api/collections/${collectionId}/groups`, {
+  const searchParams = new URLSearchParams();
+
+  if (options.limit !== undefined) {
+    searchParams.set("limit", String(options.limit));
+  }
+
+  if (options.offset !== undefined) {
+    searchParams.set("offset", String(options.offset));
+  }
+
+  const query = searchParams.size > 0 ? `?${searchParams.toString()}` : "";
+  const response = await fetch(`/api/collections/${collectionId}/groups${query}`, {
     method: "GET",
     headers: { Accept: "application/json" },
   });

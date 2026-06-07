@@ -5,7 +5,7 @@ import {
   type CollectionLowQualityImagesResponse,
 } from "@/lib/db/collection-low-quality-images";
 import {
-  getCollectionGroupPreviews,
+  listCollectionGroups,
   type CollectionGroupPreviewsResponse,
 } from "@/lib/db/collection-groups";
 import {
@@ -37,7 +37,7 @@ export async function getCollectionResultsOverall(
 ): Promise<CollectionResultsOverall | null> {
   const [baseSummary, similarGroups, lowQuality] = await Promise.all([
     getCollectionResultsBaseSummary(collectionId, userId),
-    getCollectionGroupPreviews(collectionId, userId, {
+    listCollectionGroups(collectionId, userId, {
       limit: OVERALL_GROUP_LIMIT,
     }),
     getCollectionLowQualityImages(collectionId, userId, {

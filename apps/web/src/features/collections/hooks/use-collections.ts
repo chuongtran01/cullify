@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { queryKeys } from "@/lib/query-keys";
 import {
@@ -50,10 +55,23 @@ export function useCollectionResultsOverall(collectionId: string) {
   });
 }
 
-export function useCollectionGroups(collectionId: string) {
-  return useQuery({
-    queryKey: queryKeys.collections.groups(collectionId),
-    queryFn: () => listCollectionGroups(collectionId),
+export function useCollectionGroups(
+  collectionId: string,
+  options: { limit?: number; offset?: number } = {},
+) {
+  const limit = options.limit;
+  const initialOffset = options.offset ?? 0;
+
+  return useInfiniteQuery({
+    queryKey: queryKeys.collections.groups(collectionId, options),
+    queryFn: ({ pageParam }) =>
+      listCollectionGroups(collectionId, {
+        limit,
+        offset: pageParam,
+      }),
+    initialPageParam: initialOffset,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.offset + lastPage.limit : undefined,
     enabled: collectionId.length > 0,
   });
 }

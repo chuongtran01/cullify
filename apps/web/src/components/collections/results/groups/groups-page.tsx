@@ -10,14 +10,37 @@ import { Button } from "@/components/ui/button";
 import { useCollectionGroups } from "@/features/collections/hooks";
 import { CollectionsServiceError } from "@/services/collections";
 
+const PAGE_SIZE = 50;
+
 type GroupsPageProps = {
   collectionId: string;
 };
 
 export function GroupsPage({ collectionId }: GroupsPageProps) {
-  const { data, error, isPending, refetch } = useCollectionGroups(collectionId);
-  const groups = data?.groups ?? [];
-  const totalGroups = data?.totalSimilarGroups ?? 0;
+  const queryOptions = {
+    limit: PAGE_SIZE,
+    offset: 0,
+  };
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isPending,
+    refetch,
+  } = useCollectionGroups(collectionId, queryOptions);
+  const groups = data?.pages.flatMap((page) => page.groups) ?? [];
+  const totalGroups = data?.pages[0]?.totalSimilarGroups ?? 0;
+  const isInitialPending = isPending && groups.length === 0;
+
+  function handleLoadMore() {
+    if (!hasNextPage || isFetchingNextPage) {
+      return;
+    }
+
+    void fetchNextPage();
+  }
 
   if (error instanceof CollectionsServiceError && error.status === 404) {
     notFound();
@@ -41,13 +64,13 @@ export function GroupsPage({ collectionId }: GroupsPageProps) {
           variant="outline"
           className="h-8 w-fit rounded-full px-3 text-sm text-body"
         >
-          {isPending ? "Loading" : `${totalGroups} groups`}
+          {isInitialPending ? "Loading" : `${totalGroups} groups`}
         </Badge>
       </section>
 
-      {isPending ? (
+      {isInitialPending ? (
         <GroupGridSkeleton />
-      ) : error ? (
+      ) : error && groups.length === 0 ? (
         <GroupState
           title="Could not load similar groups"
           description={
@@ -70,11 +93,46 @@ export function GroupsPage({ collectionId }: GroupsPageProps) {
           description="This collection does not have any similar photo groups to review."
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {groups.map((group) => (
-            <GroupCard group={group} key={group.id} />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {groups.map((group) => (
+              <GroupCard group={group} key={group.id} />
+            ))}
+          </div>
+          {error ? (
+            <GroupState
+              title="Could not load more similar groups"
+              description={
+                error instanceof Error
+                  ? error.message
+                  : "Try loading the next page again."
+              }
+              action={
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-10 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
+                  onClick={() => void refetch()}
+                >
+                  Retry
+                </Button>
+              }
+            />
+          ) : null}
+          {hasNextPage ? (
+            <div className="flex justify-center">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
+                disabled={isFetchingNextPage}
+                onClick={handleLoadMore}
+              >
+                {isFetchingNextPage ? "Loading..." : "Load More"}
+              </Button>
+            </div>
+          ) : null}
+        </>
       )}
     </div>
   );

@@ -37,20 +37,14 @@ export type CollectionGroupPreviewsResponse = {
   totalSimilarGroups: number;
   totalImages: number;
   limit: number;
+  offset: number;
   hasMore: boolean;
 };
 
 export async function listCollectionGroups(
   collectionId: string,
   userId: string,
-): Promise<CollectionGroupPreviewsResponse | null> {
-  return getCollectionGroupPreviews(collectionId, userId);
-}
-
-export async function getCollectionGroupPreviews(
-  collectionId: string,
-  userId: string,
-  { limit }: { limit?: number } = {},
+  { limit, offset = 0 }: { limit?: number; offset?: number } = {},
 ): Promise<CollectionGroupPreviewsResponse | null> {
   const collection = await prisma.collection.findFirst({
     where: { id: collectionId, userId },
@@ -81,6 +75,7 @@ export async function getCollectionGroupPreviews(
         },
       },
       orderBy: [{ imageCount: "desc" }, { createdAt: "asc" }],
+      skip: offset,
       take: limit,
     }),
   ]);
@@ -116,7 +111,8 @@ export async function getCollectionGroupPreviews(
     totalSimilarGroups,
     totalImages: groups.reduce((total, group) => total + group.imageCount, 0),
     limit: limit ?? groups.length,
-    hasMore: groups.length < totalSimilarGroups,
+    offset,
+    hasMore: offset + groups.length < totalSimilarGroups,
   };
 }
 
