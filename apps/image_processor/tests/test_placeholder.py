@@ -150,6 +150,15 @@ class FakeQualityAnalysisRepository:
     def upsert_failure(self, image_id: str, error: str) -> None:
         self.failures.append((image_id, error))
 
+    def list_viable_image_ids(self, image_ids: list[str]) -> list[str]:
+        failed_image_ids = {image_id for image_id, _error in self.failures}
+        successful_image_ids = [
+            image_id
+            for image_id, _result in self.successes
+            if image_id in image_ids and image_id not in failed_image_ids
+        ]
+        return successful_image_ids
+
 
 class FakeEmbeddingRepository:
     def __init__(self) -> None:
@@ -201,6 +210,14 @@ class FakeImageGroupRepository:
         image_groups: list[list[str]],
     ) -> None:
         self.replacements.append((collection_id, image_groups))
+
+
+class FakeCollectionImageReviewRepository:
+    def __init__(self) -> None:
+        self.collection_ids: list[str] = []
+
+    def create_defaults_for_collection(self, collection_id: str) -> None:
+        self.collection_ids.append(collection_id)
 
 
 class FakeCollectionStatusRepository:
@@ -339,6 +356,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline.image_embedding_repository = FakeEmbeddingRepository()
         pipeline.grouping_service = FakeGroupingService()
         pipeline.image_group_repository = FakeImageGroupRepository()
+        pipeline.collection_image_review_repository = FakeCollectionImageReviewRepository()
         pipeline.collection_repository = FakeCollectionStatusRepository()
 
         with redirect_stdout(StringIO()) as output:
@@ -360,6 +378,10 @@ class WorkerPlaceholderTest(unittest.TestCase):
         self.assertEqual(
             pipeline.image_group_repository.replacements,
             [("session-1", [["image-1"]])],
+        )
+        self.assertEqual(
+            pipeline.collection_image_review_repository.collection_ids,
+            ["session-1"],
         )
         self.assertEqual(
             pipeline.collection_repository.statuses,
@@ -387,6 +409,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline.image_embedding_repository = FakeEmbeddingRepository()
         pipeline.grouping_service = FakeGroupingService()
         pipeline.image_group_repository = FakeImageGroupRepository()
+        pipeline.collection_image_review_repository = FakeCollectionImageReviewRepository()
         pipeline.collection_repository = FakeCollectionStatusRepository()
 
         with redirect_stdout(StringIO()) as output:
@@ -407,7 +430,11 @@ class WorkerPlaceholderTest(unittest.TestCase):
         )
         self.assertEqual(
             pipeline.image_group_repository.replacements,
-            [("session-1", [["image-1"], ["image-2"], ["image-3"]])],
+            [("session-1", [["image-1"], ["image-3"]])],
+        )
+        self.assertEqual(
+            pipeline.collection_image_review_repository.collection_ids,
+            ["session-1"],
         )
         self.assertEqual(
             pipeline.collection_repository.statuses,
@@ -428,6 +455,7 @@ class WorkerPlaceholderTest(unittest.TestCase):
         pipeline.image_embedding_repository = FakeEmbeddingRepository()
         pipeline.grouping_service = FakeGroupingService()
         pipeline.image_group_repository = FakeImageGroupRepository()
+        pipeline.collection_image_review_repository = FakeCollectionImageReviewRepository()
         pipeline.collection_repository = FakeCollectionStatusRepository()
 
         pipeline.process({"collectionId": "session-1"})
@@ -449,6 +477,10 @@ class WorkerPlaceholderTest(unittest.TestCase):
         self.assertEqual(
             pipeline.image_group_repository.replacements,
             [("session-1", [["image-1"]])],
+        )
+        self.assertEqual(
+            pipeline.collection_image_review_repository.collection_ids,
+            ["session-1"],
         )
         self.assertEqual(
             pipeline.collection_repository.statuses,

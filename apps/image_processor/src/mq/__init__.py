@@ -6,8 +6,8 @@ from image_processor.mq.message_types import (
 )
 
 __all__ = [
-    "PROCESS_COLLECTION_JOB_NAME",
     "BullMQJob",
     "ImageWorker",
+    "PROCESS_COLLECTION_JOB_NAME",
     "ProcessCollectionJobData",
 ]
