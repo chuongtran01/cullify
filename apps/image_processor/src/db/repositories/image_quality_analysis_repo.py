@@ -83,6 +83,28 @@ class ImageQualityAnalysisRepository:
             analysis.analyzed_at = now
             analysis.updated_at = now
 
+    def list_viable_image_ids(self, image_ids: list[str]) -> list[str]:
+        if not image_ids:
+            return []
+
+        with self.session_factory() as session:
+            rows = session.execute(
+                select(ImageQualityAnalysis.image_id).where(
+                    ImageQualityAnalysis.image_id.in_(image_ids),
+                    ImageQualityAnalysis.analyzed_at.is_not(None),
+                    ImageQualityAnalysis.analysis_error.is_(None),
+                    ImageQualityAnalysis.is_blurry.is_(False),
+                    ImageQualityAnalysis.is_out_of_focus.is_(False),
+                    ImageQualityAnalysis.has_motion_blur.is_(False),
+                    ImageQualityAnalysis.has_eyes_closed.is_(False),
+                    ImageQualityAnalysis.is_low_exposure.is_(False),
+                    ImageQualityAnalysis.is_high_exposure.is_(False),
+                    ImageQualityAnalysis.has_compression_artifacts.is_(False),
+                )
+            ).scalars()
+
+        return list(rows)
+
     def _get_by_image_id(
         self,
         session: Session,

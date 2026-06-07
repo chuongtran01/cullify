@@ -103,10 +103,15 @@ class ImageProcessingPipeline:
                 )
                 continue
 
-        # Build similarity groups from successfully generated embeddings.
+        # Build similarity groups from viable photos only; low-quality photos are rescued separately.
         image_ids = [image.id for image in context.images]
-        embeddings = self.image_embedding_repository.list_successful_vectors(image_ids)
-        image_groups = self.grouping_service.group(image_ids, embeddings)
+        viable_image_ids = self.quality_analysis_repository.list_viable_image_ids(
+            image_ids,
+        )
+        embeddings = self.image_embedding_repository.list_successful_vectors(
+            viable_image_ids,
+        )
+        image_groups = self.grouping_service.group(viable_image_ids, embeddings)
         self.image_group_repository.replace_for_collection(
             context.collection.id,
             image_groups,

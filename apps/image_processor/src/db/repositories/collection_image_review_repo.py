@@ -46,6 +46,7 @@ class CollectionImageReviewRepository:
                         ImageQualityAnalysis.is_low_exposure,
                         ImageQualityAnalysis.is_high_exposure,
                         ImageQualityAnalysis.has_compression_artifacts,
+                        ImageQualityAnalysis.analysis_error,
                     )
                     .outerjoin(GroupImage, GroupImage.image_id == Image.id)
                     .outerjoin(ImageGroup, ImageGroup.id == GroupImage.group_id)
@@ -91,6 +92,7 @@ class CollectionImageReviewRepository:
             is_low_exposure,
             is_high_exposure,
             has_compression_artifacts,
+            analysis_error,
         ) = row
 
         if group_image_count is not None and group_image_count > 1:
@@ -109,6 +111,7 @@ class CollectionImageReviewRepository:
                 is_low_exposure,
                 is_high_exposure,
                 has_compression_artifacts,
+                analysis_error,
             )
         ):
             return ReviewDefault(
