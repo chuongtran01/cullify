@@ -166,7 +166,7 @@ export function ResultsWorkflows({
       <WorkflowSection
         count={`${data.similarGroups.length} groups`}
         description="Compare visually similar photos and keep the best frame from each set."
-        title="Review Similar Groups"
+        title="Similar Groups"
       >
         <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
           {data.similarGroups.map((group) => (
@@ -179,7 +179,7 @@ export function ResultsWorkflows({
         count={`${lowQualityCount} photos`}
         description="Check photos flagged for blur, focus issues, closed eyes, poor lighting, or duplication."
         href={`/dashboard/collections/${collectionId}/results/low-quality`}
-        title="Review Low Quality Photos"
+        title="Low Quality Photos"
       >
         <LowQualityPhotosStrip
           images={lowQualityImages.data?.images ?? []}
