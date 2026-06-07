@@ -3,10 +3,10 @@
 import { notFound } from "next/navigation";
 import { useState } from "react";
 
-import { LowQualityGridSkeleton } from "@/components/results/low-quality/low-quality-grid-skeleton";
-import { LowQualityHeader } from "@/components/results/low-quality/low-quality-header";
-import { LowQualityImageCard } from "@/components/results/low-quality/low-quality-image-card";
-import { LowQualityState } from "@/components/results/low-quality/low-quality-state";
+import { LowQualityGridSkeleton } from "@/components/collections/results/low-quality/low-quality-grid-skeleton";
+import { LowQualityHeader } from "@/components/collections/results/low-quality/low-quality-header";
+import { LowQualityImageCard } from "@/components/collections/results/low-quality/low-quality-image-card";
+import { LowQualityState } from "@/components/collections/results/low-quality/low-quality-state";
 import { Button } from "@/components/ui/button";
 import {
   useCollectionLowQualityImages,

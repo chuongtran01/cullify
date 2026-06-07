@@ -7,8 +7,8 @@ import { useParams } from "next/navigation";
 import type {
   ReviewResultsData,
   SimilarGroup,
-} from "@/components/results/overall/mock-data";
-import { PhotoSurface } from "@/components/results/photo-surface";
+} from "@/components/collections/results/overall/mock-data";
+import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCollectionLowQualityImages } from "@/features/collections/hooks";

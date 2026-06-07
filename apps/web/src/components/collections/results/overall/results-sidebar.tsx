@@ -3,7 +3,7 @@ import { Info } from "lucide-react";
 import type {
   ReviewProgressItem,
   ReviewResultsData,
-} from "@/components/results/overall/mock-data";
+} from "@/components/collections/results/overall/mock-data";
 import { Progress } from "@/components/ui/progress";
 
 function ProgressRing({ percent }: { percent: number }) {

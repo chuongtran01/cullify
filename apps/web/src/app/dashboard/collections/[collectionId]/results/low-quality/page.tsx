@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { LowQualityPage } from "@/components/results/low-quality/low-quality-page";
+import { LowQualityPage } from "@/components/collections/results/low-quality/low-quality-page";
 import { isUuid } from "@/services/collections";
 
 type LowQualityImagesPageProps = {

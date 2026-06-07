@@ -1,4 +1,4 @@
-import { PhotoSurface } from "@/components/results/photo-surface";
+import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CollectionLowQualityImage } from "@/services/collections";

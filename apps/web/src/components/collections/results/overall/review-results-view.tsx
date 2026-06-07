@@ -1,10 +1,10 @@
 "use client";
 
-import type { ReviewResultsData } from "@/components/results/overall/mock-data";
-import { ResultsHeader } from "@/components/results/overall/results-header";
-import { ResultsSidebar } from "@/components/results/overall/results-sidebar";
-import { ResultsSummary } from "@/components/results/overall/results-summary";
-import { ResultsWorkflows } from "@/components/results/overall/results-workflows";
+import type { ReviewResultsData } from "@/components/collections/results/overall/mock-data";
+import { ResultsHeader } from "@/components/collections/results/overall/results-header";
+import { ResultsSidebar } from "@/components/collections/results/overall/results-sidebar";
+import { ResultsSummary } from "@/components/collections/results/overall/results-summary";
+import { ResultsWorkflows } from "@/components/collections/results/overall/results-workflows";
 import { useCollectionResultsSummary } from "@/features/collections/hooks";
 
 export function ReviewResultsView({ data }: { data: ReviewResultsData }) {
