@@ -2,298 +2,261 @@
 
 ## Overview
 
-Cullify should read as a controlled enterprise AI product: editorial white space, near-black actions, deep product bands, rounded media cards, and data-rich surfaces that feel calm rather than flashy. The visual direction is inspired by Cohere's public design language: white-first pages, sober AI infrastructure tone, deep green-black or navy showcase sections, thin rules, and large restrained type.
+Expo's marketing site reads like a quietly-confident React-Native developer platform. The base canvas is **pure white** (`{colors.canvas}` — #ffffff) with a soft **sky-blue gradient atmospheric wash** behind the hero band. Near-black ink `{colors.ink}` (#171717) carries body and display alike. The single brand voltage is **pure black** (`{colors.primary}` — #000000) for primary CTAs — minimal and editorial-feeling. A small blue text-link accent (`{colors.text-link}` — #0d74ce) is reserved for inline body links, never as a CTA.
 
-The system should make image curation feel like serious infrastructure. Use open white canvas for strategy, trust, and explanation. Use dark product bands for workflow proof, processing states, dashboards, and high-confidence AI moments. Color should usually arrive through image content, product previews, status chips, and sparse warm accents rather than decorative gradients.
+Type runs **Inter** as the single sans family at modest weights (display 600, body 400). JetBrains Mono carries every code surface. No custom typeface — the brand trusts Inter's editorial neutrality.
 
-This file defines the target design direction for future app component updates. It should not be treated as a request to immediately modify existing components.
+The brand's strongest visual signature is the **device-mockup hero** — a centered MacBook + iPhone composite showing real Expo dev surfaces (Expo Studio, EAS Build dashboard, the Expo Go simulator) — over a sky-blue gradient atmospheric wash. The composite is the page's chrome instead of an illustration.
 
-## Key Characteristics
-
-- White editorial canvas with strong near-black text.
-- Deep green-black and dark navy bands for product showcases.
-- Near-black or white pill CTAs, depending on surface contrast.
-- Rounded media cards, especially 22px on major product and image surfaces.
-- Thin borders, rules, and surface alternation instead of drop shadows.
-- Large display headlines at weight 400 with tight line height.
-- Data-rich dashboard areas that stay quiet, structured, and scannable.
-- Warm coral used only for metadata, taxonomy, warnings, or small editorial accents.
-- Blue reserved for links, focus states, and secondary interaction emphasis.
+**Key Characteristics:**
+- Pure white canvas with sky-blue gradient atmospheric backdrop in hero only.
+- Single primary CTA: pure black pill at `{rounded.md}` (8px) — compact developer-tool dialect.
+- Text-link blue (`{colors.text-link}`) for inline links only — never on a CTA.
+- Inter as the single sans family — no custom display typeface.
+- JetBrains Mono on every code surface.
+- Device-mockup hero with real Expo product surfaces is the brand chrome.
+- Hairline + soft drop depth; no atmospheric brand decoration outside the hero.
+- 96px section rhythm.
 
 ## Colors
 
-### Brand And Accent
-
-| Token | Value | Use |
-| --- | --- | --- |
-| `colors.primary` | `#17171c` | Primary light-surface CTA, dark product cards, strongest UI emphasis. |
-| `colors.black` | `#000000` | Announcement strips, maximum-emphasis text, rare high-contrast anchors. |
-| `colors.ink` | `#212121` | Default body and heading text on light surfaces. |
-| `colors.deep-green` | `#003c33` | Product workflow bands, AI processing showcases, high-trust dark sections. |
-| `colors.dark-navy` | `#071829` | Security, analytics, billing, and operational dashboard bands. |
-| `colors.action-blue` | `#1863dc` | Links, hover emphasis, active states, pagination, and secondary interactive cues. |
-| `colors.focus-blue` | `#4c6ee6` | Keyboard focus rings. |
-| `colors.coral` | `#ff7759` | Taxonomy chips, warning markers, editorial labels, and small warm accents. |
-| `colors.coral-soft` | `#ffad9b` | Soft chip borders and secondary warm accents. |
+### Brand & Accent
+- **Black** (`{colors.primary}` — #000000): Primary CTA fill. Used scarcely.
+- **Black Active** (`{colors.primary-active}` — #1a1a1a): Press state.
+- **Text Link Blue** (`{colors.text-link}` — #0d74ce): Inline body links inside long-form copy. Scoped narrowly — never on CTAs.
+- **Legal Link Blue** (`{colors.text-link-secondary}` — #476cff): Inline links inside legal copy footer.
+- **Bright Cyan** (`{colors.accent-link-bright}` — #47c2ff): Used very sparingly inside docs widget links.
 
 ### Surface
+- **Canvas** (`{colors.canvas}` — #ffffff): Pure white page floor.
+- **Canvas Soft** (`{colors.canvas-soft}` — #fafafa): Subtle alternating band.
+- **Surface Card** (`{colors.surface-card}` — #ffffff): Pure white card.
+- **Surface Strong** (`{colors.surface-strong}` — #f0f0f3): Badges, ecosystem tiles, secondary buttons.
+- **Surface Dark** (`{colors.surface-dark}` — #171717): Dark feature cards, code blocks, IDE mockups, featured pricing.
+- **Surface Dark Elevated** (`{colors.surface-dark-elevated}` — #1a1a1a): One step lighter inside dark cards.
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `colors.canvas` | `#ffffff` | Default page background and primary card surface. |
-| `colors.surface-stone` | `#eeece7` | Product cards, image placeholders, comparison blocks, and warm neutral bands. |
-| `colors.surface-green-wash` | `#edfce9` | Pale support background behind dark product modules. |
-| `colors.surface-blue-wash` | `#f1f5ff` | Lightweight editorial or empty-state CTA backgrounds. |
-| `colors.surface-card` | `#ffffff` | Cards, forms, dialogs, and table surfaces. |
-| `colors.surface-dark` | `#17171c` | Dark panels, console previews, and inverted cards. |
-| `colors.surface-dark-soft` | `#24302f` | Secondary dark cards inside deep green sections. |
+### Atmospheric Backdrop
+- **Sky Light** (`{colors.gradient-sky-light}` — #cfe7ff) + **Sky Mid** (`{colors.gradient-sky-mid}` — #a8c8e8): The soft sky-blue gradient wash behind the homepage hero only. Not a brand action color.
 
-### Text And Rules
+### Hairlines
+- **Hairline** (`{colors.hairline}` — #f0f0f3): Default 1px divider.
+- **Hairline Soft** (`{colors.hairline-soft}` — #f5f5f7): Lighter divider.
+- **Hairline Strong** (`{colors.hairline-strong}` — #dcdee0): Stronger panel outline.
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `colors.body` | `#616161` | Running copy on light surfaces. |
-| `colors.muted` | `#93939f` | Metadata, captions, dates, disabled labels. |
-| `colors.slate` | `#75758a` | Tertiary labels and dense table metadata. |
-| `colors.hairline` | `#d9d9dd` | Standard dividers, form borders, table rules. |
-| `colors.hairline-light` | `#e5e7eb` | Secondary dividers and light utility rules. |
-| `colors.card-border` | `#f2f2f2` | Soft card containment on white canvas. |
-| `colors.on-primary` | `#ffffff` | Text on near-black, deep green, and navy surfaces. |
-| `colors.error` | `#b30000` | Validation errors and destructive warnings. |
+### Text
+- **Ink** (`{colors.ink}` — #171717): Display, body emphasis.
+- **Body** (`{colors.body}` — #60646c): Default running-text — slightly cool gray.
+- **Body Strong** (`{colors.body-strong}` — #171717): Same as ink.
+- **Muted** (`{colors.muted}` — #999999): Sub-titles.
+- **Muted Soft** (`{colors.muted-soft}` — #cccccc): Disabled text.
+- **On Primary** (`{colors.on-primary}` — #ffffff): White text on black CTA.
+- **On Dark** (`{colors.on-dark}` — #ffffff): White text on dark cards.
+- **On Dark Soft** (`{colors.on-dark-soft}` — #b0b4ba): Muted off-white on dark.
+
+### Semantic
+- **Warning** (`{colors.accent-warning}` — #ab6400): Warning text inside docs callouts.
+- **Preview** (`{colors.accent-preview}` — #8145b5): "Preview" tag color.
+- **Success** (`{colors.semantic-success}` — #16a34a): Confirmation.
+- **Error** (`{colors.semantic-error}` — #eb8e90): Validation errors.
 
 ## Typography
 
-Use a Cohere-like split: a distinctive display face for major declarations, a precise sans for UI, and a mono face for technical labels. If proprietary fonts are unavailable, use the fallbacks below.
+### Font Family
+**Inter** is the single sans family across every text role. **JetBrains Mono** carries every code surface. Fallback: `-apple-system, system-ui, sans-serif`.
 
-- Display: `Space Grotesk`, `Inter`, `ui-sans-serif`, `system-ui`.
-- Body/UI: `Inter`, `Arial`, `ui-sans-serif`, `system-ui`.
-- Technical labels and code: `JetBrains Mono`, `ui-monospace`, `SFMono-Regular`, `Menlo`, monospace.
+### Hierarchy
 
-| Token | Tailwind Utility | Weight | Line Height | Letter Spacing | Use |
-| --- | --- | --- | --- | --- | --- |
-| `typography.hero-display` | `text-6xl sm:text-7xl lg:text-8xl` | 400 | 1.0 | -1.92px | Homepage or major product hero. |
-| `typography.product-display` | `text-5xl sm:text-6xl lg:text-7xl` | 400 | 1.0 | -1.44px | Product workflow and dashboard hero sections. |
-| `typography.section-display` | `text-4xl sm:text-5xl lg:text-6xl` | 400 | 1.0 | -1.2px | Large section headings. |
-| `typography.section-heading` | `text-3xl sm:text-4xl lg:text-5xl` | 400 | 1.2 | -0.48px | Standard section headings. |
-| `typography.card-heading` | `text-2xl sm:text-3xl` | 400 | 1.2 | -0.32px | Card groups and feature titles. |
-| `typography.feature-heading` | `text-xl sm:text-2xl` | 400 | 1.3 | 0 | Feature cards, filter headings, dashboard panels. |
-| `typography.body-large` | `text-lg` | 400 | 1.4 | 0 | Lead copy and larger descriptions. |
-| `typography.body` | `text-base` | 400 | 1.5 | 0 | Default body, links, labels. |
-| `typography.button` | `text-sm` | 500 | 1.7 | 0 | CTA and compact control labels. |
-| `typography.caption` | `text-sm` | 400 | 1.4 | 0 | Metadata and helper text. |
-| `typography.mono-label` | `text-sm uppercase` | 400 | 1.4 | 0.28px | Technical labels, status markers, categories. |
-| `typography.micro` | `text-xs` | 400 | 1.4 | 0 | Footer, fine print, compact metadata. |
-| `typography.code` | `text-sm` | 400 | 1.5 | 0 | Code blocks, logs, and processing traces. |
+| Token | Size | Weight | Line Height | Letter Spacing | Use |
+|---|---|---|---|---|---|
+| `{typography.display-mega}` | 64px | 600 | 1.05 | -1.92px | Homepage hero h1 |
+| `{typography.display-xl}` | 48px | 600 | 1.1 | -1.44px | Subsidiary heroes |
+| `{typography.display-lg}` | 36px | 600 | 1.15 | -1.08px | Section heads |
+| `{typography.display-md}` | 28px | 600 | 1.2 | -0.84px | Sub-section heads |
+| `{typography.display-sm}` | 22px | 600 | 1.25 | -0.5px | Card group titles |
+| `{typography.title-md}` | 18px | 600 | 1.4 | 0 | Component titles |
+| `{typography.title-sm}` | 16px | 600 | 1.4 | 0 | List labels |
+| `{typography.body-md}` | 16px | 400 | 1.5 | 0 | Default body |
+| `{typography.body-sm}` | 14px | 400 | 1.5 | 0 | Footer body |
+| `{typography.caption}` | 13px | 400 | 1.4 | 0 | Photo captions |
+| `{typography.caption-uppercase}` | 11px | 600 | 1.4 | 0.88px | Section labels, badges |
+| `{typography.code}` | 13px | 400 | 1.5 | 0 | Code blocks — JetBrains Mono |
+| `{typography.button}` | 14px | 500 | 1.0 | 0 | CTA labels |
+| `{typography.nav-link}` | 14px | 500 | 1.4 | 0 | Top-nav menu |
 
-### Typography Principles
+### Principles
+- **Display weight stays at 600** — confident but not bombastic. Inter at 600 reads cleaner than 700.
+- **Negative letter-spacing on display** — -0.5px to -1.92px tracking.
+- **JetBrains Mono on every code surface.**
 
-- Use massive type sparingly; one large headline per view is enough.
-- Avoid heavy bold display weights. Hierarchy comes from scale, space, and contrast.
-- Keep display lines tight and deliberate.
-- Use mono labels for system states, AI job types, queue labels, and image-processing metadata.
-- Do not let dense dashboard text inherit hero-scale styling.
+### Note on Font Substitutes
+Inter and JetBrains Mono are both freely available — the system uses them directly.
 
 ## Layout
 
-### Spacing
+### Spacing System
+- **Base unit:** 4px.
+- **Tokens:** `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.base}` 16px · `{spacing.md}` 20px · `{spacing.lg}` 24px · `{spacing.xl}` 32px · `{spacing.xxl}` 48px · `{spacing.section}` 96px.
+- **Section padding:** 96px.
 
-Use an 8px base with a few practical intermediate values for alignment.
+### Grid & Container
+- Max content width: ~1200px.
+- Editorial body: 12-column grid.
+- Feature card grids: 2-up at desktop for hero splits, 3-up for benefit grids.
+- Ecosystem tile grid: 8-up at desktop.
+- Footer: 5-column at desktop.
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `spacing.xxs` | `2px` | Hairline offsets and micro alignment. |
-| `spacing.xs` | `6px` | Tight inline gaps. |
-| `spacing.sm` | `8px` | Compact control spacing. |
-| `spacing.md` | `12px` | Form and chip padding. |
-| `spacing.lg` | `16px` | Default component gaps. |
-| `spacing.xl` | `24px` | Card padding and grid gaps. |
-| `spacing.xxl` | `32px` | Larger cards and stacked sections. |
-| `spacing.section-sm` | `56px` | Compact page bands. |
-| `spacing.section` | `80px` | Default section rhythm. |
+### Whitespace Philosophy
+Generous editorial pacing. The white canvas does not compete with the hero's gradient sky wash; cards inside dense workflow sections sit close (16-24px gap).
 
-### Grid And Container
-
-- Max content width: approximately 1200px for app and marketing content.
-- Global nav uses three zones: brand left, primary navigation center, account/actions right.
-- Product showcase sections can use a two-column composition: dashboard or image preview beside supporting proof.
-- Dense app views should prefer rule-separated rows, tables, split panes, and compact cards over decorative marketing card grids.
-- Feature and settings grids can be 3-up on desktop, 2-up on tablet, and 1-up on mobile.
-- Forms use two-column rows on desktop and stack on mobile.
-
-### Whitespace
-
-Whitespace is a trust signal. Leave large empty intervals around brand claims, customer proof, and workflow proof. Dense content is welcome inside product surfaces, but it should be organized with rules, labels, and consistent row heights.
-
-## Elevation And Depth
-
-Cullify should be nearly shadow-free. Depth comes from contrast between white canvas, dark product fields, rounded media, thin borders, and image content.
+## Elevation & Depth
 
 | Level | Treatment | Use |
-| --- | --- | --- |
-| Flat | No shadow, open white or dark field | Page backgrounds, hero copy, editorial text. |
-| Bordered | 1px `colors.hairline`, `colors.hairline-light`, or `colors.card-border` | Cards, forms, tables, panels, dialogs. |
-| Media Lift | Rounded image or product preview over contrasting field | Image previews, culling workflows, hero media. |
-| Dark Product Field | Deep green or navy full-width band | AI workflow demos, analytics dashboards, security claims. |
+|---|---|---|
+| Flat (canvas) | `{colors.canvas}` (#ffffff) | Body bands, footer |
+| Card | `{colors.surface-card}` (#ffffff) | Content cards |
+| Hairline border | 1px `{colors.hairline}` | Card outlines |
+| Soft drop | `0 4px 12px rgba(0, 0, 0, 0.04)` | Hovered cards (single shadow tier) |
+| Atmospheric gradient | Sky-blue radial wash | Hero backdrop only |
+| Dark inversion | `{colors.surface-dark}` (#171717) | Dark feature cards, code blocks, featured pricing |
 
-Drop shadows are not part of the default system. Use them only for unavoidable overlays, and keep them subtle.
+### Decorative Depth
+- **Sky-blue gradient backdrop** in the hero only — atmospheric depth without claiming to be a brand color.
+- **Device mockup composite** as page chrome — MacBook + iPhone showing real Expo dev surfaces.
 
 ## Shapes
 
+### Border Radius Scale
+
 | Token | Value | Use |
-| --- | --- | --- |
-| `rounded.xs` | `4px` | Utility controls, compact thumbnails, search fields. |
-| `rounded.sm` | `8px` | Dialogs, chips, small cards, table row controls. |
-| `rounded.md` | `16px` | Medium product cards and grouped blocks. |
-| `rounded.lg` | `22px` | Signature media cards, large product previews, major placeholders. |
-| `rounded.xl` | `30px` | Large taxonomy filters and segmented pill groups. |
-| `rounded.pill` | `32px` | Primary CTA buttons and prominent chips. |
-| `rounded.full` | `9999px` | Avatars, circular status dots, fully pill-shaped controls. |
+|---|---|---|
+| `{rounded.none}` | 0px | Reserved |
+| `{rounded.xs}` | 4px | Inline tags |
+| `{rounded.sm}` | 6px | Compact rows |
+| `{rounded.md}` | 8px | CTA buttons, form inputs, ecosystem tiles |
+| `{rounded.lg}` | 12px | Feature cards, code blocks, pricing tiers |
+| `{rounded.xl}` | 16px | Device mockup cards |
+| `{rounded.xxl}` | 24px | Larger atmospheric cards (rare) |
+| `{rounded.pill}` | 9999px | Badges only |
+| `{rounded.full}` | 9999px | Avatar plates (rare) |
 
-### Image Treatment
-
-Images are the product. Show them clearly, with real inspection value. Use 22px rounded media cards for major previews, before/after comparisons, culling groups, and hero visuals. Avoid blurred, dark, or overly cropped imagery when users need to judge quality.
+Compact developer-ergonomic radii — 8px CTAs, 12px cards. Pill geometry is reserved for badges, never CTAs.
 
 ## Components
 
 ### Top Navigation
 
-`top-nav` uses a white canvas, ink text, and a quiet three-zone layout. Keep it thin, functional, and predictable. Primary actions use `button-primary`; secondary navigation is text-only.
+**`top-nav`** — Background `{colors.canvas}`, text `{colors.ink}`, height 64px. Layout: Expo wordmark left, primary horizontal menu (Tools / Workflows / EAS / Pricing / Docs / Showcase), Sign In + Get started CTA right.
 
 ### Buttons
 
-`button-primary` is a near-black pill on light surfaces. It uses `colors.primary`, `colors.on-primary`, `typography.button`, `rounded.pill`, and roughly `px-6 py-3`.
+**`button-primary`** — Pure black pill. Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.button}` (14px / 500), padding 10px × 18px, height 40px, rounded `{rounded.md}` (8px).
 
-`button-primary-inverted` is a white pill on dark green, navy, or near-black surfaces. It uses `colors.canvas`, `colors.primary`, `typography.button`, and `rounded.pill`.
+**`button-primary-active`** — Press state. Background `{colors.primary-active}`.
 
-`button-secondary` is text-only or underlined. It has no filled background and uses `colors.ink` on light surfaces or `colors.on-primary` on dark surfaces.
+**`button-secondary`** — White card with 1px hairline-strong border. Background `{colors.surface-card}`, text `{colors.ink}`, 1px `{colors.hairline-strong}` border.
 
-`button-pill-outline` is a transparent outlined pill for filters and taxonomy controls. It uses a 1px border, `rounded.xl`, and compact horizontal padding.
+**`button-tertiary-text`** — Inline blue text link. Background transparent, text `{colors.text-link}`.
 
-### Hero And Product Showcase
+### Hero & Device Mockup
 
-`hero-band` uses white canvas, a centered or split hero declaration, one primary CTA, one text secondary action, and a clear product or image-preview surface.
+**`hero-band`** — Background `{colors.canvas}` with a soft sky-blue gradient wash behind the centered headline. Display headline in `{typography.display-mega}` (64px / 600 / -1.92px), subhead in `{typography.body-md}`, single primary CTA, then below — the device mockup composite.
 
-`product-showcase-band` uses `colors.deep-green` or `colors.dark-navy`, white text, generous padding, and dashboard or workflow previews. Cards inside the band use dark softened surfaces and pale borders.
-
-`hero-photo-card` is a rounded 22px image or product preview card. It can include subtle overlay metadata, but text must not obscure image inspection.
-
-### App Shell
-
-`app-shell` should feel like a professional operations surface. Use white or very pale backgrounds, clear navigation, compact row heights, and scannable filters. Reserve dark surfaces for focused previews, processing consoles, or high-emphasis panels.
-
-`sidebar` uses white or stone surfaces, 1px rules, compact text labels, and clear active states. Avoid saturated background fills for active navigation.
-
-### Dashboard And Tables
-
-`dashboard-panel` uses `colors.surface-card`, `rounded.sm` or `rounded.md`, 1px `colors.hairline-light`, and no shadow.
-
-`data-table` uses rule-separated rows, sticky or clearly repeated column labels, compact metadata, and visible empty/loading/error states.
-
-`metric-card` should be quiet: small mono label, large but not heroic value, muted trend text, and one optional accent marker.
-
-### Image Review
-
-`image-grid-card` uses visible image content, `rounded.sm` or `rounded.lg` depending on size, and restrained metadata below or overlaid only in safe corners.
-
-`image-inspection-panel` uses a dark or neutral background when judging contrast, sharpness, and exposure. Controls should be compact icon buttons with tooltips where needed.
-
-`selection-chip` uses pill shape, mono or caption text, and restrained color. Use coral only for warning-like statuses or taxonomy, not for normal selection.
-
-### AI Workflow
-
-`agent-console-card` is a dark panel for AI processing traces, model decisions, job states, and generated summaries. It uses `colors.surface-dark`, white text, muted metadata, mono labels, and compact status chips.
-
-`workflow-step-card` uses thin borders, small mono labels, and clear status markers. Prefer rows or compact cards over decorative timeline art.
-
-`status-chip` uses pill shape, caption or mono label text, and semantic color only when the state needs it.
+**`device-mockup-card`** — A layered MacBook + iPhone composite showing real Expo dev surfaces. Background `{colors.surface-card}`, rounded `{rounded.xl}`. The MacBook holds the EAS dashboard or Expo Studio screenshot; the iPhone overlay shows the running app in Expo Go. This is the page chrome.
 
 ### Cards
 
-`feature-card` uses `colors.surface-card`, `colors.ink`, `typography.feature-heading`, `rounded.sm` or `rounded.md`, `p-6`, and a 1px border.
+**`feature-card`** — Background `{colors.surface-card}`, text `{colors.ink}`, type `{typography.title-md}`, rounded `{rounded.lg}`, padding 24px, 1px `{colors.hairline-strong}` border.
 
-`media-card` uses `rounded.lg`, no shadow, and either an image, video, or product screenshot as the dominant content.
+**`feature-card-dark`** — Dark variant. Background `{colors.surface-dark}`, text `{colors.on-dark}`. Same shape, dark inversion.
 
-`product-card` uses `colors.surface-stone`, `rounded.sm`, generous padding, a divider line, and compact action controls.
+**`workflow-step-card`** — Step in the "Get your app on every device" workflow row. Background `{colors.surface-card}`, text `{colors.body}`, rounded `{rounded.lg}`, padding 20px. Layout: 32px square `{component.workflow-step-icon}` + step number + label + body.
 
-### Forms And Inputs
+**`workflow-step-icon`** — Square plate. Background `{colors.surface-strong}`, rounded `{rounded.md}`, 32px size.
 
-`text-input` uses white background, ink text, 1px `colors.hairline`, `rounded.xs` or `rounded.sm`, and 12px-16px padding. Focus uses `colors.focus-blue` ring or `colors.action-blue` outline.
+**`testimonial-card`** — Quote card. Background `{colors.surface-card}`, text `{colors.body}`, rounded `{rounded.lg}`, padding 24px.
 
-`contact-form-card` and larger form panels use `colors.surface-card`, `rounded.lg`, 1px border, and two-column field grouping on desktop.
+### Code & IDE
 
-Validation errors use `colors.error` sparingly with clear text, not only color.
+**`code-block`** — Inline code block. Background `{colors.surface-dark}`, text `{colors.on-dark}` in `{typography.code}` (JetBrains Mono 13px), rounded `{rounded.lg}`, padding 20px. White text on dark.
 
-### Tags And Filters
+**`ide-mockup-card`** — Stylized IDE mockup. Background `{colors.surface-dark}`, rounded `{rounded.lg}`. Multi-pane editor + terminal preview.
 
-`taxonomy-chip` uses transparent or pale fill, a thin border, `rounded.xl`, and caption text. Coral can mark editorial category groups or cautionary states.
+### Pricing
 
-`filter-chip` uses outlined pill styling, compact spacing, and clear selected/unselected states.
+**`pricing-tier-card`** — Standard pricing tier. Background `{colors.surface-card}`, rounded `{rounded.lg}`, padding 32px, 1px `{colors.hairline-strong}` border.
 
-### Footer
+**`pricing-tier-featured`** — Featured tier. Background `{colors.surface-dark}`, text `{colors.on-dark}`. Same shape, dark inversion.
 
-`footer` may invert to near-black or deep green. Use white section labels, muted links, and thin dividers. Newsletter or CTA areas should use a single input row and one clear action.
+### Ecosystem
+
+**`ecosystem-tile`** — Square logo plate for ecosystem partner logos (TypeScript, React, Sentry, etc.). Background `{colors.surface-card}`, rounded `{rounded.md}`, 64px size, 1px `{colors.hairline}` border.
+
+### Forms & Tags
+
+**`text-input`** — Background `{colors.surface-card}`, text `{colors.ink}`, rounded `{rounded.md}` (8px), padding 12px × 16px, height 44px, 1px `{colors.hairline-strong}` border. Focus thickens border to 2px ink.
+
+**`badge-pill`** — Small uppercase pill. Background `{colors.surface-strong}`, text `{colors.ink}`, type `{typography.caption-uppercase}`, rounded `{rounded.pill}`, padding 4px × 10px.
+
+### CTA / Footer
+
+**`cta-band`** — Pre-footer band. Background `{colors.canvas}`, centered display headline in `{typography.display-lg}`, single black pill CTA. 96px padding.
+
+**`footer-light`** — Closing white footer. Background `{colors.canvas}`, text `{colors.body}`. 5-column link list. 64×48px padding.
+
+**`footer-link`** — Background transparent, text `{colors.body}`, type `{typography.body-sm}`.
+
+## Do's and Don'ts
+
+### Do
+- Reserve `{colors.primary}` (black) for primary CTAs.
+- Use `{colors.text-link}` (blue) for inline body links only — never on CTAs or buttons.
+- Set every CTA at `{rounded.md}` (8px) — developer dialect.
+- Use Inter at weight 600 for display, 400 for body.
+- Render every code surface in JetBrains Mono.
+- Pair the hero with the device-mockup composite — it's the page chrome.
+
+### Don't
+- Don't introduce a saturated brand action color. Black is the only CTA fill.
+- Don't use blue (`{colors.text-link}`) on a CTA. Inline links only.
+- Don't drop display below weight 600 or above 700.
+- Don't use full pills on CTAs — pills are for badges only.
+- Don't replicate the sky-blue gradient backdrop outside the hero.
+- Don't extract a CTA color from a third-party widget (cookie consent, OneTrust). The brand's CTA is what appears on actual page CTAs.
 
 ## Responsive Behavior
 
+### Breakpoints
+
 | Name | Width | Key Changes |
-| --- | --- | --- |
-| Small Mobile | < 425px | Single-column cards, compact nav, reduced hero scale, stacked media. |
-| Mobile | 425-640px | Hero media stacks, forms become one column, tables collapse metadata below titles. |
-| Large Mobile | 640-768px | Larger one-column previews, two-up compact controls only when comfortable. |
-| Tablet | 768-1024px | Two-column cards begin, nav spacing tightens, dashboards compress sidebars. |
-| Desktop | 1024-1440px | Full nav, 3-column grids, split product showcases, full tables. |
-| Wide | > 1440px | Keep content capped; add whitespace rather than stretching dense UI. |
+|---|---|---|
+| Mobile | < 640px | Hero h1 64→32px; device mockup → single iPhone screen; feature grid 1-up; nav hamburger. |
+| Tablet | 640–1024px | Hero h1 48px; device mockup compresses; feature grid 2-up. |
+| Desktop | 1024–1280px | Full hero h1 64px; full MacBook + iPhone composite; feature grid 3-up. |
+| Wide | > 1280px | Content caps at 1200px. |
 
-Touch targets:
+### Touch Targets
+- Primary CTA at 40px height — at WCAG AA, padded for AAA.
+- Search input 44px — at AAA.
 
-- Primary CTAs: at least 44px height.
-- Icon buttons: at least 36px square, 40px preferred for touch-heavy areas.
-- Filter chips: comfortable horizontal padding and at least 32px height.
-
-Collapsing strategy:
-
-- Top nav collapses below tablet width.
-- Product showcase media stacks below supporting copy on mobile.
-- Card grids move 3-up to 2-up to 1-up.
-- Data tables preserve row hierarchy; metadata stacks rather than disappearing.
-- Image inspection controls collapse into grouped icon toolbars.
-
-## Do
-
-- Use white canvas as the default surface.
-- Use deep green or navy for full-width product proof sections.
-- Keep primary CTAs pill-shaped and near-black on light surfaces.
-- Use 22px radius on major media and product-preview cards.
-- Use thin borders and rules instead of shadows.
-- Let real images, product screenshots, and data surfaces carry visual interest.
-- Use mono labels for AI workflow states, processing metadata, and technical categories.
-- Keep dense app views compact, aligned, and highly scannable.
-
-## Don't
-
-- Do not update existing app components just because this document changed.
-- Do not turn coral or blue into broad decorative backgrounds.
-- Do not use saturated gradients as normal UI surfaces.
-- Do not add heavy drop shadows to cards.
-- Do not make every section a floating card.
-- Do not obscure image previews with large text overlays.
-- Do not use hero-scale typography inside dashboards, sidebars, tables, or compact panels.
-- Do not make the app feel like a dark IDE by default.
+### Collapsing Strategy
+- Top nav switches to hamburger below 768px.
+- Device mockup MacBook + iPhone collapses to a single iPhone preview on mobile.
+- Feature grid: 3-up → 2-up → 1-up.
+- Ecosystem tile grid: 8-up → 4-up → 3-up → 2-up.
 
 ## Iteration Guide
 
-1. Start from white canvas or a full-width deep green/navy product band.
-2. Pick one primary action per view; use secondary actions as text links or outlined pills.
-3. Use major rounded media cards when the page needs visual energy.
-4. Prefer rows, rules, and compact panels for operational app workflows.
-5. Use token references everywhere once tokens exist in code.
-6. Keep component examples structurally honest; avoid invented product data that implies unsupported behavior.
-7. Treat gradients as media or illustration, not generic surface styling.
-8. Check mobile layouts for text fit, image inspectability, and non-overlapping controls.
+1. Focus on a single component at a time.
+2. CTAs default to `{rounded.md}` (8px). Cards use `{rounded.lg}` (12px).
+3. Variants live as separate entries.
+4. Use `{token.refs}` everywhere — never inline hex.
+5. Hover state never documented.
+6. Inter 600 for display, Inter 400 for body. JetBrains Mono on code.
+7. Black stays the only CTA color; text-link blue stays inline-only.
 
 ## Known Gaps
 
-- Proprietary Cohere fonts are not bundled; use the documented fallbacks.
-- Animation timing, route transitions, and micro-interactions are not fully specified.
-- Exact implementation tokens may need mapping to the current Tailwind and component setup.
-- Existing components have not been updated to match this document yet.
+- Inter and JetBrains Mono are freely available — no licensing concerns.
+- Animation timings (device mockup parallax, hero entrance) out of scope.
+- In-app surfaces (EAS dashboard interactive, Expo Go simulator) only partially captured via marketing mockups.
+- Form validation states beyond focus not visible on captured surfaces.
