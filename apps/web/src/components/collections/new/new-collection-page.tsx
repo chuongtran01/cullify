@@ -288,15 +288,17 @@ export function NewCollectionPage() {
         <div
           {...getRootProps()}
           className={cn(
-            "rounded-lg border border-dashed bg-canvas-soft p-6 transition-colors outline-none focus-visible:border-ink focus-visible:ring-3 focus-visible:ring-ink/10 sm:p-8",
-            isDragActive
-              ? "border-text-link bg-gradient-sky-light/20"
-              : "border-hairline-strong",
+            "relative overflow-hidden rounded-lg border border-dashed p-6 transition-colors outline-none focus-visible:border-ink focus-visible:ring-3 focus-visible:ring-ink/10 sm:p-8",
+            isDragActive ? "border-text-link" : "border-hairline-strong",
           )}
         >
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,var(--gradient-sky-light)_0%,color-mix(in_srgb,var(--gradient-sky-mid)_50%,transparent)_45%,transparent_75%)]"
+          />
           <input {...getInputProps()} />
 
-          <div className="flex flex-col items-center text-center">
+          <div className="relative flex flex-col items-center text-center">
             <div className="grid size-14 place-items-center rounded-md border border-hairline-strong bg-surface-card text-primary">
               <Upload className="size-6" />
             </div>
