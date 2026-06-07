@@ -112,7 +112,7 @@ export function AuthNavActions() {
         <button
           className={cn(
             buttonVariants({ variant: "link" }),
-            "h-10 px-0 text-ink no-underline hover:text-action-blue hover:no-underline",
+            "h-10 px-0 text-sm font-medium text-ink no-underline hover:text-text-link hover:no-underline",
           )}
           onClick={() => openAuth("sign-in")}
           type="button"
@@ -120,7 +120,7 @@ export function AuthNavActions() {
           Sign In
         </button>
         <Button
-          className="h-11 rounded-full px-5"
+          className="h-10 rounded-md px-4 text-sm font-medium"
           onClick={() => openAuth("sign-up")}
         >
           Get Started

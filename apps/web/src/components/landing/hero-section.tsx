@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Check, Sparkles, Upload } from "lucide-react";
+import { ArrowRight, Check, Upload } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { featureBullets } from "@/components/landing/content";
@@ -14,31 +14,32 @@ export function HeroSection({
   onUploadClick: () => void;
 }) {
   return (
-    <section className="bg-canvas">
+    <section className="relative overflow-hidden bg-canvas">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[min(560px,72%)] bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,var(--gradient-sky-light)_0%,color-mix(in_srgb,var(--gradient-sky-mid)_55%,transparent)_48%,transparent_78%)]"
+      />
+
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="mx-auto max-w-5xl px-5 pt-16 pb-8 text-center sm:pt-20"
+        className="relative mx-auto max-w-[1200px] px-5 pt-24 pb-12 text-center"
       >
-        <Badge
-          variant="outline"
-          className="mb-7 h-auto gap-2 rounded-full border-hairline bg-transparent px-4 py-2 font-mono text-xs font-normal uppercase tracking-wide text-body"
-        >
-          <Sparkles className="size-3.5 text-coral" />
+        <Badge className="mb-6 h-auto rounded-full border-transparent bg-surface-strong px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.88px] text-ink">
           AI culling for high-volume review
         </Badge>
-        <h1 className="mx-auto max-w-4xl text-6xl font-normal leading-none tracking-tight text-ink sm:text-7xl">
+        <h1 className="mx-auto max-w-4xl text-[32px] font-semibold leading-[1.05] tracking-[-0.03em] text-ink sm:text-[48px] lg:text-[64px]">
           AI photo culling for cleaner first-pass decisions.
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-body">
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-normal text-body">
           Cullify removes blurry shots, groups similar frames, and explains the
           strongest picks so large photo collections become small, confident review
           moments.
         </p>
-        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5">
           <Button
-            className="h-11 cursor-pointer gap-2 rounded-full px-6"
+            className="h-10 cursor-pointer gap-2 rounded-md px-[18px] text-sm font-medium"
             onClick={onUploadClick}
           >
             <Upload className="size-4" />
@@ -46,7 +47,7 @@ export function HeroSection({
           </Button>
           <a
             href="#demo"
-            className="inline-flex h-11 items-center gap-2 text-sm text-ink underline-offset-4 hover:text-action-blue hover:underline"
+            className="inline-flex h-10 items-center gap-2 text-sm font-medium text-text-link"
           >
             Explore the workflow
             <ArrowRight className="size-4" />
@@ -61,7 +62,8 @@ export function HeroSection({
           ))}
         </div>
       </motion.div>
-      <div className="px-5 pb-16">
+
+      <div className="relative px-5 pb-24">
         <HeroMockup />
       </div>
     </section>

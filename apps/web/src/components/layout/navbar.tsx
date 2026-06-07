@@ -6,7 +6,7 @@ import { Logo } from "@/components/layout/logo";
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/95 backdrop-blur-sm">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
         <Logo />
         <div className="hidden items-center gap-9 md:flex">
@@ -14,7 +14,7 @@ export function Navbar() {
             <a
               href={`#${link.toLowerCase().replaceAll(" ", "-")}`}
               key={link}
-              className="text-sm text-body transition-colors hover:text-ink"
+              className="text-sm font-medium leading-5 text-body transition-colors hover:text-ink"
             >
               {link}
             </a>
@@ -24,7 +24,7 @@ export function Navbar() {
           <AuthNavActions />
         </div>
         <button
-          className="grid size-10 place-items-center rounded-full border border-hairline bg-surface-card md:hidden"
+          className="grid size-10 place-items-center rounded-md border border-hairline-strong bg-surface-card text-ink md:hidden"
           aria-label="Open navigation menu"
         >
           <Menu className="size-5" />
