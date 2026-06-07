@@ -9,12 +9,21 @@ import {
   type CollectionGroupPreviewsResponse,
 } from "@/lib/db/collection-groups";
 import {
-  getCollectionResultsSummary,
-  type CollectionResultsSummary,
+  getCollectionResultsBaseSummary,
 } from "@/lib/db/collection-results-summary";
 
 const OVERALL_GROUP_LIMIT = 5;
 const OVERALL_LOW_QUALITY_LIMIT = 5;
+
+export type CollectionResultsSummary = {
+  collectionId: string;
+  collectionName: string;
+  status: string;
+  createdAt: string;
+  totalPhotos: number;
+  similarGroups: number;
+  lowQualityImages: number;
+};
 
 export type CollectionResultsOverall = {
   summary: CollectionResultsSummary;
@@ -26,8 +35,8 @@ export async function getCollectionResultsOverall(
   collectionId: string,
   userId: string,
 ): Promise<CollectionResultsOverall | null> {
-  const [summary, similarGroups, lowQuality] = await Promise.all([
-    getCollectionResultsSummary(collectionId, userId),
+  const [baseSummary, similarGroups, lowQuality] = await Promise.all([
+    getCollectionResultsBaseSummary(collectionId, userId),
     getCollectionGroupPreviews(collectionId, userId, {
       limit: OVERALL_GROUP_LIMIT,
     }),
@@ -37,12 +46,16 @@ export async function getCollectionResultsOverall(
     }),
   ]);
 
-  if (!summary || !similarGroups || !lowQuality) {
+  if (!baseSummary || !similarGroups || !lowQuality) {
     return null;
   }
 
   return {
-    summary,
+    summary: {
+      ...baseSummary,
+      similarGroups: similarGroups.totalSimilarGroups,
+      lowQualityImages: lowQuality.totalLowQualityImages,
+    },
     similarGroups,
     lowQuality,
   };

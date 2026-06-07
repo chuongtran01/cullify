@@ -6,6 +6,7 @@ import Link from "next/link";
 import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import type {
   CollectionGroupPreview,
   CollectionGroupPreviewsResponse,
@@ -82,6 +83,21 @@ function SimilarGroupCard({ group }: { group: CollectionGroupPreview }) {
   );
 }
 
+function WorkflowImageStripSkeleton() {
+  return (
+    <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
+      {Array.from({ length: 5 }).map((_, index) => (
+        <div
+          key={index}
+          className="min-w-60 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card"
+        >
+          <Skeleton className="aspect-[4/3] rounded-none" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SimilarGroupsStrip({
   groups,
   isError,
@@ -92,18 +108,7 @@ function SimilarGroupsStrip({
   isPending: boolean;
 }) {
   if (isPending) {
-    return (
-      <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <div
-            key={index}
-            className="min-w-60 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card"
-          >
-            <div className="aspect-[4/3] animate-pulse bg-surface-strong" />
-          </div>
-        ))}
-      </div>
-    );
+    return <WorkflowImageStripSkeleton />;
   }
 
   if (isError) {
@@ -160,18 +165,7 @@ function LowQualityPhotosStrip({
   isPending: boolean;
 }) {
   if (isPending) {
-    return (
-      <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <div
-            key={index}
-            className="min-w-48 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card"
-          >
-            <div className="aspect-[4/3] animate-pulse bg-surface-strong" />
-          </div>
-        ))}
-      </div>
-    );
+    return <WorkflowImageStripSkeleton />;
   }
 
   if (isError) {

@@ -5,32 +5,18 @@ import { prisma } from "@/lib/prisma";
 import { formatFallbackCollectionName } from "@/lib/db/collections";
 import type { CollectionStatus } from "@/components/collections/types";
 
-export type CollectionResultsSummary = {
+export type CollectionResultsBaseSummary = {
   collectionId: string;
   collectionName: string;
   status: CollectionStatus;
   createdAt: string;
   totalPhotos: number;
-  similarGroups: number;
-  lowQualityImages: number;
 };
 
-const lowQualityAnalysisWhere = {
-  OR: [
-    { isBlurry: true },
-    { isOutOfFocus: true },
-    { hasMotionBlur: true },
-    { hasEyesClosed: true },
-    { isLowExposure: true },
-    { isHighExposure: true },
-    { hasCompressionArtifacts: true },
-  ],
-};
-
-export async function getCollectionResultsSummary(
+export async function getCollectionResultsBaseSummary(
   collectionId: string,
   userId: string,
-): Promise<CollectionResultsSummary | null> {
+): Promise<CollectionResultsBaseSummary | null> {
   const collection = await prisma.collection.findFirst({
     where: { id: collectionId, userId },
     select: {
@@ -45,28 +31,12 @@ export async function getCollectionResultsSummary(
     return null;
   }
 
-  const [totalPhotos, similarGroups, lowQualityImages] = await Promise.all([
-    prisma.image.count({
-      where: {
-        collectionId,
-        status: ImageUploadStatus.UPLOADED,
-      },
-    }),
-    prisma.imageGroup.count({
-      where: {
-        collectionId,
-        imageCount: { gt: 1 },
-      },
-    }),
-    prisma.image.count({
-      where: {
-        collectionId,
-        qualityAnalysis: {
-          is: lowQualityAnalysisWhere,
-        },
-      },
-    }),
-  ]);
+  const totalPhotos = await prisma.image.count({
+    where: {
+      collectionId,
+      status: ImageUploadStatus.UPLOADED,
+    },
+  });
 
   return {
     collectionId: collection.id,
@@ -75,7 +45,5 @@ export async function getCollectionResultsSummary(
     status: collection.status,
     createdAt: collection.createdAt.toISOString(),
     totalPhotos,
-    similarGroups,
-    lowQualityImages,
   };
 }
