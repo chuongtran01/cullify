@@ -1,10 +1,12 @@
 "use client";
 
-import { notFound } from "next/navigation";
+import { notFound, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import {
   LowQualityFilters,
+  LOW_QUALITY_FILTER_SEARCH_PARAM,
+  parseLowQualityFilter,
   type LowQualityFilterValue,
 } from "@/components/collections/results/low-quality/low-quality-filters";
 import { LowQualityGridSkeleton } from "@/components/collections/results/low-quality/low-quality-grid-skeleton";
@@ -25,9 +27,27 @@ type LowQualityPageProps = {
 };
 
 export function LowQualityPage({ collectionId }: LowQualityPageProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [limit, setLimit] = useState(PAGE_SIZE);
-  const [activeFilter, setActiveFilter] =
-    useState<LowQualityFilterValue>("ALL");
+  const activeFilter = parseLowQualityFilter(
+    searchParams.get(LOW_QUALITY_FILTER_SEARCH_PARAM),
+  );
+
+  function handleFilterChange(filter: LowQualityFilterValue) {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (filter === "ALL") {
+      params.delete(LOW_QUALITY_FILTER_SEARCH_PARAM);
+    } else {
+      params.set(LOW_QUALITY_FILTER_SEARCH_PARAM, filter);
+    }
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }
+
   const queryOptions = {
     limit,
     offset: 0,
@@ -60,7 +80,7 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
       <LowQualityHeader isPending={isPending} total={total} />
       <LowQualityFilters
         activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
+        onFilterChange={handleFilterChange}
       />
 
       {isPending ? (

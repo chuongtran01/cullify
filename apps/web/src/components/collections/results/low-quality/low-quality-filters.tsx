@@ -2,6 +2,18 @@ import { cn } from "@/lib/utils";
 
 export type LowQualityFilterValue = "ALL" | "NEEDS_REVIEW" | "SELECTED";
 
+export const LOW_QUALITY_FILTER_SEARCH_PARAM = "filter";
+
+export function parseLowQualityFilter(
+  value: string | null,
+): LowQualityFilterValue {
+  if (value === "NEEDS_REVIEW" || value === "SELECTED") {
+    return value;
+  }
+
+  return "ALL";
+}
+
 const lowQualityFilters: Array<{
   label: string;
   value: LowQualityFilterValue;
