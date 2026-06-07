@@ -14,7 +14,7 @@ export function ReviewResultsView({ data }: { data: ReviewResultsData }) {
       <ResultsHeader summary={summary} />
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">
-        <ResultsSummary summary={summary} progress={data.progress} />
+        <ResultsSummary summary={summary} />
         <ResultsWorkflows data={data} />
       </div>
     </div>
