@@ -23,6 +23,7 @@ Initial quality flags:
 - Motion blur.
 - Eyes closed.
 - Low exposure.
+- High exposure.
 - Compression artifacts.
 
 Recommended MVP order:
@@ -51,17 +52,23 @@ Grouping signals:
 - Same camera angle.
 
 These should be treated as similarity features, not as separate user-facing
-cluster types yet. The durable product output is the cluster membership:
+group types yet. The durable product output is the group membership:
 
 - These images belong together.
-- This image is recommended.
-- This cluster has a confidence score.
-- Each image has a rank inside the cluster.
+- This group needs a user-selected representative.
+- This image is part of the final selected set.
+- This image was excluded because it is low quality, part of a similar group, or
+  explicitly changed by the user.
+
+Similarity grouping should focus on viable photos only. Low-quality images and
+images with quality-analysis errors should be excluded from similarity grouping
+and sent to the low-quality review workflow instead. This keeps the similar-group
+workflow focused on choosing the best photo from usable alternatives.
 
 ## Recommended Database Shape
 
-Use separate tables for image records, quality analysis, embeddings, clusters,
-and cluster membership.
+Use separate tables for image records, quality analysis, embeddings, similarity
+groups, group membership, and review decisions.
 
 ```prisma
 model ImageQualityAnalysis {
@@ -82,8 +89,10 @@ model ImageQualityAnalysis {
   hasMotionBlur            Boolean  @default(false)
   hasEyesClosed            Boolean  @default(false)
   isLowExposure            Boolean  @default(false)
+  isHighExposure           Boolean  @default(false)
   hasCompressionArtifacts  Boolean  @default(false)
 
+  analysisError            String?
   flags                    Json?
   raw                      Json?
 
@@ -102,59 +111,69 @@ model ImageEmbedding {
   dimension   Int
 
   vectorRef   String?
+  embeddingError String?
   raw         Json?
 
+  embeddedAt  DateTime?
   createdAt   DateTime @default(now())
 }
 
-model ImageCluster {
-  id          String      @id @default(uuid())
-  collectionId   String
+model ImageGroup {
+  id                    String       @id @default(uuid())
+  collectionId          String
+  representativeImageId String?
+  imageCount            Int
+  images                GroupImage[]
 
-  type        ClusterType @default(SIMILAR_SHOT)
-  label       String?
-  confidence  Float?
-  size        Int         @default(0)
-  raw         Json?
-
-  images      ClusterImage[]
-
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
 
   @@index([collectionId])
+  @@index([representativeImageId])
 }
 
-model ClusterImage {
-  id              String       @id @default(uuid())
-  clusterId       String
-  imageId         String
+model GroupImage {
+  id        String     @id @default(uuid())
+  groupId   String
+  imageId   String     @unique
+  group     ImageGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  image     Image      @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
 
-  cluster         ImageCluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
-  image           Image        @relation(fields: [imageId], references: [id], onDelete: Cascade)
-
-  similarityScore Float?
-  qualityScore    Float?
-  rank            Int?
-  isRecommended   Boolean      @default(false)
-  reason          String?
-
-  createdAt       DateTime     @default(now())
-
-  @@unique([clusterId, imageId])
-  @@index([imageId])
-  @@index([clusterId, rank])
+  @@index([groupId])
 }
 
-enum ClusterType {
-  SIMILAR_SHOT
-  DUPLICATE
-  SINGLETON
+model CollectionImageReview {
+  id             String               @id @default(uuid())
+  collectionId   String
+  imageId        String               @unique
+  isSelected     Boolean              @default(false)
+  decisionSource ReviewDecisionSource @default(DEFAULT)
+  decisionReason ReviewDecisionReason
+  reviewedAt     DateTime?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([collectionId])
+  @@index([decisionSource])
+  @@index([decisionReason])
+  @@index([isSelected])
+}
+
+enum ReviewDecisionSource {
+  DEFAULT
+  USER
+}
+
+enum ReviewDecisionReason {
+  GOOD_STANDALONE
+  LOW_QUALITY
+  SIMILAR_GROUP
 }
 ```
 
 For the current schema, `collectionId` maps to the upload collection id. If the product
-renames upload collections to collections or projects later, keep the cluster relation
+renames upload collections to collections or projects later, keep the group relation
 attached to that durable collection/project entity rather than to a transient job.
 
 ## `flags` And `raw` Examples
@@ -179,6 +198,7 @@ Example `ImageQualityAnalysis` row:
   "hasMotionBlur": false,
   "hasEyesClosed": false,
   "isLowExposure": true,
+  "isHighExposure": false,
   "hasCompressionArtifacts": false
 }
 ```
@@ -266,26 +286,32 @@ later migration.
 ## Worker Pipeline
 
 The Python worker should receive a BullMQ job with a `collectionId`, then load the
-images for that session from the database.
+uploaded images for that collection from the database.
 
 Recommended pipeline:
 
 ```text
-process_upload_session(collectionId)
-  load completed images for session
+process_collection(collectionId)
+  load uploaded images for collection
   for each image:
     download original from R2
     decode image
-    extract metadata
     run quality analysis
     persist ImageQualityAnalysis
-    generate embedding/features
+    generate embedding
     persist ImageEmbedding
-  cluster images for session
-  persist ImageCluster rows
-  persist ClusterImage rows
-  rank images inside each cluster
-  mark recommended image per cluster
+  find viable images:
+    analyzed successfully
+    no analysisError
+    no low-quality flags
+  group viable images by embedding similarity
+  persist ImageGroup rows
+  persist GroupImage rows
+  create CollectionImageReview defaults:
+    good standalone/singleton images -> selected
+    low-quality or analysis-error images -> unselected
+    similar-group images -> unselected until user chooses
+  mark collection READY_FOR_REVIEW
 ```
 
 Recommended worker package shape:
@@ -308,16 +334,19 @@ apps/image_processor/src/
 │   │   └── scoring.py
 │   ├── similarity/
 │   │   ├── embeddings.py
-│   │   ├── clustering.py
-│   │   ├── features.py
-│   │   └── ranking.py
-│   ├── db/
-│   │   ├── session.py
-│   │   ├── models/
-│   │   └── repositories/
-│   │       ├── collection_repo.py
-│   │       └── image_repo.py
-│   └── storage.py
+│   │   └── grouping.py
+├── db/
+│   ├── session.py
+│   ├── models/
+│   └── repositories/
+│       ├── collection_repo.py
+│       ├── image_repo.py
+│       ├── image_quality_analysis_repo.py
+│       ├── image_embedding_repo.py
+│       ├── image_group_repo.py
+│       └── collection_image_review_repo.py
+└── storage/
+    └── r2_client.py
 ```
 
 ## Signal Strategy
@@ -328,7 +357,7 @@ Quality signals:
 - Out of focus: subject/center-weighted sharpness, later face-region sharpness.
 - Motion blur: directional blur or streak detection.
 - Eyes closed: face landmarks or eye-open model.
-- Low exposure: luminance histogram, clipping, and face/subject exposure.
+- Low/high exposure: luminance histogram, clipping, and face/subject exposure.
 - Compression artifacts: JPEG metadata, blockiness, and high-frequency artifact heuristics.
 
 Similarity signals:
@@ -346,8 +375,9 @@ Similarity signals:
 
 - Add `ImageQualityAnalysis`.
 - Add `ImageEmbedding`.
-- Add `ImageCluster`.
-- Add `ClusterImage`.
+- Add `ImageGroup`.
+- Add `GroupImage`.
+- Add `CollectionImageReview`.
 - Add a processing job state model if progress needs to persist independently.
 
 ### Phase B: Quality MVP
@@ -361,16 +391,18 @@ Similarity signals:
 ### Phase C: Similarity MVP
 
 - Generate image embeddings.
-- Cluster images within a session.
-- Persist clusters and memberships.
+- Exclude low-quality and analysis-error images from grouping.
+- Group viable images within a collection.
+- Persist groups and memberships.
 - Render real grouped gallery data.
 
-### Phase D: Ranking
+### Phase D: Review Decisions
 
-- Compute per-image quality score.
-- Rank images inside each cluster.
-- Mark one recommended image.
-- Persist recommendation reasons.
+- Create one `CollectionImageReview` row per uploaded image.
+- Default good standalone/singleton photos to selected.
+- Default low-quality and analysis-error photos to unselected.
+- Default similar-group photos to unselected until the user chooses.
+- Persist user overrides with `decisionSource = USER` and `reviewedAt`.
 
 ### Phase E: Advanced Signals
 
@@ -381,8 +413,12 @@ Similarity signals:
 
 ## Product Rules
 
-- Do not hide bad photos by default. Flag them and make review faster.
-- Treat singletons as valid clusters, not failures.
+- Do not put low-quality or analysis-error photos into similarity groups.
+- Send low-quality photos to a rescue/review workflow where users can keep exceptions.
+- Treat singleton groups as standalone photos in review, even if singleton rows exist internally.
 - Keep recommendations explainable with simple labels.
 - Keep raw model outputs out of the main `Image` row.
-- Let the UI depend on stable cluster/ranking/flag outputs, not raw ML internals.
+- Let the UI depend on stable group/review/flag outputs, not raw ML internals.
+- Keep AI signals separate from user decisions: quality lives in
+  `ImageQualityAnalysis`, grouping lives in `ImageGroup`/`GroupImage`, and final
+  inclusion lives in `CollectionImageReview`.
