@@ -38,6 +38,7 @@ export async function getCollectionProgress(
     processedPhotos,
     failedPhotos,
     lowQualityDetected,
+    similarGroupsFound,
   ] = await Promise.all([
     prisma.image.count({ where: uploadedImageWhere }),
     prisma.image.count({
@@ -79,6 +80,12 @@ export async function getCollectionProgress(
         },
       },
     }),
+    prisma.imageGroup.count({
+      where: {
+        collectionId,
+        imageCount: { gt: 1 },
+      },
+    })
   ]);
 
   const progress =
@@ -95,8 +102,8 @@ export async function getCollectionProgress(
     progress,
     estimatedRemaining: getEstimatedRemaining(collection.status),
     lowQualityDetected,
-    similarGroupsFound: 0,
-    stages: getStages(collection.status, progress),
+    similarGroupsFound,
+    stages: getStages(collection.status, progress, similarGroupsFound),
     activity: [],
     tasks: [
       "Detecting blurry and out-of-focus photos",
@@ -122,7 +129,11 @@ function getEstimatedRemaining(status: CollectionStatus): string {
   return "a few minutes";
 }
 
-function getStages(status: CollectionStatus, progress: number): ProcessingStage[] {
+function getStages(
+  status: CollectionStatus,
+  progress: number,
+  similarGroupsFound: number,
+): ProcessingStage[] {
   if (
     status === CollectionStatus.READY_FOR_REVIEW ||
     status === CollectionStatus.IN_REVIEW ||
@@ -156,7 +167,12 @@ function getStages(status: CollectionStatus, progress: number): ProcessingStage[
     },
     {
       label: "Grouping similar photos",
-      status: progress >= 75 ? "in progress" : "pending",
+      status:
+        similarGroupsFound > 0
+          ? "completed"
+          : progress >= 75
+            ? "in progress"
+            : "pending",
     },
     {
       label: "Scoring and selecting best photos",
