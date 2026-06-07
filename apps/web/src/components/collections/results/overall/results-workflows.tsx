@@ -11,8 +11,10 @@ import type {
 import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useCollectionLowQualityImages } from "@/features/collections/hooks";
-import type { CollectionLowQualityImage } from "@/services/collections";
+import type {
+  CollectionLowQualityImage,
+  CollectionLowQualityImagesResponse,
+} from "@/services/collections";
 
 function WorkflowSection({
   title,
@@ -109,9 +111,11 @@ function LowQualityPhotoCard({ image }: { image: CollectionLowQualityImage }) {
 
 function LowQualityPhotosStrip({
   images,
+  isError,
   isPending,
 }: {
   images: CollectionLowQualityImage[];
+  isError: boolean;
   isPending: boolean;
 }) {
   if (isPending) {
@@ -125,6 +129,14 @@ function LowQualityPhotosStrip({
             <div className="aspect-[4/3] animate-pulse bg-surface-strong" />
           </div>
         ))}
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
+        Unable to load low quality photos.
       </div>
     );
   }
@@ -148,18 +160,18 @@ function LowQualityPhotosStrip({
 
 export function ResultsWorkflows({
   data,
+  lowQuality,
+  isLowQualityError,
+  isLowQualityPending,
 }: {
   data: Pick<ReviewResultsData, "similarGroups">;
+  lowQuality?: CollectionLowQualityImagesResponse;
+  isLowQualityError: boolean;
+  isLowQualityPending: boolean;
 }) {
   const params = useParams<{ collectionId: string }>();
   const collectionId = params.collectionId ?? "";
-  const lowQualityImages = useCollectionLowQualityImages(collectionId, {
-    limit: 5,
-    isSelected: false,
-  });
-  const lowQualityCount =
-    lowQualityImages.data?.totalLowQualityImages ??
-    (lowQualityImages.isPending ? 0 : 0);
+  const lowQualityCount = lowQuality?.totalLowQualityImages ?? 0;
 
   return (
     <div className="grid min-w-0 gap-5">
@@ -182,8 +194,9 @@ export function ResultsWorkflows({
         title="Low Quality Photos"
       >
         <LowQualityPhotosStrip
-          images={lowQualityImages.data?.images ?? []}
-          isPending={lowQualityImages.isPending}
+          images={lowQuality?.images ?? []}
+          isError={isLowQualityError}
+          isPending={isLowQualityPending}
         />
       </WorkflowSection>
     </div>

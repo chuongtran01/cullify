@@ -3,8 +3,8 @@ export const queryKeys = {
     all: ["collections"] as const,
     list: () => [...queryKeys.collections.all, "list"] as const,
     summary: () => [...queryKeys.collections.all, "summary"] as const,
-    resultsSummary: (collectionId: string) =>
-      [...queryKeys.collections.all, collectionId, "summary"] as const,
+    resultsOverall: (collectionId: string) =>
+      [...queryKeys.collections.all, collectionId, "results", "overall"] as const,
     upload: () => [...queryKeys.collections.all, "upload"] as const,
     progress: (collectionId: string) =>
       [...queryKeys.collections.all, collectionId, "progress"] as const,

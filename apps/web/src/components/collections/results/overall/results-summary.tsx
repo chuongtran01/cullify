@@ -1,6 +1,5 @@
 "use client";
 
-import type { UseQueryResult } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
@@ -35,14 +34,19 @@ function SummaryStat({
 }
 
 type ResultsSummaryProps = {
-  summary: UseQueryResult<CollectionResultsSummary, Error>;
+  summary?: CollectionResultsSummary;
+  isPending: boolean;
+  isError: boolean;
 };
 
-export function ResultsSummary({ summary }: ResultsSummaryProps) {
-  const isLoading = summary.isPending;
-  const totalPhotos = summary.data?.totalPhotos ?? 0;
-  const similarGroups = summary.data?.similarGroups ?? 0;
-  const lowQualityImages = summary.data?.lowQualityImages ?? 0;
+export function ResultsSummary({
+  summary,
+  isPending,
+  isError,
+}: ResultsSummaryProps) {
+  const totalPhotos = summary?.totalPhotos ?? 0;
+  const similarGroups = summary?.similarGroups ?? 0;
+  const lowQualityImages = summary?.lowQualityImages ?? 0;
 
   return (
     <section className="grid gap-5 rounded-lg bg-surface-dark p-5 text-on-dark">
@@ -54,7 +58,7 @@ export function ResultsSummary({ summary }: ResultsSummaryProps) {
         <h2 className="mt-3 text-2xl font-semibold leading-tight text-on-dark">
           Review summary
         </h2>
-        {summary.isError ? (
+        {isError ? (
           <p className="mt-3 text-sm text-on-dark-soft">
             Unable to refresh the latest result totals.
           </p>
@@ -66,19 +70,19 @@ export function ResultsSummary({ summary }: ResultsSummaryProps) {
           helper="Visually similar sets"
           label="Similar Groups"
           value={similarGroups}
-          isLoading={isLoading}
+          isLoading={isPending}
         />
         <SummaryStat
           helper="Flagged for human review"
           label="Photos To Review"
           value={lowQualityImages}
-          isLoading={isLoading}
+          isLoading={isPending}
         />
         <SummaryStat
           helper="Uploaded photos"
           label="Total Photos"
           value={totalPhotos}
-          isLoading={isLoading}
+          isLoading={isPending}
         />
       </div>
     </section>

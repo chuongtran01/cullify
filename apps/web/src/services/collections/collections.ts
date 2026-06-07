@@ -10,7 +10,7 @@ import type {
   CollectionGroupDetail,
   CollectionGroupsResponse,
   CollectionLowQualityImagesResponse,
-  CollectionResultsSummary,
+  CollectionResultsOverall,
   CollectionUploadProgress,
   CreateCollectionUploadRequest,
   CreateCollectionUploadResponse,
@@ -72,13 +72,16 @@ export async function getCollectionsSummary(): Promise<CollectionsSummary> {
   return response.json() as Promise<CollectionsSummary>;
 }
 
-export async function getCollectionResultsSummary(
+export async function getCollectionResultsOverall(
   collectionId: string,
-): Promise<CollectionResultsSummary> {
-  const response = await fetch(`/api/collections/${collectionId}/summary`, {
-    method: "GET",
-    headers: { Accept: "application/json" },
-  });
+): Promise<CollectionResultsOverall> {
+  const response = await fetch(
+    `/api/collections/${collectionId}/results/overall`,
+    {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    },
+  );
 
   if (!response.ok) {
     const data = (await response.json().catch(() => ({}))) as {
@@ -86,12 +89,12 @@ export async function getCollectionResultsSummary(
     };
 
     throw new CollectionsServiceError(
-      data.error ?? "Failed to load collection summary",
+      data.error ?? "Failed to load collection results",
       response.status,
     );
   }
 
-  return response.json() as Promise<CollectionResultsSummary>;
+  return response.json() as Promise<CollectionResultsOverall>;
 }
 
 export async function getCollectionProgress(

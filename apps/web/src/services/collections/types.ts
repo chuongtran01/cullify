@@ -102,3 +102,8 @@ export type CollectionResultsSummary = {
   similarGroups: number;
   lowQualityImages: number;
 };
+
+export type CollectionResultsOverall = {
+  summary: CollectionResultsSummary;
+  lowQuality: CollectionLowQualityImagesResponse;
+};

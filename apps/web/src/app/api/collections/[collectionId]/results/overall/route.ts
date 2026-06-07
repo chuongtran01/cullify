@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { getRequestUserId } from "@/lib/auth-session";
-import { getCollectionResultsSummary } from "@/lib/db/collection-results-summary";
+import { getCollectionResultsOverall } from "@/lib/db/collection-results-overall";
 import { isUuid } from "@/services/collections/validate";
 
 type RouteContext = {
@@ -22,18 +22,18 @@ export async function GET(request: Request, context: RouteContext) {
   }
 
   try {
-    const summary = await getCollectionResultsSummary(collectionId, userId);
+    const overall = await getCollectionResultsOverall(collectionId, userId);
 
-    if (!summary) {
+    if (!overall) {
       return NextResponse.json({ error: "Collection not found" }, { status: 404 });
     }
 
-    return NextResponse.json(summary);
+    return NextResponse.json(overall);
   } catch (error) {
-    console.error("Failed to load collection summary", error);
+    console.error("Failed to load collection results overall", error);
 
     return NextResponse.json(
-      { error: "Failed to load collection summary" },
+      { error: "Failed to load collection results overall" },
       { status: 500 },
     );
   }

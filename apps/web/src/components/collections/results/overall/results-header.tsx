@@ -1,6 +1,5 @@
 "use client";
 
-import type { UseQueryResult } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -20,7 +19,9 @@ import { useUpdateCollectionName } from "@/features/collections/hooks";
 import type { CollectionResultsSummary } from "@/services/collections";
 
 type ResultsHeaderProps = {
-  summary: UseQueryResult<CollectionResultsSummary, Error>;
+  summary?: CollectionResultsSummary;
+  isPending: boolean;
+  isError: boolean;
 };
 
 const MAX_COLLECTION_NAME_LENGTH = 100;
@@ -35,13 +36,17 @@ const editCollectionNameSchema = z.object({
 
 type EditCollectionNameValues = z.infer<typeof editCollectionNameSchema>;
 
-export function ResultsHeader({ summary }: ResultsHeaderProps) {
-  const title = summary.data?.collectionName ?? "Results";
-  const collectionId = summary.data?.collectionId ?? "";
+export function ResultsHeader({
+  summary,
+  isPending,
+  isError,
+}: ResultsHeaderProps) {
+  const title = summary?.collectionName ?? "Results";
+  const collectionId = summary?.collectionId ?? "";
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const updateCollectionName = useUpdateCollectionName();
-  const canEdit = Boolean(summary.data);
+  const canEdit = Boolean(summary);
   const form = useForm<EditCollectionNameValues>({
     resolver: zodResolver(editCollectionNameSchema),
     mode: "onChange",
@@ -106,7 +111,7 @@ export function ResultsHeader({ summary }: ResultsHeaderProps) {
   return (
     <header className="flex items-center justify-between gap-4">
       <div className="min-w-0">
-        {summary.isPending ? (
+        {isPending ? (
           <Skeleton className="h-6 w-48" />
         ) : isEditing ? (
           <Form {...form}>
@@ -161,7 +166,7 @@ export function ResultsHeader({ summary }: ResultsHeaderProps) {
             <span className="truncate">{title}</span>
           </Button>
         )}
-        {summary.isError ? (
+        {isError ? (
           <p className="mt-1 text-xs text-body">
             Unable to refresh collection details.
           </p>

@@ -4,7 +4,7 @@ import { queryKeys } from "@/lib/query-keys";
 import {
   getCollectionGroup,
   getCollectionLowQualityImages,
-  getCollectionResultsSummary,
+  getCollectionResultsOverall,
   getCollectionsSummary,
   listCollections,
   listCollectionGroups,
@@ -14,7 +14,7 @@ import {
 } from "@/services/collections";
 import type {
   CollectionLowQualityImagesResponse,
-  CollectionResultsSummary,
+  CollectionResultsOverall,
 } from "@/services/collections";
 
 const ACTIVE_STATUSES = new Set(["UPLOADING", "PROCESSING"]);
@@ -42,10 +42,10 @@ export function useCollectionsSummary() {
   });
 }
 
-export function useCollectionResultsSummary(collectionId: string) {
+export function useCollectionResultsOverall(collectionId: string) {
   return useQuery({
-    queryKey: queryKeys.collections.resultsSummary(collectionId),
-    queryFn: () => getCollectionResultsSummary(collectionId),
+    queryKey: queryKeys.collections.resultsOverall(collectionId),
+    queryFn: () => getCollectionResultsOverall(collectionId),
     enabled: collectionId.length > 0,
   });
 }
@@ -128,6 +128,9 @@ export function useUpdateCollectionImageReview(
           };
         },
       );
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.collections.resultsOverall(collectionId),
+      });
     },
   });
 }
@@ -139,12 +142,18 @@ export function useUpdateCollectionName() {
     mutationFn: ({ collectionId, name }: { collectionId: string; name: string }) =>
       updateCollectionName(collectionId, name),
     onSuccess: (result, variables) => {
-      queryClient.setQueryData<CollectionResultsSummary>(
-        queryKeys.collections.resultsSummary(variables.collectionId),
-        (summary) =>
-          summary
-            ? { ...summary, collectionName: result.collection.name }
-            : summary,
+      queryClient.setQueryData<CollectionResultsOverall>(
+        queryKeys.collections.resultsOverall(variables.collectionId),
+        (overall) =>
+          overall
+            ? {
+                ...overall,
+                summary: {
+                  ...overall.summary,
+                  collectionName: result.collection.name,
+                },
+              }
+            : overall,
       );
       void queryClient.invalidateQueries({
         queryKey: queryKeys.collections.list(),
