@@ -27,7 +27,7 @@ export function CollectionsSummary({
           key={label}
           className="rounded-lg border border-hairline-strong bg-surface-card p-4"
         >
-          <p className="font-mono text-xs uppercase tracking-wide text-muted">
+          <p className="text-xs font-medium uppercase tracking-wide">
             {label}
           </p>
           <p className="mt-3 text-2xl font-semibold text-ink">{value}</p>

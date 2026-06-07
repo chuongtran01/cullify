@@ -4,7 +4,7 @@ export function RecentActivityCard({ activity }: { activity: string[] }) {
   return (
     <Card className="rounded-lg border border-hairline-strong bg-surface-card py-0 ring-0">
       <CardHeader className="p-5 pb-0">
-        <CardTitle className="font-mono text-xs uppercase tracking-wide text-muted">
+        <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted">
           Recent activity
         </CardTitle>
       </CardHeader>

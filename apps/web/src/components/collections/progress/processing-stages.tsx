@@ -34,7 +34,7 @@ export function ProcessingStages({ stages }: { stages: ProcessingStage[] }) {
     <aside className="rounded-lg border border-white/10 bg-surface-dark-elevated p-5">
       <div className="flex items-center gap-2">
         <ScanSearch className="size-4 text-on-dark-soft" />
-        <h3 className="font-mono text-xs uppercase tracking-wide text-on-dark-soft">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-on-dark-soft">
           Processing stages
         </h3>
       </div>
@@ -49,7 +49,7 @@ export function ProcessingStages({ stages }: { stages: ProcessingStage[] }) {
               <div className="text-sm font-normal leading-5 text-on-dark">
                 {stage.label}
               </div>
-              <div className="mt-1 font-mono text-xs uppercase tracking-wide text-on-dark-soft">
+              <div className="mt-1 text-xs font-semibold uppercase tracking-wide text-on-dark-soft">
                 {stage.status}
               </div>
             </div>

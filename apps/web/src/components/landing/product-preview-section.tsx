@@ -39,7 +39,7 @@ export function ProductPreviewSection() {
                   </Button>
                 ))}
               </div>
-              <div className="flex items-center gap-2 font-mono text-xs text-on-dark-soft">
+              <div className="flex items-center gap-2 text-xs text-on-dark-soft">
                 <Clock3 className="size-4" />
                 31 clusters left
               </div>
@@ -72,7 +72,7 @@ export function ProductPreviewSection() {
                       className="flex items-center justify-between border-b border-hairline pb-3 text-sm"
                     >
                       <span className="text-body">{label}</span>
-                      <span className="font-mono text-ink">{value}</span>
+                      <span className="tabular-nums text-ink">{value}</span>
                     </div>
                   ))}
                 </div>

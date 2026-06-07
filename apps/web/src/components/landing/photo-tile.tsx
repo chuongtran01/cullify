@@ -34,7 +34,7 @@ export function PhotoTile({
         </Badge>
       ) : null}
       {label ? (
-        <Badge className="absolute bottom-3 left-3 h-auto rounded-full border-transparent bg-surface-card/95 px-2.5 py-1 font-mono text-xs font-normal normal-case tracking-wide text-ink">
+        <Badge className="absolute bottom-3 left-3 h-auto rounded-full border-transparent bg-surface-card/95 px-2.5 py-1 text-xs tabular-nums font-normal normal-case tracking-wide text-ink">
           {label}
         </Badge>
       ) : null}

@@ -242,7 +242,7 @@ export function UploadDialog({
                       <ArrowLeft className="size-4" />
                       Back to upload
                     </button>
-                    <p className="font-mono text-xs uppercase tracking-wide text-muted">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted">
                       Manage selection
                     </p>
                     <p className="mt-1 text-sm text-body">
@@ -271,7 +271,7 @@ export function UploadDialog({
                   />
                 </label>
 
-                <div className="mt-4 flex items-center justify-between gap-3 border-y border-hairline py-3 font-mono text-xs uppercase tracking-wide text-muted">
+                <div className="mt-4 flex items-center justify-between gap-3 border-y border-hairline py-3 text-xs font-semibold uppercase tracking-wide text-muted">
                   <span>
                     {filteredFiles.length} of {files.length} shown
                   </span>
@@ -350,7 +350,7 @@ export function UploadDialog({
                 <div className="rounded-lg border border-hairline-strong bg-surface-card p-5">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <p className="font-mono text-xs uppercase tracking-wide text-muted">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted">
                         Collection intake
                       </p>
                       <p className="mt-1 text-sm text-body">
@@ -405,7 +405,7 @@ export function UploadDialog({
                             key={label}
                             className="rounded-lg border border-hairline bg-canvas-soft p-4"
                           >
-                            <p className="font-mono text-xs uppercase tracking-wide text-muted">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted">
                               {label}
                             </p>
                             <p className="mt-2 truncate text-2xl font-normal tracking-tight text-ink">

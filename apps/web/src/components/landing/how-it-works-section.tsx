@@ -20,7 +20,7 @@ export function HowItWorksSection() {
                 <span className="grid size-8 place-items-center rounded-md bg-surface-strong">
                   <step.icon className="size-4 text-ink" />
                 </span>
-                <span className="font-mono text-xs uppercase tracking-wide text-muted">
+                <span className="text-xs font-semibold uppercase tracking-wide text-muted">
                   0{index + 1}
                 </span>
               </div>

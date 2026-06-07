@@ -124,7 +124,7 @@ function ManageSelectionDialog({
             />
           </label>
 
-          <div className="flex items-center justify-between gap-3 border-y border-hairline py-3 font-mono text-xs uppercase tracking-wide text-muted">
+          <div className="flex items-center justify-between gap-3 border-y border-hairline py-3 text-xs font-medium uppercase tracking-wide">
             <span>
               {filteredFiles.length} of {files.length} shown
             </span>
@@ -327,7 +327,7 @@ export function NewCollectionPage() {
         <div className="mt-4 rounded-lg border border-hairline-strong bg-surface-card p-5 sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="font-mono text-xs uppercase tracking-wide text-muted">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Collection intake
               </p>
               <p className="mt-1 text-sm text-body">{intakeMessage}</p>

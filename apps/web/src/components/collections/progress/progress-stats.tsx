@@ -13,7 +13,7 @@ export function ProgressStats({ stats }: { stats: ProgressStat[] }) {
           >
             <CardContent className="flex items-center justify-between gap-3 p-4">
               <div>
-                <div className="font-mono text-xs uppercase tracking-wide text-muted">
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted">
                   {stat.label}
                 </div>
                 <div className="mt-3 text-2xl font-semibold text-ink">

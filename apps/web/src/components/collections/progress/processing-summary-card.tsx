@@ -26,7 +26,7 @@ export function ProcessingSummaryCard({
         <ProcessingProgressDonut progress={progress} />
 
         <div className="min-w-0">
-          <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-on-dark-soft">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-on-dark-soft">
             <Sparkles className="size-4" />
             AI processing
           </div>

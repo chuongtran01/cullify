@@ -11,7 +11,7 @@ export function LowQualityHeader({ isPending, total }: LowQualityHeaderProps) {
   return (
     <header className="flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-card p-5 sm:flex-row sm:items-start sm:justify-between">
       <div>
-        <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-muted">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted">
           <AlertTriangle className="size-4" aria-hidden="true" />
           Low quality review
         </div>

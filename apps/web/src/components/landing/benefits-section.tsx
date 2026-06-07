@@ -47,7 +47,7 @@ export function BenefitsSection() {
                       <span className="text-sm font-semibold text-ink">
                         {label}
                       </span>
-                      <span className="font-mono text-xs text-muted">
+                      <span className="text-xs tabular-nums text-muted">
                         {[128, 42, 16][index]}
                       </span>
                     </div>

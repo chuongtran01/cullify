@@ -31,7 +31,7 @@ export function ProgressHeader({
     <header className="flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-card p-5 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex items-start gap-3">
         <div>
-          <div className="mb-2 font-mono text-xs uppercase tracking-wide text-muted">
+          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
             Collection {collectionId}
           </div>
           <h1 className="text-3xl font-semibold leading-snug tracking-tight text-ink sm:text-4xl">

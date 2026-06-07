@@ -19,7 +19,7 @@ function SummaryStat({
 }) {
   return (
     <div className="rounded-lg border border-hairline-strong bg-surface-dark-elevated p-4">
-      <p className="font-mono text-xs uppercase tracking-wide text-on-dark-soft">
+      <p className="text-xs font-semibold uppercase tracking-wide text-on-dark-soft">
         {label}
       </p>
       {isLoading ? (
@@ -47,7 +47,7 @@ export function ResultsSummary({ summary }: ResultsSummaryProps) {
   return (
     <section className="grid gap-5 rounded-lg bg-surface-dark p-5 text-on-dark">
       <div>
-        <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-on-dark-soft">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-on-dark-soft">
           <Sparkles className="size-4" />
           Analysis complete
         </div>

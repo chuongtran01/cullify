@@ -99,7 +99,7 @@ function CollectionStatusBlock({ collection }: { collection: Collection }) {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wide",
+        "inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide",
         meta.className,
       )}
     >

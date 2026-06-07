@@ -27,7 +27,7 @@ function ContinueStatusPill({ collection }: { collection: Collection }) {
   return (
     <span
       className={cn(
-        "inline-flex h-5 w-fit items-center gap-1 rounded-full px-2 font-mono text-xs uppercase tracking-wide",
+        "inline-flex h-5 w-fit items-center gap-1 rounded-full px-2 text-xs font-semibold uppercase tracking-wide",
         isInReview
           ? "bg-surface-strong text-text-link"
           : "border border-hairline-strong bg-surface-strong text-ink",
