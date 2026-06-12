@@ -33,5 +33,16 @@ export const queryKeys = {
         options?.offset ?? null,
         options?.isSelected ?? null,
       ] as const,
+    selectedImages: (
+      collectionId: string,
+      options?: { limit?: number; offset?: number },
+    ) =>
+      [
+        ...queryKeys.collections.selectedImagesRoot(collectionId),
+        options?.limit ?? null,
+        options?.offset ?? null,
+      ] as const,
+    selectedImagesRoot: (collectionId: string) =>
+      [...queryKeys.collections.all, collectionId, "selected"] as const,
   },
 } as const;

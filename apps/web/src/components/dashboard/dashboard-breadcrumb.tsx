@@ -73,6 +73,15 @@ function getDashboardBreadcrumbs(pathname: string): BreadcrumbSegment[] {
     ];
   }
 
+  if (/^\/dashboard\/collections\/[^/]+\/results\/selected$/.test(pathname)) {
+    return [
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Collections", href: "/dashboard" },
+      { label: "Results", href: pathname.replace(/\/selected$/, "") },
+      { label: "Selected Photos" },
+    ];
+  }
+
   if (/^\/dashboard\/collections\/[^/]+\/results\/groups$/.test(pathname)) {
     return [
       { label: "Dashboard", href: "/dashboard" },

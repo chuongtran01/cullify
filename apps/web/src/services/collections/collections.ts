@@ -11,6 +11,7 @@ import type {
   CollectionGroupsResponse,
   CollectionLowQualityImagesResponse,
   CollectionResultsOverall,
+  CollectionSelectedImagesResponse,
   CollectionUploadProgress,
   CreateCollectionUploadRequest,
   CreateCollectionUploadResponse,
@@ -219,6 +220,40 @@ export async function getCollectionLowQualityImages(
   }
 
   return response.json() as Promise<CollectionLowQualityImagesResponse>;
+}
+
+export async function getCollectionSelectedImages(
+  collectionId: string,
+  options: { limit?: number; offset?: number } = {},
+): Promise<CollectionSelectedImagesResponse> {
+  const searchParams = new URLSearchParams();
+
+  if (options.limit !== undefined) {
+    searchParams.set("limit", String(options.limit));
+  }
+
+  if (options.offset !== undefined) {
+    searchParams.set("offset", String(options.offset));
+  }
+
+  const query = searchParams.size > 0 ? `?${searchParams.toString()}` : "";
+  const response = await fetch(`/api/collections/${collectionId}/selected${query}`, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+  });
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
+
+    throw new CollectionsServiceError(
+      data.error ?? "Failed to load selected photos",
+      response.status,
+    );
+  }
+
+  return response.json() as Promise<CollectionSelectedImagesResponse>;
 }
 
 export async function updateCollectionName(

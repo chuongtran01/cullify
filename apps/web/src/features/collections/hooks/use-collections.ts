@@ -11,6 +11,7 @@ import {
   getCollectionGroup,
   getCollectionLowQualityImages,
   getCollectionResultsOverall,
+  getCollectionSelectedImages,
   getCollectionsSummary,
   listCollections,
   listCollectionGroups,
@@ -108,6 +109,27 @@ export function useCollectionLowQualityImages(
   });
 }
 
+export function useCollectionSelectedImages(
+  collectionId: string,
+  options: { limit?: number; offset?: number } = {},
+) {
+  const limit = options.limit;
+  const initialOffset = options.offset ?? 0;
+
+  return useInfiniteQuery({
+    queryKey: queryKeys.collections.selectedImages(collectionId, options),
+    queryFn: ({ pageParam }) =>
+      getCollectionSelectedImages(collectionId, {
+        limit,
+        offset: pageParam,
+      }),
+    initialPageParam: initialOffset,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.offset + lastPage.limit : undefined,
+    enabled: collectionId.length > 0,
+  });
+}
+
 export function useUpdateCollectionImageReview(
   collectionId: string,
   options: { limit?: number; offset?: number; isSelected?: boolean } = {},
@@ -169,7 +191,12 @@ export function useUpdateCollectionImageReview(
         },
       );
       void queryClient.invalidateQueries({
+        queryKey: queryKeys.collections.selectedImagesRoot(collectionId),
+        refetchType: "none",
+      });
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.collections.resultsOverall(collectionId),
+        refetchType: "none",
       });
     },
   });
@@ -203,6 +230,10 @@ export function useUpdateCollectionGroupSelection(
       );
       void queryClient.invalidateQueries({
         queryKey: queryKeys.collections.groupsRoot(collectionId),
+        refetchType: "none",
+      });
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.collections.selectedImagesRoot(collectionId),
         refetchType: "none",
       });
       void queryClient.invalidateQueries({

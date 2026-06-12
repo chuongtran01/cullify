@@ -12,6 +12,8 @@ import type {
   CollectionGroupPreviewsResponse,
   CollectionLowQualityImage,
   CollectionLowQualityImagesResponse,
+  CollectionSelectedImage,
+  CollectionSelectedImagesResponse,
 } from "@/services/collections";
 
 function WorkflowSection({
@@ -193,28 +195,103 @@ function LowQualityPhotosStrip({
   );
 }
 
+function SelectedPhotoCard({ image }: { image: CollectionSelectedImage }) {
+  return (
+    <article className="min-w-48 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
+      <div className="relative">
+        <PhotoSurface
+          className="aspect-[4/3]"
+          src={image.imageUrl}
+          title={image.fileName}
+        />
+        <Badge className="absolute left-3 top-3 h-7 rounded-full bg-primary px-3 text-xs text-on-primary">
+          {image.selectionLabel}
+        </Badge>
+      </div>
+    </article>
+  );
+}
+
+function SelectedPhotosStrip({
+  images,
+  isError,
+  isPending,
+}: {
+  images: CollectionSelectedImage[];
+  isError: boolean;
+  isPending: boolean;
+}) {
+  if (isPending) {
+    return <WorkflowImageStripSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
+        Unable to load selected photos.
+      </div>
+    );
+  }
+
+  if (images.length === 0) {
+    return (
+      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
+        No selected photos yet.
+      </div>
+    );
+  }
+
+  return (
+    <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
+      {images.map((image) => (
+        <SelectedPhotoCard key={image.id} image={image} />
+      ))}
+    </div>
+  );
+}
+
 export function ResultsWorkflows({
   collectionId,
   lowQuality,
+  selected,
   similarGroups,
   isLowQualityError,
   isLowQualityPending,
+  isSelectedError,
+  isSelectedPending,
   isSimilarGroupsError,
   isSimilarGroupsPending,
 }: {
   collectionId: string;
   lowQuality?: CollectionLowQualityImagesResponse;
+  selected?: CollectionSelectedImagesResponse;
   similarGroups?: CollectionGroupPreviewsResponse;
   isLowQualityError: boolean;
   isLowQualityPending: boolean;
+  isSelectedError: boolean;
+  isSelectedPending: boolean;
   isSimilarGroupsError: boolean;
   isSimilarGroupsPending: boolean;
 }) {
   const similarGroupsCount = similarGroups?.totalSimilarGroups ?? 0;
   const lowQualityCount = lowQuality?.totalLowQualityImages ?? 0;
+  const selectedCount = selected?.totalSelectedImages ?? 0;
 
   return (
     <div className="grid min-w-0 gap-5">
+      <WorkflowSection
+        count={`${selectedCount} photos`}
+        description="See every photo currently included in the final set."
+        href={`/dashboard/collections/${collectionId}/results/selected`}
+        title="Selected Photos"
+      >
+        <SelectedPhotosStrip
+          images={selected?.images ?? []}
+          isError={isSelectedError}
+          isPending={isSelectedPending}
+        />
+      </WorkflowSection>
+
       <WorkflowSection
         count={`${similarGroupsCount} groups`}
         description="Compare visually similar photos and keep the best frame from each set."

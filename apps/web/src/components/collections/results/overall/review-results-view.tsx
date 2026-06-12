@@ -25,9 +25,12 @@ export function ReviewResultsView({ collectionId }: { collectionId: string }) {
         <ResultsWorkflows
           collectionId={collectionId}
           lowQuality={overall.data?.lowQuality}
+          selected={overall.data?.selected}
           similarGroups={overall.data?.similarGroups}
           isLowQualityError={overall.isError}
           isLowQualityPending={overall.isPending}
+          isSelectedError={overall.isError}
+          isSelectedPending={overall.isPending}
           isSimilarGroupsError={overall.isError}
           isSimilarGroupsPending={overall.isPending}
         />

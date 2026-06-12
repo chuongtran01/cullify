@@ -95,6 +95,27 @@ export type CollectionLowQualityImagesResponse = {
   hasMore: boolean;
 };
 
+export type CollectionSelectedImage = {
+  id: string;
+  fileName: string;
+  objectKey: string;
+  mimeType: string;
+  imageUrl: string;
+  decisionSource: string;
+  decisionReason: string;
+  selectionLabel: string;
+  reviewedAt: string | null;
+  createdAt: string;
+};
+
+export type CollectionSelectedImagesResponse = {
+  images: CollectionSelectedImage[];
+  totalSelectedImages: number;
+  limit: number;
+  offset: number;
+  hasMore: boolean;
+};
+
 export type CollectionImageReviewState = {
   imageId: string;
   isSelected: boolean;
@@ -129,4 +150,5 @@ export type CollectionResultsOverall = {
   summary: CollectionResultsSummary;
   similarGroups: CollectionGroupPreviewsResponse;
   lowQuality: CollectionLowQualityImagesResponse;
+  selected: CollectionSelectedImagesResponse;
 };
