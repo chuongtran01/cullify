@@ -109,7 +109,7 @@ export type UpdateCollectionImageReviewResponse = {
 
 export type UpdateCollectionGroupSelectionResponse = {
   ok: true;
-  selectedImageId: string;
+  selectedImageId: string | null;
 };
 
 export type CollectionResultsSummary = {

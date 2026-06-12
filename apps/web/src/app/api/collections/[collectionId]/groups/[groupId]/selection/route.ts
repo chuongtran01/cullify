@@ -8,12 +8,16 @@ type RouteContext = {
   params: Promise<{ collectionId: string; groupId: string }>;
 };
 
-function parseImageId(body: unknown): string | undefined {
+function parseImageId(body: unknown): string | null | undefined {
   if (typeof body !== "object" || body === null || Array.isArray(body)) {
     return undefined;
   }
 
   const value = (body as { imageId?: unknown }).imageId;
+
+  if (value === null) {
+    return null;
+  }
 
   return typeof value === "string" ? value : undefined;
 }
@@ -45,7 +49,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   const imageId = parseImageId(body);
 
-  if (!imageId || !isUuid(imageId)) {
+  if (imageId === undefined || (imageId !== null && !isUuid(imageId))) {
     return NextResponse.json({ error: "Invalid image id" }, { status: 400 });
   }
 

@@ -102,7 +102,9 @@ export function GroupDetailPage({
               updateSelection.isPending &&
               updateSelection.variables?.imageId === image.id
             }
+            isUpdating={updateSelection.isPending}
             onSelect={(imageId) => updateSelection.mutate({ imageId })}
+            onUnselect={() => updateSelection.mutate({ imageId: null })}
           />
         ))}
       </div>
@@ -120,12 +122,18 @@ export function GroupDetailPage({
 function GroupPhotoCard({
   image,
   isSelecting,
+  isUpdating,
   onSelect,
+  onUnselect,
 }: {
   image: CollectionGroupImage;
   isSelecting: boolean;
+  isUpdating: boolean;
   onSelect: (imageId: string) => void;
+  onUnselect: () => void;
 }) {
+  const isUpdatingSelectedImage = image.isSelected && isUpdating;
+
   return (
     <article className="overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
       <div className="relative">
@@ -145,10 +153,23 @@ function GroupPhotoCard({
           type="button"
           variant={image.isSelected ? "secondary" : "default"}
           className="h-9 rounded-md px-3 text-sm"
-          disabled={image.isSelected || isSelecting}
-          onClick={() => onSelect(image.id)}
+          disabled={isUpdating}
+          onClick={() => {
+            if (image.isSelected) {
+              onUnselect();
+              return;
+            }
+
+            onSelect(image.id);
+          }}
         >
-          {image.isSelected ? "Selected" : isSelecting ? "Selecting..." : "Select Photo"}
+          {isUpdatingSelectedImage
+            ? "Updating..."
+            : image.isSelected
+              ? "Unselect"
+              : isSelecting
+                ? "Selecting..."
+                : "Select Photo"}
         </Button>
       </div>
     </article>

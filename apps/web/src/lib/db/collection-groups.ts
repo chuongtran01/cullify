@@ -192,13 +192,13 @@ export async function getCollectionGroup(
 
 export type CollectionGroupSelectionResult = {
   ok: true;
-  selectedImageId: string;
+  selectedImageId: string | null;
 };
 
 export async function updateCollectionGroupSelection(
   collectionId: string,
   groupId: string,
-  imageId: string,
+  imageId: string | null,
   userId: string,
 ): Promise<CollectionGroupSelectionResult | null> {
   return prisma.$transaction(async (transaction) => {
@@ -222,7 +222,7 @@ export async function updateCollectionGroupSelection(
 
     const groupImageIds = group.images.map((image) => image.id);
 
-    if (!groupImageIds.includes(imageId)) {
+    if (imageId !== null && !groupImageIds.includes(imageId)) {
       return null;
     }
 
@@ -235,13 +235,13 @@ export async function updateCollectionGroupSelection(
           create: {
             collectionId,
             imageId: groupImageId,
-            isSelected: groupImageId === imageId,
+            isSelected: imageId !== null && groupImageId === imageId,
             decisionSource: ReviewDecisionSource.USER,
             decisionReason: ReviewDecisionReason.SIMILAR_GROUP,
             reviewedAt,
           },
           update: {
-            isSelected: groupImageId === imageId,
+            isSelected: imageId !== null && groupImageId === imageId,
             decisionSource: ReviewDecisionSource.USER,
             decisionReason: ReviewDecisionReason.SIMILAR_GROUP,
             reviewedAt,

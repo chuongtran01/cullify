@@ -181,7 +181,7 @@ export function useUpdateCollectionGroupSelection(
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ imageId }: { imageId: string }) =>
+    mutationFn: ({ imageId }: { imageId: string | null }) =>
       updateCollectionGroupSelection(collectionId, groupId, imageId),
     onSuccess: () => {
       void queryClient.invalidateQueries({

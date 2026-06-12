@@ -276,7 +276,7 @@ export async function updateCollectionImageReview(
 export async function updateCollectionGroupSelection(
   collectionId: string,
   groupId: string,
-  imageId: string,
+  imageId: string | null,
 ): Promise<UpdateCollectionGroupSelectionResponse> {
   const response = await fetch(
     `/api/collections/${collectionId}/groups/${groupId}/selection`,
