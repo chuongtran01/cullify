@@ -7,7 +7,11 @@ import { GroupState } from "@/components/collections/results/groups/group-state"
 import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useCollectionGroup } from "@/features/collections/hooks";
+import {
+  useCollectionGroup,
+  useUpdateCollectionGroupSelection,
+} from "@/features/collections/hooks";
+import type { CollectionGroupImage } from "@/services/collections";
 import { CollectionsServiceError } from "@/services/collections";
 
 type GroupDetailPageProps = {
@@ -23,6 +27,7 @@ export function GroupDetailPage({
     collectionId,
     groupId,
   );
+  const updateSelection = useUpdateCollectionGroupSelection(collectionId, groupId);
 
   if (error instanceof CollectionsServiceError && error.status === 404) {
     notFound();
@@ -90,14 +95,62 @@ export function GroupDetailPage({
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {group.images.map((image) => (
-          <PhotoSurface
+          <GroupPhotoCard
             key={image.id}
-            className="aspect-[4/3] rounded-lg border border-hairline-strong bg-surface-card"
-            src={image.imageUrl}
-            title={image.fileName}
+            image={image}
+            isSelecting={
+              updateSelection.isPending &&
+              updateSelection.variables?.imageId === image.id
+            }
+            onSelect={(imageId) => updateSelection.mutate({ imageId })}
           />
         ))}
       </div>
+      {updateSelection.error ? (
+        <p className="text-center text-sm text-semantic-error">
+          {updateSelection.error instanceof Error
+            ? updateSelection.error.message
+            : "Could not update group selection."}
+        </p>
+      ) : null}
     </div>
+  );
+}
+
+function GroupPhotoCard({
+  image,
+  isSelecting,
+  onSelect,
+}: {
+  image: CollectionGroupImage;
+  isSelecting: boolean;
+  onSelect: (imageId: string) => void;
+}) {
+  return (
+    <article className="overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
+      <div className="relative">
+        <PhotoSurface
+          className="aspect-[4/3]"
+          src={image.imageUrl}
+          title={image.fileName}
+        />
+        {image.isSelected ? (
+          <Badge className="absolute right-3 top-3 h-7 rounded-full bg-primary px-3 text-xs text-on-primary">
+            Selected
+          </Badge>
+        ) : null}
+      </div>
+      <div className="flex justify-end p-3">
+        <Button
+          type="button"
+          variant={image.isSelected ? "secondary" : "default"}
+          className="h-9 rounded-md px-3 text-sm"
+          disabled={image.isSelected || isSelecting}
+          onClick={() => onSelect(image.id)}
+        >
+          {image.isSelected ? "Selected" : isSelecting ? "Selecting..." : "Select Photo"}
+        </Button>
+      </div>
+    </article>
   );
 }

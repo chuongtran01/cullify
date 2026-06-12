@@ -14,6 +14,7 @@ import {
   getCollectionsSummary,
   listCollections,
   listCollectionGroups,
+  updateCollectionGroupSelection,
   updateCollectionImageReview,
   updateCollectionName,
 } from "@/services/collections";
@@ -166,6 +167,29 @@ export function useUpdateCollectionImageReview(
           };
         },
       );
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.collections.resultsOverall(collectionId),
+      });
+    },
+  });
+}
+
+export function useUpdateCollectionGroupSelection(
+  collectionId: string,
+  groupId: string,
+) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ imageId }: { imageId: string }) =>
+      updateCollectionGroupSelection(collectionId, groupId, imageId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.collections.group(collectionId, groupId),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.collections.groups(collectionId),
+      });
       void queryClient.invalidateQueries({
         queryKey: queryKeys.collections.resultsOverall(collectionId),
       });

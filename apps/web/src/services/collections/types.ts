@@ -46,6 +46,10 @@ export type CollectionGroupImage = {
   mimeType: string;
   createdAt: string;
   imageUrl: string;
+  isSelected: boolean;
+  decisionSource: string | null;
+  decisionReason: string | null;
+  reviewedAt: string | null;
 };
 
 export type CollectionGroupDetail = CollectionGroupSummary & {
@@ -101,6 +105,11 @@ export type CollectionImageReviewState = {
 
 export type UpdateCollectionImageReviewResponse = {
   review: CollectionImageReviewState;
+};
+
+export type UpdateCollectionGroupSelectionResponse = {
+  ok: true;
+  selectedImageId: string;
 };
 
 export type CollectionResultsSummary = {

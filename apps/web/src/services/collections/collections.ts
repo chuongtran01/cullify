@@ -14,6 +14,7 @@ import type {
   CollectionUploadProgress,
   CreateCollectionUploadRequest,
   CreateCollectionUploadResponse,
+  UpdateCollectionGroupSelectionResponse,
   UpdateCollectionImageReviewResponse,
 } from "@/services/collections/types";
 
@@ -270,6 +271,34 @@ export async function updateCollectionImageReview(
   }
 
   return response.json() as Promise<UpdateCollectionImageReviewResponse>;
+}
+
+export async function updateCollectionGroupSelection(
+  collectionId: string,
+  groupId: string,
+  imageId: string,
+): Promise<UpdateCollectionGroupSelectionResponse> {
+  const response = await fetch(
+    `/api/collections/${collectionId}/groups/${groupId}/selection`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageId }),
+    },
+  );
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
+
+    throw new CollectionsServiceError(
+      data.error ?? "Failed to update group selection",
+      response.status,
+    );
+  }
+
+  return response.json() as Promise<UpdateCollectionGroupSelectionResponse>;
 }
 
 export async function createCollectionUpload(

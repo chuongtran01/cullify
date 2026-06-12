@@ -1,5 +1,9 @@
 import "server-only";
 
+import {
+  ReviewDecisionReason,
+  ReviewDecisionSource,
+} from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createPresignedDownloadUrl } from "@/lib/r2/presign";
 
@@ -18,6 +22,10 @@ export type CollectionGroupImage = {
   mimeType: string;
   createdAt: string;
   imageUrl: string;
+  isSelected: boolean;
+  decisionSource: string | null;
+  decisionReason: string | null;
+  reviewedAt: string | null;
 };
 
 export type CollectionGroupDetail = CollectionGroupSummary & {
@@ -110,6 +118,10 @@ export async function listCollectionGroups(
             mimeType: firstImage.mimeType,
             createdAt: firstImage.createdAt.toISOString(),
             imageUrl: await createPresignedDownloadUrl(firstImage.objectKey),
+            isSelected: group._count.images === 1,
+            decisionSource: null,
+            decisionReason: null,
+            reviewedAt: null,
           },
         }))(),
       ];
@@ -138,6 +150,16 @@ export async function getCollectionGroup(
     },
     include: {
       images: {
+        include: {
+          review: {
+            select: {
+              isSelected: true,
+              decisionSource: true,
+              decisionReason: true,
+              reviewedAt: true,
+            },
+          },
+        },
         orderBy: { createdAt: "asc" },
       },
     },
@@ -155,6 +177,10 @@ export async function getCollectionGroup(
       mimeType: image.mimeType,
       createdAt: image.createdAt.toISOString(),
       imageUrl: await createPresignedDownloadUrl(image.objectKey),
+      isSelected: image.review?.isSelected ?? false,
+      decisionSource: image.review?.decisionSource ?? null,
+      decisionReason: image.review?.decisionReason ?? null,
+      reviewedAt: image.review?.reviewedAt?.toISOString() ?? null,
     })),
   );
 
@@ -162,6 +188,73 @@ export async function getCollectionGroup(
     ...formatGroupSummary(group),
     images,
   };
+}
+
+export type CollectionGroupSelectionResult = {
+  ok: true;
+  selectedImageId: string;
+};
+
+export async function updateCollectionGroupSelection(
+  collectionId: string,
+  groupId: string,
+  imageId: string,
+  userId: string,
+): Promise<CollectionGroupSelectionResult | null> {
+  return prisma.$transaction(async (transaction) => {
+    const group = await transaction.imageGroup.findFirst({
+      where: {
+        id: groupId,
+        collectionId,
+        imageCount: { gt: 1 },
+        collection: { userId },
+      },
+      select: {
+        images: {
+          select: { id: true },
+        },
+      },
+    });
+
+    if (!group) {
+      return null;
+    }
+
+    const groupImageIds = group.images.map((image) => image.id);
+
+    if (!groupImageIds.includes(imageId)) {
+      return null;
+    }
+
+    const reviewedAt = new Date();
+
+    await Promise.all(
+      groupImageIds.map((groupImageId) =>
+        transaction.collectionImageReview.upsert({
+          where: { imageId: groupImageId },
+          create: {
+            collectionId,
+            imageId: groupImageId,
+            isSelected: groupImageId === imageId,
+            decisionSource: ReviewDecisionSource.USER,
+            decisionReason: ReviewDecisionReason.SIMILAR_GROUP,
+            reviewedAt,
+          },
+          update: {
+            isSelected: groupImageId === imageId,
+            decisionSource: ReviewDecisionSource.USER,
+            decisionReason: ReviewDecisionReason.SIMILAR_GROUP,
+            reviewedAt,
+          },
+        }),
+      ),
+    );
+
+    return {
+      ok: true,
+      selectedImageId: imageId,
+    };
+  });
 }
 
 type GroupSummaryFields = {
