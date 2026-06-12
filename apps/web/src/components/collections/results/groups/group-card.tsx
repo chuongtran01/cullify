@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import type { CollectionGroupPreview } from "@/services/collections";
@@ -11,7 +13,10 @@ export function GroupCard({ group }: { group: CollectionGroupPreview }) {
   const isSelected = group.selectionStatus === "SELECTED";
 
   return (
-    <article className="overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
+    <Link
+      href={`/dashboard/collections/${group.collectionId}/results/groups/${group.id}`}
+      className="block overflow-hidden rounded-lg border border-hairline-strong bg-surface-card transition-colors hover:border-hairline-strong hover:bg-canvas-soft"
+    >
       <PhotoSurface
         className="aspect-[4/3]"
         src={group.previewImage.imageUrl}
@@ -37,6 +42,6 @@ export function GroupCard({ group }: { group: CollectionGroupPreview }) {
           {isSelected ? "Representative selected" : "Choose the best frame"}
         </p>
       </div>
-    </article>
+    </Link>
   );
 }
