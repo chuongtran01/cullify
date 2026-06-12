@@ -8,19 +8,19 @@ export const queryKeys = {
     upload: () => [...queryKeys.collections.all, "upload"] as const,
     progress: (collectionId: string) =>
       [...queryKeys.collections.all, collectionId, "progress"] as const,
+    groupsRoot: (collectionId: string) =>
+      [...queryKeys.collections.all, collectionId, "groups"] as const,
     groups: (
       collectionId: string,
       options?: { limit?: number; offset?: number },
     ) =>
       [
-        ...queryKeys.collections.all,
-        collectionId,
-        "groups",
+        ...queryKeys.collections.groupsRoot(collectionId),
         options?.limit ?? null,
         options?.offset ?? null,
       ] as const,
     group: (collectionId: string, groupId: string) =>
-      [...queryKeys.collections.groups(collectionId), groupId] as const,
+      [...queryKeys.collections.groupsRoot(collectionId), "detail", groupId] as const,
     lowQualityImages: (
       collectionId: string,
       options?: { limit?: number; offset?: number; isSelected?: boolean },

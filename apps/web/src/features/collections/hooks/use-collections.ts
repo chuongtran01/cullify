@@ -19,6 +19,7 @@ import {
   updateCollectionName,
 } from "@/services/collections";
 import type {
+  CollectionGroupDetail,
   CollectionLowQualityImagesResponse,
   CollectionResultsOverall,
 } from "@/services/collections";
@@ -183,15 +184,30 @@ export function useUpdateCollectionGroupSelection(
   return useMutation({
     mutationFn: ({ imageId }: { imageId: string | null }) =>
       updateCollectionGroupSelection(collectionId, groupId, imageId),
-    onSuccess: () => {
+    onSuccess: (result) => {
+      queryClient.setQueryData<CollectionGroupDetail>(
+        queryKeys.collections.group(collectionId, groupId),
+        (group) =>
+          group
+            ? {
+                ...group,
+                images: group.images.map((image) => ({
+                  ...image,
+                  isSelected: image.id === result.selectedImageId,
+                  decisionSource: result.decisionSource,
+                  decisionReason: result.decisionReason,
+                  reviewedAt: result.reviewedAt,
+                })),
+              }
+            : group,
+      );
       void queryClient.invalidateQueries({
-        queryKey: queryKeys.collections.group(collectionId, groupId),
-      });
-      void queryClient.invalidateQueries({
-        queryKey: queryKeys.collections.groups(collectionId),
+        queryKey: queryKeys.collections.groupsRoot(collectionId),
+        refetchType: "none",
       });
       void queryClient.invalidateQueries({
         queryKey: queryKeys.collections.resultsOverall(collectionId),
+        refetchType: "none",
       });
     },
   });

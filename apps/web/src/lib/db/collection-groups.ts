@@ -193,6 +193,9 @@ export async function getCollectionGroup(
 export type CollectionGroupSelectionResult = {
   ok: true;
   selectedImageId: string | null;
+  decisionSource: string;
+  decisionReason: string;
+  reviewedAt: string;
 };
 
 export async function updateCollectionGroupSelection(
@@ -253,6 +256,9 @@ export async function updateCollectionGroupSelection(
     return {
       ok: true,
       selectedImageId: imageId,
+      decisionSource: ReviewDecisionSource.USER,
+      decisionReason: ReviewDecisionReason.SIMILAR_GROUP,
+      reviewedAt: reviewedAt.toISOString(),
     };
   });
 }

@@ -110,6 +110,9 @@ export type UpdateCollectionImageReviewResponse = {
 export type UpdateCollectionGroupSelectionResponse = {
   ok: true;
   selectedImageId: string | null;
+  decisionSource: string;
+  decisionReason: string;
+  reviewedAt: string;
 };
 
 export type CollectionResultsSummary = {
