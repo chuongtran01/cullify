@@ -11,7 +11,6 @@ export type Collection = {
   name: string;
   status: CollectionStatus;
   totalImages: number;
-  processedImages: number;
   createdAt: string;
   reviewedImages?: number;
   keptImages?: number;

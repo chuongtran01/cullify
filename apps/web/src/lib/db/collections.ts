@@ -63,7 +63,6 @@ export async function listUserCollections(userId: string): Promise<Collection[]>
       name: collection.name ?? formatFallbackCollectionName(collection.createdAt),
       status,
       totalImages,
-      processedImages,
       createdAt: collection.createdAt.toISOString(),
       reviewedImages: status === "IN_REVIEW" ? 0 : undefined,
       keptImages: status === "COMPLETED" ? 0 : undefined,

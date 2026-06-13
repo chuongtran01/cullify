@@ -1,11 +1,10 @@
 import { Search } from "lucide-react";
 
-import { collectionFilters } from "@/components/collections/listing/mock-data";
 import type { CollectionFilterValue } from "@/components/collections/types";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 type CollectionFiltersProps = {
   activeFilter: CollectionFilterValue;
@@ -13,6 +12,18 @@ type CollectionFiltersProps = {
   onFilterChange: (filter: CollectionFilterValue) => void;
   onSearchChange: (search: string) => void;
 };
+
+const collectionFilters: Array<{
+  label: string;
+  value: CollectionFilterValue;
+}> = [
+  { label: "All", value: "ALL" },
+  { label: "Processing", value: "PROCESSING" },
+  { label: "Ready for Review", value: "READY_FOR_REVIEW" },
+  { label: "In Review", value: "IN_REVIEW" },
+  { label: "Completed", value: "COMPLETED" },
+  { label: "Failed", value: "FAILED" },
+];
 
 export function CollectionFilters({
   activeFilter,
