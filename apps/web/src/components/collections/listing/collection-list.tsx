@@ -6,7 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal, Pencil } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -94,7 +94,6 @@ function CollectionRowActions({ collection }: { collection: Collection }) {
               setEditOpen(true);
             }}
           >
-            <Pencil aria-hidden="true" />
             Edit
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -116,15 +115,16 @@ function CollectionRowContent({ collection }: { collection: Collection }) {
   );
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
+    <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 gap-y-1 text-sm">
       <p className="truncate text-sm font-medium text-ink">{collection.name}</p>
-      <div className="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body">
-        <span>{collection.totalImages.toLocaleString()} photos</span>
-        <span aria-hidden="true">·</span>
-        <span className={statusClassName}>{statusLabels[collection.status]}</span>
-        <span aria-hidden="true">·</span>
-        <span>{formatCollectionDate(collection.createdAt)}</span>
-      </div>
+      <span className="text-body" aria-hidden="true">·</span>
+      <span className="text-body">{formatCollectionDate(collection.createdAt)}</span>
+      <span className="text-body" aria-hidden="true">·</span>
+      <span className="text-body">
+        {collection.totalImages.toLocaleString()} photos
+      </span>
+      <span className="text-body" aria-hidden="true">·</span>
+      <span className={statusClassName}>{statusLabels[collection.status]}</span>
     </div>
   );
 }
