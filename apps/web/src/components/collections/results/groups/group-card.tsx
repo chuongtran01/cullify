@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { CollectionGroupPreview } from "@/services/collections";
 
 const selectionStatusLabels = {
@@ -13,35 +14,41 @@ export function GroupCard({ group }: { group: CollectionGroupPreview }) {
   const isSelected = group.selectionStatus === "SELECTED";
 
   return (
-    <Link
-      href={`/dashboard/collections/${group.collectionId}/results/groups/${group.id}`}
-      className="block overflow-hidden rounded-lg border border-hairline-strong bg-surface-card transition-colors hover:border-hairline-strong hover:bg-canvas-soft"
-    >
+    <article>
       <PhotoSurface
-        className="aspect-[4/3]"
+        className="aspect-[4/3] rounded-md"
         src={group.previewImage.imageUrl}
         title={group.previewImage.fileName}
       />
-      <div className="grid gap-3 p-3">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-sm font-medium text-ink">
+      <div className="mt-3 grid gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge className="rounded-full border-0 bg-surface-strong px-2.5 text-sm font-medium text-body shadow-none">
             {group.imageCount} photos
-          </p>
+          </Badge>
           <Badge
             variant="outline"
             className={
               isSelected
-                ? "h-6 rounded-full border-semantic-success/20 bg-semantic-success/10 px-2.5 text-xs text-semantic-success"
-                : "h-6 rounded-full border-hairline-strong bg-surface-strong px-2.5 text-xs text-body"
+                ? "rounded-full border-semantic-success/20 bg-semantic-success/10 px-2.5 text-sm font-medium text-semantic-success"
+                : "rounded-full border-hairline-strong bg-surface-card px-2.5 text-sm font-medium text-body"
             }
           >
             {selectionStatusLabels[group.selectionStatus]}
           </Badge>
         </div>
-        <p className="text-xs text-body">
-          {isSelected ? "Representative selected" : "Choose the best frame"}
-        </p>
+        <div className="border-t border-hairline pt-3">
+          <Button
+            asChild
+            className="h-8 w-full rounded-md px-4.5 text-sm font-medium"
+          >
+            <Link
+              href={`/dashboard/collections/${group.collectionId}/results/groups/${group.id}`}
+            >
+              Choose
+            </Link>
+          </Button>
+        </div>
       </div>
-    </Link>
+    </article>
   );
 }
