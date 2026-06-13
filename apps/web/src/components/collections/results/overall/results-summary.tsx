@@ -54,8 +54,8 @@ export function ResultsSummary({
           isLoading={isPending}
         />
         <SummaryStat
-          helper="Flagged for human review"
-          label="Photos To Review"
+          helper="Flagged for review"
+          label="Low Quality"
           value={lowQualityImages}
           isLoading={isPending}
         />
