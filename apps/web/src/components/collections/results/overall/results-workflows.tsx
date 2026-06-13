@@ -44,7 +44,7 @@ function WorkflowRow({
               {count}
             </Badge>
           </div>
-          <p className="mt-3 max-w-md text-sm leading-6 text-body">
+          <p className="mt-3 max-w-xl text-sm leading-6 text-body">
             {description}
           </p>
         </div>
