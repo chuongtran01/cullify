@@ -36,26 +36,19 @@ function getHeaderCopy(status: string) {
 
 function StageIcon({ status }: { status: ProcessingStageStatus }) {
   if (status === "completed") {
-    return (
-      <span className="flex size-8 items-center justify-center rounded-full bg-primary text-on-primary">
-        <Check className="size-4" aria-hidden="true" />
-      </span>
-    );
+    return <Check className="mt-1 size-5 shrink-0 text-semantic-success" aria-hidden="true" />;
   }
 
   if (status === "in progress") {
     return (
-      <span className="flex size-8 items-center justify-center rounded-full bg-primary text-on-primary">
-        <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
-      </span>
+      <LoaderCircle
+        className="mt-1 size-5 shrink-0 animate-spin text-ink"
+        aria-hidden="true"
+      />
     );
   }
 
-  return (
-    <span className="flex size-8 items-center justify-center rounded-full border border-hairline-strong text-body">
-      <Clock3 className="size-4" aria-hidden="true" />
-    </span>
-  );
+  return <Clock3 className="mt-1 size-5 shrink-0 text-body" aria-hidden="true" />;
 }
 
 function getStageDescription(label: string) {
