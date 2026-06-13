@@ -60,8 +60,6 @@ function StageIcon({ status }: { status: ProcessingStageStatus }) {
 
 function getStageDescription(label: string) {
   switch (label) {
-    case "Uploading photos":
-      return "Transferring files to your private review project.";
     case "Checking image quality":
       return "Flagging blur, focus, exposure, and compression issues.";
     case "Creating image embeddings":

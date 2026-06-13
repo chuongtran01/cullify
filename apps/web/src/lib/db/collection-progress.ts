@@ -107,7 +107,6 @@ function getStages(
     status === CollectionStatus.COMPLETED
   ) {
     return [
-      { label: "Uploading photos", status: "completed" },
       { label: "Checking image quality", status: "completed" },
       { label: "Creating image embeddings", status: "completed" },
       { label: "Finding similar groups", status: "completed" },
@@ -117,7 +116,6 @@ function getStages(
 
   if (status === CollectionStatus.FAILED) {
     return [
-      { label: "Uploading photos", status: "completed" },
       { label: "Checking image quality", status: "completed" },
       { label: "Creating image embeddings", status: "pending" },
       { label: "Finding similar groups", status: "pending" },
@@ -126,10 +124,6 @@ function getStages(
   }
 
   return [
-    {
-      label: "Uploading photos",
-      status: "completed",
-    },
     {
       label: "Checking image quality",
       status: progress > 0 ? "completed" : "in progress",
