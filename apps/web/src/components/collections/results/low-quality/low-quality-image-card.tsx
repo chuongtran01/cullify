@@ -1,20 +1,27 @@
+import { useState } from "react";
+
 import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { CollectionLowQualityImage } from "@/services/collections";
 import { cn } from "@/lib/utils";
+import type { CollectionLowQualityImage } from "@/services/collections";
 
 type LowQualityImageCardProps = {
   image: CollectionLowQualityImage;
-  isSelecting: boolean;
+  isUpdating: boolean;
+  onRemove: (imageId: string) => void;
   onSelect: (imageId: string) => void;
 };
 
 export function LowQualityImageCard({
   image,
-  isSelecting,
+  isUpdating,
+  onRemove,
   onSelect,
 }: LowQualityImageCardProps) {
+  const [isConfirmingRemove, setIsConfirmingRemove] = useState(false);
+  const isShowingRemoveConfirmation = image.isSelected && isConfirmingRemove;
+
   return (
     <article>
       <div className="relative">
@@ -41,19 +48,52 @@ export function LowQualityImageCard({
           ))}
         </div>
         <div className="border-t border-hairline pt-3">
-          <Button
-            type="button"
-            variant={image.isSelected ? "outline" : "default"}
-            className={cn("cursor-pointer",
-              image.isSelected
-                ? "h-8 w-full rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
-                : "h-8 w-full rounded-md px-4.5 text-sm font-medium"
-            )}
-            disabled={image.isSelected || isSelecting}
-            onClick={() => onSelect(image.id)}
-          >
-            {image.isSelected ? "Selected" : "Keep"}
-          </Button>
+          {isShowingRemoveConfirmation ? (
+            <div className="grid gap-2">
+              <p className="text-sm text-body">Remove from selected?</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-8 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
+                  disabled={isUpdating}
+                  onClick={() => setIsConfirmingRemove(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  className="h-8 rounded-md px-4.5 text-sm font-medium"
+                  disabled={isUpdating}
+                  onClick={() => onRemove(image.id)}
+                >
+                  {isUpdating ? "Removing..." : "Remove"}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button
+              type="button"
+              variant={image.isSelected ? "outline" : "default"}
+              className={cn(
+                "h-8 w-full rounded-md px-4.5 text-sm font-medium",
+                image.isSelected &&
+                  "border-hairline-strong bg-surface-card text-ink",
+              )}
+              disabled={isUpdating}
+              onClick={() => {
+                if (image.isSelected) {
+                  setIsConfirmingRemove(true);
+                  return;
+                }
+
+                setIsConfirmingRemove(false);
+                onSelect(image.id);
+              }}
+            >
+              {isUpdating ? "Saving..." : image.isSelected ? "Remove" : "Keep"}
+            </Button>
+          )}
         </div>
       </div>
     </article>

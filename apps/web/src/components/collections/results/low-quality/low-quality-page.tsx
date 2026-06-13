@@ -105,9 +105,12 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
               <LowQualityImageCard
                 key={image.id}
                 image={image}
-                isSelecting={
+                isUpdating={
                   updateReview.isPending &&
                   updateReview.variables?.imageId === image.id
+                }
+                onRemove={(imageId) =>
+                  updateReview.mutate({ imageId, isSelected: false })
                 }
                 onSelect={(imageId) =>
                   updateReview.mutate({ imageId, isSelected: true })
