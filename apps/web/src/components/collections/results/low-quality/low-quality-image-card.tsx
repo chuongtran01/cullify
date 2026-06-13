@@ -2,6 +2,7 @@ import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CollectionLowQualityImage } from "@/services/collections";
+import { cn } from "@/lib/utils";
 
 type LowQualityImageCardProps = {
   image: CollectionLowQualityImage;
@@ -48,11 +49,11 @@ export function LowQualityImageCard({
           <Button
             type="button"
             variant={image.isSelected ? "outline" : "default"}
-            className={
+            className={cn("cursor-pointer",
               image.isSelected
                 ? "h-8 w-full rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
                 : "h-8 w-full rounded-md px-4.5 text-sm font-medium"
-            }
+            )}
             disabled={image.isSelected || isSelecting}
             onClick={() => onSelect(image.id)}
           >
