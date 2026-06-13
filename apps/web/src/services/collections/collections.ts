@@ -1,4 +1,4 @@
-import type { Collection, CollectionsSummary } from "@/components/collections/types";
+import type { Collection } from "@/components/collections/types";
 import type { CollectionProgressData } from "@/components/collections/progress/types";
 
 import {
@@ -52,26 +52,6 @@ export async function listCollections(): Promise<ListCollectionsResponse> {
   }
 
   return response.json() as Promise<ListCollectionsResponse>;
-}
-
-export async function getCollectionsSummary(): Promise<CollectionsSummary> {
-  const response = await fetch("/api/collections/summary", {
-    method: "GET",
-    headers: { Accept: "application/json" },
-  });
-
-  if (!response.ok) {
-    const data = (await response.json().catch(() => ({}))) as {
-      error?: string;
-    };
-
-    throw new CollectionsServiceError(
-      data.error ?? "Failed to load collections summary",
-      response.status,
-    );
-  }
-
-  return response.json() as Promise<CollectionsSummary>;
 }
 
 export async function getCollectionResultsOverall(

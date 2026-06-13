@@ -19,13 +19,6 @@ export type Collection = {
   errorMessage?: string;
 };
 
-export type CollectionsSummary = {
-  totalCollections: number;
-  needsReview: number;
-  processing: number;
-  totalPhotos: number;
-};
-
 export type CollectionFilterValue =
   | "ALL"
   | "PROCESSING"

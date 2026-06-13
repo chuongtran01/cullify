@@ -3,7 +3,6 @@ import "server-only";
 import { CollectionStatus as PrismaCollectionStatus, ImageUploadStatus } from "@/generated/prisma/client";
 import type {
   Collection,
-  CollectionsSummary,
   CollectionStatus,
 } from "@/components/collections/types";
 import { prisma } from "@/lib/prisma";
@@ -96,47 +95,6 @@ export async function updateUserCollectionName(
   }
 
   return { id: collectionId, name: normalizedName };
-}
-
-export async function getUserCollectionsSummary(
-  userId: string,
-): Promise<CollectionsSummary> {
-  const [totalCollections, needsReview, processing, totalPhotos] =
-    await Promise.all([
-      prisma.collection.count({ where: { userId } }),
-      prisma.collection.count({
-        where: {
-          userId,
-          status: {
-            in: [
-              PrismaCollectionStatus.READY_FOR_REVIEW,
-              PrismaCollectionStatus.IN_REVIEW,
-            ],
-          },
-        },
-      }),
-      prisma.collection.count({
-        where: {
-          userId,
-          status: {
-            in: [PrismaCollectionStatus.UPLOADING, PrismaCollectionStatus.PROCESSING],
-          },
-        },
-      }),
-      prisma.image.count({
-        where: {
-          status: ImageUploadStatus.UPLOADED,
-          collection: { userId },
-        },
-      }),
-    ]);
-
-  return {
-    totalCollections,
-    needsReview,
-    processing,
-    totalPhotos,
-  };
 }
 
 function countProcessedImages(images: CollectionImageSignal[]) {

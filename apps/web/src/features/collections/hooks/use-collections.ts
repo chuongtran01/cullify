@@ -12,7 +12,6 @@ import {
   getCollectionLowQualityImages,
   getCollectionResultsOverall,
   getCollectionSelectedImages,
-  getCollectionsSummary,
   listCollections,
   listCollectionGroups,
   updateCollectionGroupSelection,
@@ -40,13 +39,6 @@ export function useCollections() {
 
       return hasActiveCollection ? POLL_INTERVAL_MS : false;
     },
-  });
-}
-
-export function useCollectionsSummary() {
-  return useQuery({
-    queryKey: queryKeys.collections.summary(),
-    queryFn: getCollectionsSummary,
   });
 }
 

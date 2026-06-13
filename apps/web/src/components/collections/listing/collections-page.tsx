@@ -11,38 +11,17 @@ import {
   CollectionList,
   CollectionListSkeleton,
 } from "@/components/collections/listing/collection-list";
-import {
-  CollectionsSummary,
-  CollectionsSummarySkeleton,
-} from "@/components/collections/listing/collections-summary";
 import { EmptyCollections } from "@/components/collections/listing/empty-collections";
 import type { CollectionFilterValue } from "@/components/collections/types";
 import { Button } from "@/components/ui/button";
-import { useCollections, useCollectionsSummary } from "@/features/collections/hooks";
-
-const emptySummary = {
-  totalCollections: 0,
-  needsReview: 0,
-  processing: 0,
-  totalPhotos: 0,
-};
+import { useCollections } from "@/features/collections/hooks";
 
 export function CollectionsPage() {
   const [activeFilter, setActiveFilter] = useState<CollectionFilterValue>("ALL");
   const [search, setSearch] = useState("");
   const { data, error, isPending } = useCollections();
-  const {
-    data: summary = emptySummary,
-    error: summaryError,
-    isPending: isSummaryPending,
-  } = useCollectionsSummary();
   const collections = useMemo(() => data?.collections ?? [], [data?.collections]);
-  const loadError =
-    error instanceof Error
-      ? error
-      : summaryError instanceof Error
-        ? summaryError
-        : null;
+  const loadError = error instanceof Error ? error : null;
 
   const filteredCollections = useMemo(() => {
     return collections
@@ -77,15 +56,12 @@ export function CollectionsPage() {
         </Button>
       </header>
 
-      {isPending || isSummaryPending ? (
-        <>
-          <CollectionsSummarySkeleton />
-          <section className="grid gap-4">
-            <CollectionFiltersSkeleton />
-            <CollectionListSkeleton rowCount={5} />
-          </section>
-        </>
-      ) : loadError || error || summaryError ? (
+      {isPending ? (
+        <section className="grid gap-4">
+          <CollectionFiltersSkeleton />
+          <CollectionListSkeleton rowCount={5} />
+        </section>
+      ) : loadError || error ? (
         <section className="rounded-lg border border-hairline-strong bg-surface-card p-8 text-center">
           <h2 className="text-lg font-semibold text-ink">
             Could not load collections
@@ -94,34 +70,29 @@ export function CollectionsPage() {
             {loadError?.message ?? "Refresh the page and try again."}
           </p>
         </section>
-      ) : summary.totalCollections === 0 ? (
+      ) : collections.length === 0 ? (
         <EmptyCollections />
       ) : (
-        <>
-          <CollectionsSummary {...summary} />
-          <section className="grid gap-4">
-            <CollectionFilters
-              activeFilter={activeFilter}
-              search={search}
-              onFilterChange={setActiveFilter}
-              onSearchChange={setSearch}
-            />
-            {filteredCollections.length === 0 ? (
-              <section className="rounded-lg border border-hairline-strong bg-surface-card p-8 text-center">
-                <h2 className="text-lg font-semibold text-ink">
-                  No matching collections
-                </h2>
-                <p className="mx-auto mt-2 max-w-md text-base font-normal leading-normal text-body">
-                  {collections.length === 0
-                    ? "No collection rows are available yet."
-                    : "Try another search term or filter."}
-                </p>
-              </section>
-            ) : (
-              <CollectionList collections={filteredCollections} />
-            )}
-          </section>
-        </>
+        <section className="grid gap-4">
+          <CollectionFilters
+            activeFilter={activeFilter}
+            search={search}
+            onFilterChange={setActiveFilter}
+            onSearchChange={setSearch}
+          />
+          {filteredCollections.length === 0 ? (
+            <section className="rounded-lg border border-hairline-strong bg-surface-card p-8 text-center">
+              <h2 className="text-lg font-semibold text-ink">
+                No matching collections
+              </h2>
+              <p className="mx-auto mt-2 max-w-md text-base font-normal leading-normal text-body">
+                Try another search term or filter.
+              </p>
+            </section>
+          ) : (
+            <CollectionList collections={filteredCollections} />
+          )}
+        </section>
       )}
     </div>
   );
