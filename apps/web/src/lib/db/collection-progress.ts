@@ -4,13 +4,6 @@ import { CollectionStatus, ImageUploadStatus } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { CollectionProgressData, ProcessingStage } from "@/components/collections/progress/types";
 
-const TERMINAL_STATUSES = new Set<string>([
-  CollectionStatus.READY_FOR_REVIEW,
-  CollectionStatus.IN_REVIEW,
-  CollectionStatus.COMPLETED,
-  CollectionStatus.FAILED,
-]);
-
 export async function getCollectionProgress(
   collectionId: string,
   userId: string,
@@ -20,7 +13,6 @@ export async function getCollectionProgress(
     select: {
       id: true,
       status: true,
-      createdAt: true,
     },
   });
 
@@ -93,40 +85,15 @@ export async function getCollectionProgress(
 
   return {
     collectionId,
-    title: "Photo collection",
-    uploadedAt: formatUploadDate(collection.createdAt),
     status: collection.status,
     totalPhotos,
     processedPhotos,
     failedPhotos,
     progress,
-    estimatedRemaining: getEstimatedRemaining(collection.status),
     lowQualityDetected,
     similarGroupsFound,
     stages: getStages(collection.status, progress, similarGroupsFound),
-    activity: [],
-    tasks: [
-      "Detecting blurry and out-of-focus photos",
-      "Grouping similar photos",
-      "Scoring and selecting best photos",
-    ],
   };
-}
-
-function formatUploadDate(date: Date): string {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
-}
-
-function getEstimatedRemaining(status: CollectionStatus): string {
-  if (TERMINAL_STATUSES.has(status)) {
-    return "0 minutes";
-  }
-
-  return "a few minutes";
 }
 
 function getStages(
