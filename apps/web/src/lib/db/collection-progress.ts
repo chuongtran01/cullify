@@ -140,33 +140,39 @@ function getStages(
     status === CollectionStatus.COMPLETED
   ) {
     return [
-      { label: "Detecting blurry and out-of-focus photos", status: "completed" },
-      { label: "Extracting image features", status: "completed" },
-      { label: "Grouping similar photos", status: "completed" },
-      { label: "Scoring and selecting best photos", status: "completed" },
+      { label: "Uploading photos", status: "completed" },
+      { label: "Checking image quality", status: "completed" },
+      { label: "Creating image embeddings", status: "completed" },
+      { label: "Finding similar groups", status: "completed" },
+      { label: "Preparing review", status: "completed" },
     ];
   }
 
   if (status === CollectionStatus.FAILED) {
     return [
-      { label: "Detecting blurry and out-of-focus photos", status: "completed" },
-      { label: "Extracting image features", status: "completed" },
-      { label: "Grouping similar photos", status: "pending" },
-      { label: "Scoring and selecting best photos", status: "pending" },
+      { label: "Uploading photos", status: "completed" },
+      { label: "Checking image quality", status: "completed" },
+      { label: "Creating image embeddings", status: "pending" },
+      { label: "Finding similar groups", status: "pending" },
+      { label: "Preparing review", status: "pending" },
     ];
   }
 
   return [
     {
-      label: "Detecting blurry and out-of-focus photos",
+      label: "Uploading photos",
+      status: "completed",
+    },
+    {
+      label: "Checking image quality",
       status: progress > 0 ? "completed" : "in progress",
     },
     {
-      label: "Extracting image features",
+      label: "Creating image embeddings",
       status: progress >= 50 ? "completed" : progress > 0 ? "in progress" : "pending",
     },
     {
-      label: "Grouping similar photos",
+      label: "Finding similar groups",
       status:
         similarGroupsFound > 0
           ? "completed"
@@ -175,8 +181,8 @@ function getStages(
             : "pending",
     },
     {
-      label: "Scoring and selecting best photos",
-      status: "pending",
+      label: "Preparing review",
+      status: progress >= 100 ? "in progress" : "pending",
     },
   ];
 }
