@@ -49,27 +49,25 @@ export function LowQualityImageCard({
         </div>
         <div className="border-t border-hairline pt-3">
           {isShowingRemoveConfirmation ? (
-            <div className="grid gap-2">
-              <p className="text-sm text-body">Remove from selected?</p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-8 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
-                  disabled={isUpdating}
-                  onClick={() => setIsConfirmingRemove(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  className="h-8 rounded-md px-4.5 text-sm font-medium"
-                  disabled={isUpdating}
-                  onClick={() => onRemove(image.id)}
-                >
-                  {isUpdating ? "Removing..." : "Remove"}
-                </Button>
-              </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-8 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
+                disabled={isUpdating}
+                onClick={() => setIsConfirmingRemove(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                className="h-8 rounded-md px-4.5 text-sm font-medium"
+                disabled={isUpdating}
+                onClick={() => onRemove(image.id)}
+              >
+                {isUpdating ? "Removing..." : "Remove"}
+              </Button>
             </div>
           ) : (
             <Button
@@ -78,7 +76,7 @@ export function LowQualityImageCard({
               className={cn(
                 "h-8 w-full rounded-md px-4.5 text-sm font-medium",
                 image.isSelected &&
-                  "border-hairline-strong bg-surface-card text-ink",
+                "border-hairline-strong bg-surface-card text-destructive",
               )}
               disabled={isUpdating}
               onClick={() => {
