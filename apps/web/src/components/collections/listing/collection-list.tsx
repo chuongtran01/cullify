@@ -6,7 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -94,6 +94,7 @@ function CollectionRowActions({ collection }: { collection: Collection }) {
               setEditOpen(true);
             }}
           >
+            <Pencil aria-hidden="true" />
             Edit
           </DropdownMenuItem>
         </DropdownMenuContent>
