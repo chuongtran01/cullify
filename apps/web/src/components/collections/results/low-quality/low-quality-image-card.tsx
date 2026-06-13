@@ -30,11 +30,6 @@ export function LowQualityImageCard({
         ) : null}
       </div>
       <div className="mt-3 grid gap-3">
-        <div className="min-w-0">
-          <h2 className="truncate text-sm font-medium text-ink">
-            {image.fileName}
-          </h2>
-        </div>
         <div className="flex flex-wrap gap-1.5">
           {image.reasons.map((reason) => (
             <Badge
