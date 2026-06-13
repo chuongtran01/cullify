@@ -1,11 +1,10 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CircleCheck, ImageOff } from "lucide-react";
 import Link from "next/link";
 
 import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type {
   CollectionGroupPreview,
@@ -16,91 +15,97 @@ import type {
   CollectionSelectedImagesResponse,
 } from "@/services/collections";
 
-function WorkflowSection({
+const PREVIEW_LIMIT = 4;
+
+function WorkflowRow({
   title,
   count,
   description,
-  children,
+  actionLabel,
   href,
+  children,
 }: {
   title: string;
   count: string;
   description: string;
+  actionLabel: string;
+  href: string;
   children: React.ReactNode;
-  href?: string;
 }) {
   return (
-    <section className="min-w-0 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card p-5">
-      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <div className="flex flex-wrap items-center gap-3">
-            <h2 className="text-2xl font-semibold leading-tight text-ink">{title}</h2>
-            <Badge variant="outline" className="h-7 rounded-full px-3 text-xs text-body">
+    <section className="border-t border-hairline-strong py-9">
+      <div className="grid gap-5 sm:grid-cols-[1fr_auto]">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-lg font-semibold leading-tight text-ink">
+              {title}
+            </h2>
+            <Badge className="rounded-full border-0 bg-surface-strong px-2.5 py-1 text-xs font-medium text-body shadow-none">
               {count}
             </Badge>
           </div>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-body">{description}</p>
+          <p className="mt-3 max-w-md text-sm leading-6 text-body">
+            {description}
+          </p>
         </div>
-        {href ? (
-          <Button
-            asChild
-            variant="outline"
-            className="h-10 gap-2 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink hover:cursor-pointer sm:shrink-0"
-          >
-            <Link href={href}>
-              Review
-              <ArrowRight
-                className="size-4 transition-transform duration-200 group-hover/button:translate-x-1"
-                aria-hidden="true"
-              />
-            </Link>
-          </Button>
-        ) : (
-          <Button
-            variant="outline"
-            className="h-10 gap-2 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink hover:cursor-pointer sm:shrink-0"
-          >
-            Review
-            <ArrowRight
-              className="size-4 transition-transform duration-200 group-hover/button:translate-x-1"
-              aria-hidden="true"
-            />
-          </Button>
-        )}
+        <Link
+          href={href}
+          className="inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-body sm:justify-self-end"
+        >
+          {actionLabel}
+          <ArrowRight className="size-4" aria-hidden="true" />
+        </Link>
       </div>
-      {children}
+      <div className="mt-6">{children}</div>
     </section>
   );
 }
 
-function SimilarGroupCard({ group }: { group: CollectionGroupPreview }) {
+function PreviewTile({
+  src,
+  title,
+}: {
+  src: string;
+  title: string;
+}) {
   return (
-    <article className="min-w-60 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
-      <PhotoSurface
-        className="aspect-[4/3]"
-        src={group.previewImage.imageUrl}
-        title={group.previewImage.fileName}
-      />
-    </article>
+    <div className="size-32 overflow-hidden rounded-md bg-surface-strong md:size-36 lg:size-40">
+      <PhotoSurface className="size-full" src={src} title={title} />
+    </div>
   );
 }
 
-function WorkflowImageStripSkeleton() {
+function PreviewSkeleton() {
   return (
-    <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
-      {Array.from({ length: 5 }).map((_, index) => (
-        <div
+    <div className="flex gap-3">
+      {Array.from({ length: 2 }).map((_, index) => (
+        <Skeleton
           key={index}
-          className="min-w-60 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card"
-        >
-          <Skeleton className="aspect-[4/3] rounded-none" />
-        </div>
+          className="size-32 rounded-md md:size-36 lg:size-40"
+        />
       ))}
     </div>
   );
 }
 
-function SimilarGroupsStrip({
+function EmptyState({
+  icon,
+  message,
+}: {
+  icon: React.ReactNode;
+  message: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 text-sm text-body">
+      <span className="text-muted" aria-hidden="true">
+        {icon}
+      </span>
+      <span>{message}</span>
+    </div>
+  );
+}
+
+function SimilarGroupsPreview({
   groups,
   isError,
   isPending,
@@ -110,54 +115,38 @@ function SimilarGroupsStrip({
   isPending: boolean;
 }) {
   if (isPending) {
-    return <WorkflowImageStripSkeleton />;
+    return <PreviewSkeleton />;
   }
 
   if (isError) {
     return (
-      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
-        Unable to load similar groups.
-      </div>
+      <p className="text-sm text-body">Unable to load similar groups.</p>
     );
   }
 
   if (groups.length === 0) {
     return (
-      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
-        No similar groups found.
-      </div>
+      <EmptyState
+        icon={<CircleCheck className="size-4" />}
+        message="No similar groups found."
+      />
     );
   }
 
   return (
-    <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
-      {groups.map((group) => (
-        <SimilarGroupCard group={group} key={group.id} />
+    <div className="flex flex-wrap gap-3">
+      {groups.slice(0, PREVIEW_LIMIT).map((group) => (
+        <PreviewTile
+          key={group.id}
+          src={group.previewImage.imageUrl}
+          title={group.previewImage.fileName}
+        />
       ))}
     </div>
   );
 }
 
-function LowQualityPhotoCard({ image }: { image: CollectionLowQualityImage }) {
-  const reason = image.reasons[0] ?? "Low Quality";
-
-  return (
-    <article className="min-w-48 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
-      <div className="relative">
-        <PhotoSurface
-          className="aspect-[4/3]"
-          src={image.imageUrl}
-          title={image.fileName}
-        />
-        <Badge className="absolute top-3 left-3 h-7 rounded-full border-semantic-error/20 bg-semantic-error/10 px-3 text-semantic-error">
-          {reason}
-        </Badge>
-      </div>
-    </article>
-  );
-}
-
-function LowQualityPhotosStrip({
+function LowQualityPhotosPreview({
   images,
   isError,
   isPending,
@@ -167,52 +156,34 @@ function LowQualityPhotosStrip({
   isPending: boolean;
 }) {
   if (isPending) {
-    return <WorkflowImageStripSkeleton />;
+    return <PreviewSkeleton />;
   }
 
   if (isError) {
     return (
-      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
-        Unable to load low quality photos.
-      </div>
+      <p className="text-sm text-body">Unable to load low quality photos.</p>
     );
   }
 
   if (images.length === 0) {
     return (
-      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
-        No low quality images found.
-      </div>
+      <EmptyState
+        icon={<ImageOff className="size-4" />}
+        message="No low quality images found."
+      />
     );
   }
 
   return (
-    <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
-      {images.map((image) => (
-        <LowQualityPhotoCard key={image.id} image={image} />
+    <div className="flex flex-wrap gap-3">
+      {images.slice(0, PREVIEW_LIMIT).map((image) => (
+        <PreviewTile key={image.id} src={image.imageUrl} title={image.fileName} />
       ))}
     </div>
   );
 }
 
-function SelectedPhotoCard({ image }: { image: CollectionSelectedImage }) {
-  return (
-    <article className="min-w-48 overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
-      <div className="relative">
-        <PhotoSurface
-          className="aspect-[4/3]"
-          src={image.imageUrl}
-          title={image.fileName}
-        />
-        <Badge className="absolute left-3 top-3 h-7 rounded-full bg-primary px-3 text-xs text-on-primary">
-          {image.selectionLabel}
-        </Badge>
-      </div>
-    </article>
-  );
-}
-
-function SelectedPhotosStrip({
+function SelectedPhotosPreview({
   images,
   isError,
   isPending,
@@ -222,29 +193,26 @@ function SelectedPhotosStrip({
   isPending: boolean;
 }) {
   if (isPending) {
-    return <WorkflowImageStripSkeleton />;
+    return <PreviewSkeleton />;
   }
 
   if (isError) {
-    return (
-      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
-        Unable to load selected photos.
-      </div>
-    );
+    return <p className="text-sm text-body">Unable to load selected photos.</p>;
   }
 
   if (images.length === 0) {
     return (
-      <div className="rounded-lg border border-hairline-strong bg-surface-card p-5 text-sm text-body">
-        No selected photos yet.
-      </div>
+      <EmptyState
+        icon={<CircleCheck className="size-4" />}
+        message="No selected photos yet."
+      />
     );
   }
 
   return (
-    <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
-      {images.map((image) => (
-        <SelectedPhotoCard key={image.id} image={image} />
+    <div className="flex flex-wrap gap-3">
+      {images.slice(0, PREVIEW_LIMIT).map((image) => (
+        <PreviewTile key={image.id} src={image.imageUrl} title={image.fileName} />
       ))}
     </div>
   );
@@ -278,45 +246,48 @@ export function ResultsWorkflows({
   const selectedCount = selected?.totalSelectedImages ?? 0;
 
   return (
-    <div className="grid min-w-0 gap-5">
-      <WorkflowSection
+    <div>
+      <WorkflowRow
+        actionLabel="View"
         count={`${selectedCount} photos`}
         description="See every photo currently included in the final set."
         href={`/dashboard/collections/${collectionId}/results/selected`}
         title="Selected Photos"
       >
-        <SelectedPhotosStrip
+        <SelectedPhotosPreview
           images={selected?.images ?? []}
           isError={isSelectedError}
           isPending={isSelectedPending}
         />
-      </WorkflowSection>
+      </WorkflowRow>
 
-      <WorkflowSection
+      <WorkflowRow
+        actionLabel="Choose"
         count={`${similarGroupsCount} groups`}
         description="Compare visually similar photos and keep the best frame from each set."
         href={`/dashboard/collections/${collectionId}/results/groups`}
         title="Similar Groups"
       >
-        <SimilarGroupsStrip
+        <SimilarGroupsPreview
           groups={similarGroups?.groups ?? []}
           isError={isSimilarGroupsError}
           isPending={isSimilarGroupsPending}
         />
-      </WorkflowSection>
+      </WorkflowRow>
 
-      <WorkflowSection
+      <WorkflowRow
+        actionLabel="Review"
         count={`${lowQualityCount} photos`}
         description="Check photos flagged for blur, focus issues, closed eyes, poor lighting, or duplication."
         href={`/dashboard/collections/${collectionId}/results/low-quality`}
         title="Low Quality Photos"
       >
-        <LowQualityPhotosStrip
+        <LowQualityPhotosPreview
           images={lowQuality?.images ?? []}
           isError={isLowQualityError}
           isPending={isLowQualityPending}
         />
-      </WorkflowSection>
+      </WorkflowRow>
     </div>
   );
 }

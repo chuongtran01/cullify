@@ -16,7 +16,7 @@ export function ReviewResultsView({ collectionId }: { collectionId: string }) {
         isPending={overall.isPending}
       />
 
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16">
         <ResultsSummary
           summary={overall.data?.summary}
           isError={overall.isError}

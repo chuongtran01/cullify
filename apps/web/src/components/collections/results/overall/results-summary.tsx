@@ -1,7 +1,3 @@
-"use client";
-
-import { Sparkles } from "lucide-react";
-
 import { Skeleton } from "@/components/ui/skeleton";
 import type { CollectionResultsSummary } from "@/services/collections";
 
@@ -17,18 +13,18 @@ function SummaryStat({
   isLoading?: boolean;
 }) {
   return (
-    <div className="rounded-lg border border-hairline-strong bg-surface-dark-elevated p-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-on-dark-soft">
+    <div className="border-t border-hairline-strong py-5 md:border-l md:first:border-l-0 md:px-6 md:first:pl-0">
+      <p className="text-xs font-medium uppercase tracking-wide text-body">
         {label}
       </p>
       {isLoading ? (
-        <Skeleton className="mt-2 h-8 w-16 bg-on-dark/20" />
+        <Skeleton className="mt-3 h-9 w-14" />
       ) : (
-        <p className="mt-2 text-2xl font-semibold leading-none text-on-dark">
+        <p className="mt-3 text-4xl font-semibold leading-none text-ink">
           {value}
         </p>
       )}
-      <p className="mt-2 text-xs leading-5 text-on-dark-soft">{helper}</p>
+      <p className="mt-2 text-sm leading-5 text-body">{helper}</p>
     </div>
   );
 }
@@ -49,23 +45,8 @@ export function ResultsSummary({
   const lowQualityImages = summary?.lowQualityImages ?? 0;
 
   return (
-    <section className="grid gap-5 rounded-lg bg-surface-dark p-5 text-on-dark">
-      <div>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-on-dark-soft">
-          <Sparkles className="size-4" />
-          Analysis complete
-        </div>
-        <h2 className="mt-3 text-2xl font-semibold leading-tight text-on-dark">
-          Review summary
-        </h2>
-        {isError ? (
-          <p className="mt-3 text-sm text-on-dark-soft">
-            Unable to refresh the latest result totals.
-          </p>
-        ) : null}
-      </div>
-
-      <div className="grid gap-3 md:grid-cols-3">
+    <section>
+      <div className="grid md:grid-cols-3">
         <SummaryStat
           helper="Visually similar sets"
           label="Similar Groups"
@@ -85,6 +66,11 @@ export function ResultsSummary({
           isLoading={isPending}
         />
       </div>
+      {isError ? (
+        <p className="mt-3 text-sm text-body">
+          Unable to refresh the latest result totals.
+        </p>
+      ) : null}
     </section>
   );
 }
