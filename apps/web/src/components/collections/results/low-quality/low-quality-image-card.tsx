@@ -15,22 +15,24 @@ export function LowQualityImageCard({
   onSelect,
 }: LowQualityImageCardProps) {
   return (
-    <article className="overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
+    <article>
       <div className="relative">
         <PhotoSurface
-          className="aspect-[4/3]"
+          className="aspect-[4/3] rounded-md"
           src={image.imageUrl}
           title={image.fileName}
         />
         {image.isSelected ? (
-          <Badge className="absolute top-3 left-3 rounded-full bg-primary px-3 text-on-primary">
+          <Badge className="absolute left-3 top-3 rounded-full bg-primary px-3 text-on-primary">
             Selected
           </Badge>
         ) : null}
       </div>
-      <div className="grid gap-3 p-3">
+      <div className="mt-3 grid gap-3">
         <div className="min-w-0">
-          <h2 className="truncate text-sm font-semibold text-ink">{image.fileName}</h2>
+          <h2 className="truncate text-sm font-medium text-ink">
+            {image.fileName}
+          </h2>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {image.reasons.map((reason) => (
@@ -42,19 +44,21 @@ export function LowQualityImageCard({
             </Badge>
           ))}
         </div>
-        <Button
-          type="button"
-          variant={image.isSelected ? "outline" : "default"}
-          className={
-            image.isSelected
-              ? "h-10 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
-              : "h-10 rounded-md px-4.5 text-sm font-medium"
-          }
-          disabled={image.isSelected || isSelecting}
-          onClick={() => onSelect(image.id)}
-        >
-          {image.isSelected ? "Selected" : "Keep Photo"}
-        </Button>
+        <div className="border-t border-hairline pt-3">
+          <Button
+            type="button"
+            variant={image.isSelected ? "outline" : "default"}
+            className={
+              image.isSelected
+                ? "h-8 w-full rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
+                : "h-8 w-full rounded-md px-4.5 text-sm font-medium"
+            }
+            disabled={image.isSelected || isSelecting}
+            onClick={() => onSelect(image.id)}
+          >
+            {image.isSelected ? "Selected" : "Keep"}
+          </Button>
+        </div>
       </div>
     </article>
   );
