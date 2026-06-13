@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CircleCheck, ImageOff } from "lucide-react";
+import { CircleCheck, ImageOff } from "lucide-react";
 import Link from "next/link";
 
 import { PhotoSurface } from "@/components/collections/results/photo-surface";
@@ -53,7 +53,6 @@ function WorkflowRow({
           className="inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-body sm:justify-self-end"
         >
           {actionLabel}
-          <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
       </div>
       <div className="mt-6">{children}</div>
