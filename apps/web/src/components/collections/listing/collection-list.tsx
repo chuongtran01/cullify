@@ -6,21 +6,11 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  CheckCircle2,
-  CircleX,
-  Clock3,
-  Loader2,
-  MoreHorizontal,
-  Sparkles,
-} from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-import {
-  formatCollectionDate,
-  getCollectionActionLabel,
-} from "@/components/collections/listing/collection-ui";
+import { formatCollectionDate } from "@/components/collections/listing/collection-ui";
 import { EditCollectionDialog } from "@/components/collections/listing/edit-collection-dialog";
 import type { Collection, CollectionStatus } from "@/components/collections/types";
 import { Button } from "@/components/ui/button";
@@ -50,67 +40,14 @@ type CollectionListSkeletonProps = {
   rowCount?: number;
 };
 
-const listStatusMeta: Record<
-  CollectionStatus,
-  {
-    label: string;
-    icon: typeof CheckCircle2;
-    className: string;
-  }
-> = {
-  UPLOADING: {
-    label: "Uploading",
-    icon: Loader2,
-    className: "text-text-link",
-  },
-  PROCESSING: {
-    label: "Processing",
-    icon: Loader2,
-    className: "text-semantic-success",
-  },
-  READY_FOR_REVIEW: {
-    label: "Ready for Review",
-    icon: Sparkles,
-    className: "text-accent-preview",
-  },
-  IN_REVIEW: {
-    label: "In Review",
-    icon: Clock3,
-    className: "text-text-link",
-  },
-  COMPLETED: {
-    label: "Completed",
-    icon: CheckCircle2,
-    className: "text-semantic-success",
-  },
-  FAILED: {
-    label: "Failed",
-    icon: CircleX,
-    className: "text-semantic-error",
-  },
+const statusLabels: Record<CollectionStatus, string> = {
+  UPLOADING: "Uploading",
+  PROCESSING: "Processing",
+  READY_FOR_REVIEW: "Ready for review",
+  IN_REVIEW: "In review",
+  COMPLETED: "Completed",
+  FAILED: "Failed",
 };
-
-function CollectionStatusBlock({ collection }: { collection: Collection }) {
-  const meta = listStatusMeta[collection.status];
-  const Icon = meta.icon;
-  const isSpinning =
-    collection.status === "PROCESSING" || collection.status === "UPLOADING";
-
-  return (
-    <div
-      className={cn(
-        "inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide",
-        meta.className,
-      )}
-    >
-      <Icon
-        className={cn("size-3.5", isSpinning && "animate-spin")}
-        aria-hidden="true"
-      />
-      {meta.label}
-    </div>
-  );
-}
 
 function getCollectionActionHref(collection: Collection) {
   if (collection.status === "PROCESSING" || collection.status === "UPLOADING") {
@@ -125,7 +62,7 @@ function getCollectionActionHref(collection: Collection) {
     return `/dashboard/collections/${collection.id}/results`;
   }
 
-  return null;
+  return `/dashboard/collections/${collection.id}/progress`;
 }
 
 function CollectionRowActions({ collection }: { collection: Collection }) {
@@ -136,14 +73,20 @@ function CollectionRowActions({ collection }: { collection: Collection }) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            className="h-8 w-8 p-0 text-body hover:text-ink"
+            className="size-8 p-0 text-body hover:text-ink"
             variant="ghost"
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
           >
             <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
+            <MoreHorizontal className="size-4" aria-hidden="true" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent
+          align="end"
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={(event) => event.stopPropagation()}
+        >
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
             onSelect={(event) => {
@@ -165,66 +108,47 @@ function CollectionRowActions({ collection }: { collection: Collection }) {
   );
 }
 
+function CollectionRowContent({ collection }: { collection: Collection }) {
+  const statusClassName = cn(
+    "text-sm text-body",
+    collection.status === "FAILED" && "text-semantic-error",
+  );
+
+  return (
+    <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
+      <p className="truncate text-sm font-medium text-ink">{collection.name}</p>
+      <div className="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-body">
+        <span>{collection.totalImages.toLocaleString()} photos</span>
+        <span aria-hidden="true">·</span>
+        <span className={statusClassName}>{statusLabels[collection.status]}</span>
+        <span aria-hidden="true">·</span>
+        <span>{formatCollectionDate(collection.createdAt)}</span>
+      </div>
+    </div>
+  );
+}
+
 const collectionColumns: ColumnDef<Collection>[] = [
   {
-    id: "details",
+    id: "collection",
     header: "Collection",
     cell: ({ row }) => {
       const collection = row.original;
 
       return (
-        <div className="min-w-0">
-          <p className="truncate text-base font-semibold text-ink">{collection.name}</p>
-          <p className="mt-1 text-sm font-normal leading-normal text-body">
-            {collection.totalImages} photos <span className="px-1">·</span> Created{" "}
-            {formatCollectionDate(collection.createdAt)}
-          </p>
+        <div className="relative flex min-w-0 items-center gap-3">
+          <Link
+            href={getCollectionActionHref(collection)}
+            className="absolute inset-0 z-10 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={`Open ${collection.name}`}
+          />
+          <CollectionRowContent collection={collection} />
+          <div className="relative z-20 shrink-0 opacity-0 transition-opacity group-hover/list-row:opacity-100 group-focus-within/list-row:opacity-100">
+            <CollectionRowActions collection={collection} />
+          </div>
         </div>
       );
     },
-  },
-  {
-    id: "status",
-    header: "Status",
-    cell: ({ row }) => <CollectionStatusBlock collection={row.original} />,
-  },
-  {
-    id: "primaryAction",
-    header: "Action",
-    cell: ({ row }) => {
-      const collection = row.original;
-      const actionHref = getCollectionActionHref(collection);
-
-      return (
-        <div className="flex items-center gap-2 lg:justify-end">
-          {actionHref ? (
-            <Button
-              asChild
-              className="h-10 min-w-36 cursor-pointer rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
-              size="sm"
-              variant="outline"
-            >
-              <Link href={actionHref}>
-                {getCollectionActionLabel(collection.status)}
-              </Link>
-            </Button>
-          ) : (
-            <Button
-              className="h-10 min-w-36 cursor-pointer rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
-              size="sm"
-              variant="outline"
-            >
-              {getCollectionActionLabel(collection.status)}
-            </Button>
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    id: "rowActions",
-    header: "More actions",
-    cell: ({ row }) => <CollectionRowActions collection={row.original} />,
   },
 ];
 
@@ -238,7 +162,7 @@ export function CollectionList({ collections }: CollectionListProps) {
   });
 
   return (
-    <div className="overflow-hidden rounded-lg border border-hairline-strong bg-surface-card">
+    <div>
       <Table className="min-w-0">
         <TableHeader className="sr-only">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -248,9 +172,9 @@ export function CollectionList({ collections }: CollectionListProps) {
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                 </TableHead>
               ))}
             </TableRow>
@@ -260,13 +184,10 @@ export function CollectionList({ collections }: CollectionListProps) {
           {table.getRowModel().rows.map((row) => (
             <TableRow
               key={row.id}
-              className="grid gap-4 border-b border-hairline px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_180px_32px] lg:items-center"
+              className="group/list-row block border-b border-hairline px-3 py-3 transition-colors hover:rounded-md hover:border-transparent hover:bg-surface-strong/60 has-aria-expanded:rounded-md has-aria-expanded:border-transparent has-aria-expanded:bg-surface-strong/60 last:border-b-0"
             >
               {row.getVisibleCells().map((cell) => (
-                <TableCell
-                  key={cell.id}
-                  className="block whitespace-normal p-0"
-                >
+                <TableCell key={cell.id} className="block p-0">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}
@@ -282,44 +203,27 @@ export function CollectionListSkeleton({
   rowCount = 5,
 }: CollectionListSkeletonProps) {
   return (
-    <div
-      className="overflow-hidden rounded-lg border border-hairline-strong bg-surface-card"
-      aria-label="Loading collections"
-    >
+    <div aria-label="Loading collections">
       <Table className="min-w-0">
         <TableHeader className="sr-only">
           <TableRow>
             <TableHead>Collection</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Action</TableHead>
-            <TableHead>More actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="block">
           {Array.from({ length: rowCount }).map((_, index) => (
             <TableRow
               key={index}
-              className="grid gap-4 border-b border-hairline px-4 py-3 hover:bg-transparent has-aria-expanded:bg-transparent last:border-b-0 lg:grid-cols-[minmax(220px,1.2fr)_minmax(260px,1fr)_180px_32px] lg:items-center"
+              className="block border-b border-hairline px-3 py-3 last:border-b-0"
             >
-              <TableCell className="block whitespace-normal p-0">
-                <div className="min-w-0">
-                  <Skeleton className="h-4 w-40" />
-                  <Skeleton className="mt-2 h-3 w-56 max-w-full" />
+              <TableCell className="block p-0">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex min-w-0 flex-1 items-baseline gap-3">
+                    <Skeleton className="h-4 w-44" />
+                    <Skeleton className="h-4 w-56" />
+                  </div>
+                  <Skeleton className="size-8 rounded-md" />
                 </div>
-              </TableCell>
-              <TableCell className="block whitespace-normal p-0">
-                <div className="flex items-center gap-2">
-                  <Skeleton className="size-3.5 rounded-full" />
-                  <Skeleton className="h-3 w-32" />
-                </div>
-              </TableCell>
-              <TableCell className="block whitespace-normal p-0">
-                <div className="flex items-center gap-2 lg:justify-end">
-                  <Skeleton className="h-9 w-36" />
-                </div>
-              </TableCell>
-              <TableCell className="block whitespace-normal p-0">
-                <Skeleton className="size-8 rounded-md" />
               </TableCell>
             </TableRow>
           ))}
