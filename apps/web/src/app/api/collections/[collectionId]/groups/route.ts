@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 
 import { getRequestUserId } from "@/lib/auth-session";
-import { listCollectionGroups } from "@/lib/db/collection-groups";
+import {
+  listCollectionGroups,
+  type CollectionGroupSelectionStatus,
+} from "@/lib/db/collection-groups";
 import { isUuid } from "@/services/collections/validate";
 
 type RouteContext = {
@@ -10,6 +13,10 @@ type RouteContext = {
 
 const DEFAULT_GROUP_LIMIT = 50;
 const MAX_GROUP_LIMIT = 100;
+const groupSelectionStatuses = new Set<CollectionGroupSelectionStatus>([
+  "NEEDS_SELECTION",
+  "SELECTED",
+]);
 
 function parseBoundedInteger(
   value: string | null,
@@ -56,11 +63,26 @@ export async function GET(request: Request, context: RouteContext) {
     0,
     Number.MAX_SAFE_INTEGER,
   );
+  const rawSelectionStatus = url.searchParams.get("selectionStatus");
+
+  if (
+    rawSelectionStatus !== null &&
+    !groupSelectionStatuses.has(rawSelectionStatus as CollectionGroupSelectionStatus)
+  ) {
+    return NextResponse.json(
+      { error: "Invalid group selection status" },
+      { status: 400 },
+    );
+  }
 
   try {
     const groups = await listCollectionGroups(collectionId, userId, {
       limit,
       offset,
+      selectionStatus:
+        rawSelectionStatus === null
+          ? undefined
+          : (rawSelectionStatus as CollectionGroupSelectionStatus),
     });
 
     if (!groups) {

@@ -1,8 +1,15 @@
 "use client";
 
-import { notFound } from "next/navigation";
+import { useEffect } from "react";
+import { notFound, usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { GroupCard } from "@/components/collections/results/groups/group-card";
+import {
+  GROUP_FILTER_SEARCH_PARAM,
+  GroupsFilters,
+  parseGroupFilter,
+  type GroupFilterValue,
+} from "@/components/collections/results/groups/group-filters";
 import { GroupGridSkeleton } from "@/components/collections/results/groups/group-grid-skeleton";
 import { GroupState } from "@/components/collections/results/groups/group-state";
 import { Badge } from "@/components/ui/badge";
@@ -17,9 +24,41 @@ type GroupsPageProps = {
 };
 
 export function GroupsPage({ collectionId }: GroupsPageProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const rawFilter = searchParams.get(GROUP_FILTER_SEARCH_PARAM);
+  const activeFilter = parseGroupFilter(rawFilter);
+
+  useEffect(() => {
+    if (rawFilter === null || rawFilter === "SELECTED") {
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete(GROUP_FILTER_SEARCH_PARAM);
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }, [pathname, rawFilter, router, searchParams]);
+
+  function handleFilterChange(filter: GroupFilterValue) {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (filter === "NEEDS_SELECTION") {
+      params.delete(GROUP_FILTER_SEARCH_PARAM);
+    } else {
+      params.set(GROUP_FILTER_SEARCH_PARAM, filter);
+    }
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }
+
   const queryOptions = {
     limit: PAGE_SIZE,
     offset: 0,
+    selectionStatus: activeFilter,
   };
   const {
     data,
@@ -32,6 +71,13 @@ export function GroupsPage({ collectionId }: GroupsPageProps) {
   } = useCollectionGroups(collectionId, queryOptions);
   const groups = data?.pages.flatMap((page) => page.groups) ?? [];
   const totalGroups = data?.pages[0]?.totalSimilarGroups ?? 0;
+  const counts = data?.pages[0]?.counts;
+  const filterCounts = counts
+    ? {
+        NEEDS_SELECTION: counts.needsSelection,
+        SELECTED: counts.selected,
+      }
+    : undefined;
   const isInitialPending = isPending && groups.length === 0;
 
   function handleLoadMore() {
@@ -62,6 +108,11 @@ export function GroupsPage({ collectionId }: GroupsPageProps) {
           {isInitialPending ? "Loading..." : `${totalGroups} groups`}
         </Badge>
       </section>
+      <GroupsFilters
+        activeFilter={activeFilter}
+        counts={filterCounts}
+        onFilterChange={handleFilterChange}
+      />
 
       {isInitialPending ? (
         <GroupGridSkeleton />
@@ -84,8 +135,16 @@ export function GroupsPage({ collectionId }: GroupsPageProps) {
         />
       ) : groups.length === 0 ? (
         <GroupState
-          title="No similar groups found"
-          description="This collection does not have any similar photo groups to review."
+          title={
+            activeFilter === "NEEDS_SELECTION"
+              ? "No groups need selection"
+              : "No selected groups"
+          }
+          description={
+            activeFilter === "NEEDS_SELECTION"
+              ? "Every similar group in this collection already has a selected photo."
+              : "Choose photos from similar groups to see selected groups here."
+          }
         />
       ) : (
         <>

@@ -9,6 +9,7 @@ import {
 import type {
   CollectionGroupDetail,
   CollectionGroupsResponse,
+  CollectionGroupSelectionStatus,
   CollectionLowQualityImagesResponse,
   CollectionResultsOverall,
   CollectionSelectedImagesResponse,
@@ -103,7 +104,11 @@ export async function getCollectionProgress(
 
 export async function listCollectionGroups(
   collectionId: string,
-  options: { limit?: number; offset?: number } = {},
+  options: {
+    limit?: number;
+    offset?: number;
+    selectionStatus?: CollectionGroupSelectionStatus;
+  } = {},
 ): Promise<CollectionGroupsResponse> {
   const searchParams = new URLSearchParams();
 
@@ -113,6 +118,10 @@ export async function listCollectionGroups(
 
   if (options.offset !== undefined) {
     searchParams.set("offset", String(options.offset));
+  }
+
+  if (options.selectionStatus !== undefined) {
+    searchParams.set("selectionStatus", options.selectionStatus);
   }
 
   const query = searchParams.size > 0 ? `?${searchParams.toString()}` : "";

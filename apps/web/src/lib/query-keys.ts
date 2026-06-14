@@ -11,12 +11,13 @@ export const queryKeys = {
       [...queryKeys.collections.all, collectionId, "groups"] as const,
     groups: (
       collectionId: string,
-      options?: { limit?: number; offset?: number },
+      options?: { limit?: number; offset?: number; selectionStatus?: string },
     ) =>
       [
         ...queryKeys.collections.groupsRoot(collectionId),
         options?.limit ?? null,
         options?.offset ?? null,
+        options?.selectionStatus ?? null,
       ] as const,
     group: (collectionId: string, groupId: string) =>
       [...queryKeys.collections.groupsRoot(collectionId), "detail", groupId] as const,

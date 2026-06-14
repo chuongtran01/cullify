@@ -20,6 +20,7 @@ import {
 } from "@/services/collections";
 import type {
   CollectionGroupDetail,
+  CollectionGroupSelectionStatus,
   CollectionLowQualityImagesResponse,
   CollectionResultsOverall,
 } from "@/services/collections";
@@ -52,9 +53,14 @@ export function useCollectionResultsOverall(collectionId: string) {
 
 export function useCollectionGroups(
   collectionId: string,
-  options: { limit?: number; offset?: number } = {},
+  options: {
+    limit?: number;
+    offset?: number;
+    selectionStatus?: CollectionGroupSelectionStatus;
+  } = {},
 ) {
   const limit = options.limit;
+  const selectionStatus = options.selectionStatus;
   const initialOffset = options.offset ?? 0;
 
   return useInfiniteQuery({
@@ -63,6 +69,7 @@ export function useCollectionGroups(
       listCollectionGroups(collectionId, {
         limit,
         offset: pageParam,
+        selectionStatus,
       }),
     initialPageParam: initialOffset,
     getNextPageParam: (lastPage) =>

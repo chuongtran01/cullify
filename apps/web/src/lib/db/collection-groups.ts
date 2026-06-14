@@ -3,6 +3,7 @@ import "server-only";
 import {
   ReviewDecisionReason,
   ReviewDecisionSource,
+  type Prisma,
 } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createPresignedDownloadUrl } from "@/lib/r2/presign";
@@ -41,6 +42,10 @@ export type CollectionGroupPreview = CollectionGroupSummary & {
 
 export type CollectionGroupPreviewsResponse = {
   groups: CollectionGroupPreview[];
+  counts: {
+    needsSelection: number;
+    selected: number;
+  };
   totalSimilarGroups: number;
   limit: number;
   offset: number;
@@ -50,7 +55,15 @@ export type CollectionGroupPreviewsResponse = {
 export async function listCollectionGroups(
   collectionId: string,
   userId: string,
-  { limit, offset = 0 }: { limit?: number; offset?: number } = {},
+  {
+    limit,
+    offset = 0,
+    selectionStatus,
+  }: {
+    limit?: number;
+    offset?: number;
+    selectionStatus?: CollectionGroupSelectionStatus;
+  } = {},
 ): Promise<CollectionGroupPreviewsResponse | null> {
   const collection = await prisma.collection.findFirst({
     where: { id: collectionId, userId },
@@ -61,43 +74,75 @@ export async function listCollectionGroups(
     return null;
   }
 
-  const [totalSimilarGroups, rows] = await Promise.all([
-    prisma.imageGroup.count({
-      where: {
-        collectionId,
-        imageCount: { gt: 1 },
-      },
-    }),
-    prisma.imageGroup.findMany({
-      where: {
-        collectionId,
-        imageCount: { gt: 1 },
-      },
-      include: {
-        images: {
-          orderBy: { createdAt: "asc" },
-          take: 1,
+  const baseGroupWhere = {
+    collectionId,
+    imageCount: { gt: 1 },
+  } satisfies Prisma.ImageGroupWhereInput;
+  const selectedGroupWhere = {
+    images: {
+      some: {
+        review: {
+          is: {
+            isSelected: true,
+            decisionReason: ReviewDecisionReason.SIMILAR_GROUP,
+          },
         },
-        _count: {
-          select: {
-            images: {
-              where: {
-                review: {
-                  is: {
-                    isSelected: true,
-                    decisionReason: "SIMILAR_GROUP",
+      },
+    },
+  } satisfies Prisma.ImageGroupWhereInput;
+  const selectedGroupsWhere = {
+    ...baseGroupWhere,
+    ...selectedGroupWhere,
+  } satisfies Prisma.ImageGroupWhereInput;
+  const needsSelectionGroupsWhere = {
+    ...baseGroupWhere,
+    NOT: selectedGroupWhere,
+  } satisfies Prisma.ImageGroupWhereInput;
+  const filteredGroupWhere =
+    selectionStatus === "SELECTED"
+      ? selectedGroupsWhere
+      : selectionStatus === "NEEDS_SELECTION"
+        ? needsSelectionGroupsWhere
+        : baseGroupWhere;
+
+  const [totalSimilarGroups, needsSelectionCount, selectedCount, rows] =
+    await Promise.all([
+      prisma.imageGroup.count({
+        where: filteredGroupWhere,
+      }),
+      prisma.imageGroup.count({
+        where: needsSelectionGroupsWhere,
+      }),
+      prisma.imageGroup.count({
+        where: selectedGroupsWhere,
+      }),
+      prisma.imageGroup.findMany({
+        where: filteredGroupWhere,
+        include: {
+          images: {
+            orderBy: { createdAt: "asc" },
+            take: 1,
+          },
+          _count: {
+            select: {
+              images: {
+                where: {
+                  review: {
+                    is: {
+                      isSelected: true,
+                      decisionReason: ReviewDecisionReason.SIMILAR_GROUP,
+                    },
                   },
                 },
               },
             },
           },
         },
-      },
-      orderBy: [{ imageCount: "desc" }, { createdAt: "asc" }],
-      skip: offset,
-      take: limit,
-    }),
-  ]);
+        orderBy: [{ imageCount: "desc" }, { createdAt: "asc" }],
+        skip: offset,
+        take: limit,
+      }),
+    ]);
 
   const groups = await Promise.all(
     rows.flatMap((group) => {
@@ -130,6 +175,10 @@ export async function listCollectionGroups(
 
   return {
     groups,
+    counts: {
+      needsSelection: needsSelectionCount,
+      selected: selectedCount,
+    },
     totalSimilarGroups,
     limit: limit ?? groups.length,
     offset,

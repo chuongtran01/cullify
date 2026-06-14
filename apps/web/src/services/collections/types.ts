@@ -65,6 +65,10 @@ export type CollectionGroupPreview = CollectionGroupSummary & {
 
 export type CollectionGroupPreviewsResponse = {
   groups: CollectionGroupPreview[];
+  counts: {
+    needsSelection: number;
+    selected: number;
+  };
   totalSimilarGroups: number;
   limit: number;
   offset: number;

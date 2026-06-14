@@ -32,6 +32,10 @@ export function GroupsPageSkeleton() {
         </div>
         <Skeleton className="h-8 w-24 shrink-0 rounded-full" />
       </div>
+      <div className="flex flex-wrap gap-2">
+        <Skeleton className="h-8 w-36 rounded-full" />
+        <Skeleton className="h-8 w-24 rounded-full" />
+      </div>
       <GroupGridSkeleton />
     </div>
   );
