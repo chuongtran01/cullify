@@ -165,7 +165,7 @@ export function useUpdateCollectionImageReview(
               (data.pages[0]?.counts.selected ?? 0) + selectedDelta,
             ),
           };
-          const totalLowQualityImages =
+          const totalImages =
             options.isSelected === undefined
               ? counts.all
               : options.isSelected
@@ -185,8 +185,8 @@ export function useUpdateCollectionImageReview(
                   ...page,
                   counts,
                   images,
-                  totalLowQualityImages,
-                  hasMore: page.offset + images.length < totalLowQualityImages,
+                  totalImages,
+                  hasMore: page.offset + images.length < totalImages,
                 };
               }),
             };
@@ -197,7 +197,7 @@ export function useUpdateCollectionImageReview(
             pages: data.pages.map((page) => ({
               ...page,
               counts,
-              totalLowQualityImages,
+              totalImages,
               images: page.images.map((image) =>
                 image.id === imageId
                   ? {
@@ -209,7 +209,7 @@ export function useUpdateCollectionImageReview(
                     }
                   : image,
               ),
-              hasMore: page.offset + page.images.length < totalLowQualityImages,
+              hasMore: page.offset + page.images.length < totalImages,
             })),
           };
         },

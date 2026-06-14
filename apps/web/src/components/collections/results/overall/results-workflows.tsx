@@ -241,7 +241,7 @@ export function ResultsWorkflows({
   isSimilarGroupsPending: boolean;
 }) {
   const similarGroupsCount = similarGroups?.totalSimilarGroups ?? 0;
-  const lowQualityCount = lowQuality?.totalLowQualityImages ?? 0;
+  const lowQualityCount = lowQuality?.totalImages ?? 0;
   const selectedCount = selected?.totalSelectedImages ?? 0;
 
   return (

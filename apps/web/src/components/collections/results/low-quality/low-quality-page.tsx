@@ -63,7 +63,7 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   } = useCollectionLowQualityImages(collectionId, queryOptions);
   const updateReview = useUpdateCollectionImageReview(collectionId, queryOptions);
   const images = data?.pages.flatMap((page) => page.images) ?? [];
-  const total = data?.pages[0]?.totalLowQualityImages ?? 0;
+  const total = data?.pages[0]?.totalImages ?? 0;
   const activeImage =
     images.find((image) => image.id === activeImageId) ?? images[0] ?? null;
   const counts = data?.pages[0]?.counts;

@@ -63,7 +63,7 @@ export async function getCollectionResultsOverall(
     summary: {
       ...baseSummary,
       similarGroups: similarGroups.totalSimilarGroups,
-      lowQualityImages: lowQuality.totalLowQualityImages,
+      lowQualityImages: lowQuality.totalImages,
     },
     similarGroups,
     lowQuality,

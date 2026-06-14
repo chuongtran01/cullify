@@ -94,7 +94,7 @@ export type CollectionLowQualityImagesResponse = {
     needsReview: number;
     selected: number;
   };
-  totalLowQualityImages: number;
+  totalImages: number;
   limit: number;
   offset: number;
   hasMore: boolean;
