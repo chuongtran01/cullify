@@ -35,6 +35,7 @@ export function SelectedReviewTray({
         <div className="relative">
           <PhotoSurface
             className="aspect-[4/3] rounded-md"
+            fit="contain"
             sizes="(max-width: 1024px) 100vw, 760px"
             src={activeImage.imageUrl}
             title={activeImage.fileName}

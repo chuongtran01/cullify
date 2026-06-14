@@ -139,6 +139,7 @@ function GroupPhotoCard({
       <div className="relative">
         <PhotoSurface
           className="aspect-[4/3]"
+          fit="contain"
           src={image.imageUrl}
           title={image.fileName}
         />
