@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { PhotoSurface } from "@/components/collections/results/photo-surface";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,9 +42,7 @@ export function LowQualityReviewTray({
   onRemove,
   onSelect,
 }: LowQualityReviewTrayProps) {
-  const [isConfirmingRemove, setIsConfirmingRemove] = useState(false);
   const isSelected = activeImage.isSelected;
-  const isShowingRemoveConfirmation = isSelected && isConfirmingRemove;
 
   return (
     <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
@@ -66,52 +62,24 @@ export function LowQualityReviewTray({
         </div>
         <div className="mt-4 grid gap-4">
           <ReasonChips reasons={activeImage.reasons} />
-          <div className="grid gap-2 sm:grid-cols-2">
-            {isShowingRemoveConfirmation ? (
-              <>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-10 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
-                  disabled={isUpdatingActiveImage}
-                  onClick={() => setIsConfirmingRemove(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  className="h-10 rounded-md px-4.5 text-sm font-medium"
-                  disabled={isUpdatingActiveImage}
-                  onClick={() => onRemove(activeImage.id)}
-                >
-                  {isUpdatingActiveImage ? "Removing..." : "Remove"}
-                </Button>
-              </>
-            ) : (
-              <Button
-                type="button"
-                variant={isSelected ? "outline" : "default"}
-                className={cn(
-                  "h-10 rounded-md px-4.5 text-sm font-medium sm:col-span-2",
-                  isSelected &&
-                    "border-hairline-strong bg-surface-card text-destructive",
-                )}
-                disabled={isUpdatingActiveImage}
-                onClick={() => {
-                  if (isSelected) {
-                    setIsConfirmingRemove(true);
-                    return;
-                  }
-
-                  setIsConfirmingRemove(false);
-                  onSelect(activeImage.id);
-                }}
-              >
-                {isUpdatingActiveImage ? "Saving..." : isSelected ? "Remove" : "Keep"}
-              </Button>
+          <Button
+            type="button"
+            variant={isSelected ? "destructive" : "default"}
+            className={cn(
+              "h-10 rounded-md px-4.5 text-sm font-medium cursor-pointer",
             )}
-          </div>
+            disabled={isUpdatingActiveImage}
+            onClick={() => {
+              if (isSelected) {
+                onRemove(activeImage.id);
+                return;
+              }
+
+              onSelect(activeImage.id);
+            }}
+          >
+            {isUpdatingActiveImage ? "Saving..." : isSelected ? "Remove" : "Keep"}
+          </Button>
         </div>
       </div>
 
@@ -129,10 +97,7 @@ export function LowQualityReviewTray({
                   "grid grid-cols-[6rem_minmax(0,1fr)] items-center gap-3 border-b border-hairline py-3 text-left transition-colors",
                   isActive && "bg-canvas-soft pl-2",
                 )}
-                onClick={() => {
-                  setIsConfirmingRemove(false);
-                  onActiveImageChange(image.id);
-                }}
+                onClick={() => onActiveImageChange(image.id)}
               >
                 <PhotoSurface
                   className="aspect-[4/3] rounded-md"
