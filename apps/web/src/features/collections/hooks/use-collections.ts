@@ -145,6 +145,32 @@ export function useUpdateCollectionImageReview(
           }
 
           const { imageId, isSelected } = result.review;
+          const previousImage = data.pages
+            .flatMap((page) => page.images)
+            .find((image) => image.id === imageId);
+          const selectedDelta =
+            previousImage && previousImage.isSelected !== isSelected
+              ? isSelected
+                ? 1
+                : -1
+              : 0;
+          const counts = {
+            all: data.pages[0]?.counts.all ?? 0,
+            needsReview: Math.max(
+              0,
+              (data.pages[0]?.counts.needsReview ?? 0) - selectedDelta,
+            ),
+            selected: Math.max(
+              0,
+              (data.pages[0]?.counts.selected ?? 0) + selectedDelta,
+            ),
+          };
+          const totalLowQualityImages =
+            options.isSelected === undefined
+              ? counts.all
+              : options.isSelected
+                ? counts.selected
+                : counts.needsReview;
           const matchesFilter =
             options.isSelected === undefined ||
             options.isSelected === isSelected;
@@ -152,14 +178,17 @@ export function useUpdateCollectionImageReview(
           if (!matchesFilter) {
             return {
               ...data,
-              pages: data.pages.map((page) => ({
-                ...page,
-                images: page.images.filter((image) => image.id !== imageId),
-                totalLowQualityImages: Math.max(
-                  0,
-                  page.totalLowQualityImages - 1,
-                ),
-              })),
+              pages: data.pages.map((page) => {
+                const images = page.images.filter((image) => image.id !== imageId);
+
+                return {
+                  ...page,
+                  counts,
+                  images,
+                  totalLowQualityImages,
+                  hasMore: page.offset + images.length < totalLowQualityImages,
+                };
+              }),
             };
           }
 
@@ -167,6 +196,8 @@ export function useUpdateCollectionImageReview(
             ...data,
             pages: data.pages.map((page) => ({
               ...page,
+              counts,
+              totalLowQualityImages,
               images: page.images.map((image) =>
                 image.id === imageId
                   ? {
@@ -178,10 +209,15 @@ export function useUpdateCollectionImageReview(
                     }
                   : image,
               ),
+              hasMore: page.offset + page.images.length < totalLowQualityImages,
             })),
           };
         },
       );
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.collections.lowQualityImagesRoot(collectionId),
+        refetchType: "none",
+      });
       void queryClient.invalidateQueries({
         queryKey: queryKeys.collections.selectedImagesRoot(collectionId),
         refetchType: "none",

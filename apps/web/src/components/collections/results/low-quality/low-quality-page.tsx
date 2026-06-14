@@ -66,14 +66,14 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   const total = data?.pages[0]?.totalLowQualityImages ?? 0;
   const activeImage =
     images.find((image) => image.id === activeImageId) ?? images[0] ?? null;
-  const loadedNeedsReviewCount = images.filter((image) => !image.isSelected).length;
-  const loadedSelectedCount = images.filter((image) => image.isSelected).length;
-  const filterCounts = {
-    ALL: activeFilter === "ALL" ? total : images.length,
-    NEEDS_REVIEW:
-      activeFilter === "NEEDS_REVIEW" ? total : loadedNeedsReviewCount,
-    SELECTED: activeFilter === "SELECTED" ? total : loadedSelectedCount,
-  };
+  const counts = data?.pages[0]?.counts;
+  const filterCounts = counts
+    ? {
+        ALL: counts.all,
+        NEEDS_REVIEW: counts.needsReview,
+        SELECTED: counts.selected,
+      }
+    : undefined;
 
   function getNextImageId(imageId: string) {
     if (images.length <= 1) {

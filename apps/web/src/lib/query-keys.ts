@@ -32,6 +32,8 @@ export const queryKeys = {
         options?.offset ?? null,
         options?.isSelected ?? null,
       ] as const,
+    lowQualityImagesRoot: (collectionId: string) =>
+      [...queryKeys.collections.all, collectionId, "low-quality"] as const,
     selectedImages: (
       collectionId: string,
       options?: { limit?: number; offset?: number },

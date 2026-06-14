@@ -24,6 +24,11 @@ export type CollectionLowQualityImage = {
 
 export type CollectionLowQualityImagesResponse = {
   images: CollectionLowQualityImage[];
+  counts: {
+    all: number;
+    needsReview: number;
+    selected: number;
+  };
   totalLowQualityImages: number;
   limit: number;
   offset: number;
@@ -115,12 +120,22 @@ export async function getCollectionLowQualityImages(
       ? Prisma.empty
       : Prisma.sql`AND COALESCE(collection_image_review.is_selected, false) = ${isSelected}`;
 
-  const [totalLowQualityImages, rows] = await Promise.all([
-    prisma.image.count({
-      where: buildLowQualityImageWhere(collectionId, isSelected),
-    }),
-    // Raw SQL retained: ORDER BY computed reasonCount (sum of quality flags) is not expressible in Prisma orderBy.
-    prisma.$queryRaw<LowQualityImageRow[]>`
+  const [totalLowQualityImages, allCount, needsReviewCount, selectedCount, rows] =
+    await Promise.all([
+      prisma.image.count({
+        where: buildLowQualityImageWhere(collectionId, isSelected),
+      }),
+      prisma.image.count({
+        where: buildLowQualityImageWhere(collectionId),
+      }),
+      prisma.image.count({
+        where: buildLowQualityImageWhere(collectionId, false),
+      }),
+      prisma.image.count({
+        where: buildLowQualityImageWhere(collectionId, true),
+      }),
+      // Raw SQL retained: ORDER BY computed reasonCount (sum of quality flags) is not expressible in Prisma orderBy.
+      prisma.$queryRaw<LowQualityImageRow[]>`
       SELECT
         image.id::text,
         image.file_name AS "fileName",
@@ -166,7 +181,7 @@ export async function getCollectionLowQualityImages(
       LIMIT ${limit}
       OFFSET ${offset}
     `,
-  ]);
+    ]);
 
   const images = await Promise.all(
     rows.map(async (image) => ({
@@ -186,6 +201,11 @@ export async function getCollectionLowQualityImages(
 
   return {
     images,
+    counts: {
+      all: allCount,
+      needsReview: needsReviewCount,
+      selected: selectedCount,
+    },
     totalLowQualityImages,
     limit,
     offset,
