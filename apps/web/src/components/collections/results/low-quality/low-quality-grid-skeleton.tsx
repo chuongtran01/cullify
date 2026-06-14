@@ -42,7 +42,6 @@ export function LowQualityPageSkeleton() {
         <Skeleton className="h-8 w-24 shrink-0 rounded-full" />
       </div>
       <div className="flex flex-wrap gap-2">
-        <Skeleton className="h-8 w-16 rounded-full" />
         <Skeleton className="h-8 w-32 rounded-full" />
         <Skeleton className="h-8 w-24 rounded-full" />
       </div>
