@@ -33,20 +33,19 @@ export function GroupsFilters({
 
         return (
           <Button
+            variant="outline"
             key={filter.value}
             type="button"
-            variant={isActive ? "default" : "ghost"}
             className={cn(
-              "h-8 rounded-full px-3 text-sm font-medium",
-              !isActive && "text-body hover:bg-surface-strong hover:text-ink",
+              "h-8 rounded-full px-3",
+              isActive &&
+                "border-ink bg-ink text-on-primary hover:bg-ink hover:text-on-primary",
             )}
             onClick={() => onFilterChange(filter.value)}
           >
             {filter.label}
             {count !== undefined ? (
-              <span className={cn(isActive ? "text-on-primary/70" : "text-muted")}>
-                {count}
-              </span>
+              <span className="ml-1.5 text-xs opacity-70">{count}</span>
             ) : null}
           </Button>
         );
