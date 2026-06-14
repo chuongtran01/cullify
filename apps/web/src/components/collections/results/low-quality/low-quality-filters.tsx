@@ -40,11 +40,13 @@ const lowQualityFilters: Array<{
 
 type LowQualityFiltersProps = {
   activeFilter: LowQualityFilterValue;
+  counts?: Partial<Record<LowQualityFilterValue, number>>;
   onFilterChange: (filter: LowQualityFilterValue) => void;
 };
 
 export function LowQualityFilters({
   activeFilter,
+  counts,
   onFilterChange,
 }: LowQualityFiltersProps) {
   return (
@@ -62,6 +64,11 @@ export function LowQualityFilters({
           type="button"
         >
           {filter.label}
+          {counts?.[filter.value] !== undefined ? (
+            <span className="ml-1.5 text-xs opacity-70">
+              {counts[filter.value]}
+            </span>
+          ) : null}
         </Button>
       ))}
     </div>

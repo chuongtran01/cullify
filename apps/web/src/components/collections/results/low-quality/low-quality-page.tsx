@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { notFound, usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import {
@@ -11,9 +12,8 @@ import {
 } from "@/components/collections/results/low-quality/low-quality-filters";
 import { LowQualityGridSkeleton } from "@/components/collections/results/low-quality/low-quality-grid-skeleton";
 import { LowQualityHeader } from "@/components/collections/results/low-quality/low-quality-header";
-import { LowQualityImageCard } from "@/components/collections/results/low-quality/low-quality-image-card";
+import { LowQualityReviewTray } from "@/components/collections/results/low-quality/low-quality-review-tray";
 import { LowQualityState } from "@/components/collections/results/low-quality/low-quality-state";
-import { Button } from "@/components/ui/button";
 import {
   useCollectionLowQualityImages,
   useUpdateCollectionImageReview,
@@ -27,6 +27,7 @@ type LowQualityPageProps = {
 };
 
 export function LowQualityPage({ collectionId }: LowQualityPageProps) {
+  const [activeImageId, setActiveImageId] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -63,6 +64,52 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   const updateReview = useUpdateCollectionImageReview(collectionId, queryOptions);
   const images = data?.pages.flatMap((page) => page.images) ?? [];
   const total = data?.pages[0]?.totalLowQualityImages ?? 0;
+  const activeImage =
+    images.find((image) => image.id === activeImageId) ?? images[0] ?? null;
+  const loadedNeedsReviewCount = images.filter((image) => !image.isSelected).length;
+  const loadedSelectedCount = images.filter((image) => image.isSelected).length;
+  const filterCounts = {
+    ALL: activeFilter === "ALL" ? total : images.length,
+    NEEDS_REVIEW:
+      activeFilter === "NEEDS_REVIEW" ? total : loadedNeedsReviewCount,
+    SELECTED: activeFilter === "SELECTED" ? total : loadedSelectedCount,
+  };
+
+  function getNextImageId(imageId: string) {
+    if (images.length <= 1) {
+      return null;
+    }
+
+    const imageIndex = images.findIndex((image) => image.id === imageId);
+
+    if (imageIndex === -1) {
+      return images[0]?.id ?? null;
+    }
+
+    return images[imageIndex + 1]?.id ?? images[imageIndex - 1]?.id ?? null;
+  }
+
+  function handleSelect(imageId: string) {
+    const nextImageId = getNextImageId(imageId);
+
+    updateReview.mutate(
+      { imageId, isSelected: true },
+      {
+        onSuccess: () => setActiveImageId(nextImageId),
+      },
+    );
+  }
+
+  function handleRemove(imageId: string) {
+    const nextImageId = getNextImageId(imageId);
+
+    updateReview.mutate(
+      { imageId, isSelected: false },
+      {
+        onSuccess: () => setActiveImageId(nextImageId),
+      },
+    );
+  }
 
   if (error instanceof CollectionsServiceError && error.status === 404) {
     notFound();
@@ -73,6 +120,7 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
       <LowQualityHeader isPending={isPending} total={total} />
       <LowQualityFilters
         activeFilter={activeFilter}
+        counts={filterCounts}
         onFilterChange={handleFilterChange}
       />
 
@@ -100,35 +148,21 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
         />
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {images.map((image) => (
-              <LowQualityImageCard
-                key={image.id}
-                image={image}
-                isUpdating={
-                  updateReview.isPending &&
-                  updateReview.variables?.imageId === image.id
-                }
-                onRemove={(imageId) =>
-                  updateReview.mutate({ imageId, isSelected: false })
-                }
-                onSelect={(imageId) =>
-                  updateReview.mutate({ imageId, isSelected: true })
-                }
-              />
-            ))}
-          </div>
-          {hasNextPage ? (
-            <div className="flex justify-center">
-              <Button
-                className="h-10 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
-                variant="outline"
-                disabled={isFetchingNextPage}
-                onClick={() => void fetchNextPage()}
-              >
-                {isFetchingNextPage ? "Loading..." : "Load More"}
-              </Button>
-            </div>
+          {activeImage ? (
+            <LowQualityReviewTray
+              activeImage={activeImage}
+              images={images}
+              isFetchingNextPage={isFetchingNextPage}
+              isUpdatingActiveImage={
+                updateReview.isPending &&
+                updateReview.variables?.imageId === activeImage.id
+              }
+              hasNextPage={hasNextPage}
+              onActiveImageChange={setActiveImageId}
+              onLoadMore={() => void fetchNextPage()}
+              onRemove={handleRemove}
+              onSelect={handleSelect}
+            />
           ) : null}
         </>
       )}
