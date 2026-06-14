@@ -25,7 +25,6 @@ export type CollectionLowQualityImage = {
 export type CollectionLowQualityImagesResponse = {
   images: CollectionLowQualityImage[];
   counts: {
-    all: number;
     needsReview: number;
     selected: number;
   };
@@ -120,13 +119,10 @@ export async function getCollectionLowQualityImages(
       ? Prisma.empty
       : Prisma.sql`AND COALESCE(collection_image_review.is_selected, false) = ${isSelected}`;
 
-  const [totalImages, allCount, needsReviewCount, selectedCount, rows] =
+  const [totalImages, needsReviewCount, selectedCount, rows] =
     await Promise.all([
       prisma.image.count({
         where: buildLowQualityImageWhere(collectionId, isSelected),
-      }),
-      prisma.image.count({
-        where: buildLowQualityImageWhere(collectionId),
       }),
       prisma.image.count({
         where: buildLowQualityImageWhere(collectionId, false),
@@ -202,7 +198,6 @@ export async function getCollectionLowQualityImages(
   return {
     images,
     counts: {
-      all: allCount,
       needsReview: needsReviewCount,
       selected: selectedCount,
     },

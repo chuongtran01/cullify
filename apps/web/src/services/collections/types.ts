@@ -90,7 +90,6 @@ export type CollectionLowQualityImage = {
 export type CollectionLowQualityImagesResponse = {
   images: CollectionLowQualityImage[];
   counts: {
-    all: number;
     needsReview: number;
     selected: number;
   };

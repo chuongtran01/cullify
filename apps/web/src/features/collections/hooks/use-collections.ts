@@ -155,7 +155,6 @@ export function useUpdateCollectionImageReview(
                 : -1
               : 0;
           const counts = {
-            all: data.pages[0]?.counts.all ?? 0,
             needsReview: Math.max(
               0,
               (data.pages[0]?.counts.needsReview ?? 0) - selectedDelta,
@@ -165,15 +164,10 @@ export function useUpdateCollectionImageReview(
               (data.pages[0]?.counts.selected ?? 0) + selectedDelta,
             ),
           };
-          const totalImages =
-            options.isSelected === undefined
-              ? counts.all
-              : options.isSelected
-                ? counts.selected
-                : counts.needsReview;
-          const matchesFilter =
-            options.isSelected === undefined ||
-            options.isSelected === isSelected;
+          const totalImages = options.isSelected
+            ? counts.selected
+            : counts.needsReview;
+          const matchesFilter = options.isSelected === isSelected;
 
           if (!matchesFilter) {
             return {

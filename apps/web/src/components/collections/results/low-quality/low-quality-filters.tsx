@@ -1,39 +1,30 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-export type LowQualityFilterValue = "ALL" | "NEEDS_REVIEW" | "SELECTED";
+export type LowQualityFilterValue = "NEEDS_REVIEW" | "SELECTED";
 
 export const LOW_QUALITY_FILTER_SEARCH_PARAM = "filter";
 
 export function parseLowQualityFilter(
   value: string | null,
 ): LowQualityFilterValue {
-  if (value === "NEEDS_REVIEW" || value === "SELECTED") {
-    return value;
+  if (value === "SELECTED") {
+    return "SELECTED";
   }
 
-  return "ALL";
+  return "NEEDS_REVIEW";
 }
 
 export function lowQualityFilterToIsSelected(
   filter: LowQualityFilterValue,
-): boolean | undefined {
-  if (filter === "SELECTED") {
-    return true;
-  }
-
-  if (filter === "NEEDS_REVIEW") {
-    return false;
-  }
-
-  return undefined;
+): boolean {
+  return filter === "SELECTED";
 }
 
 const lowQualityFilters: Array<{
   label: string;
   value: LowQualityFilterValue;
 }> = [
-  { label: "All", value: "ALL" },
   { label: "Needs Review", value: "NEEDS_REVIEW" },
   { label: "Selected", value: "SELECTED" },
 ];

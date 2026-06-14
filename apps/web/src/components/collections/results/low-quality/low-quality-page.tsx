@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { notFound, usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import {
@@ -31,14 +31,25 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const activeFilter = parseLowQualityFilter(
-    searchParams.get(LOW_QUALITY_FILTER_SEARCH_PARAM),
-  );
+  const rawFilter = searchParams.get(LOW_QUALITY_FILTER_SEARCH_PARAM);
+  const activeFilter = parseLowQualityFilter(rawFilter);
+
+  useEffect(() => {
+    if (rawFilter === null || rawFilter === "SELECTED") {
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete(LOW_QUALITY_FILTER_SEARCH_PARAM);
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }, [pathname, rawFilter, router, searchParams]);
 
   function handleFilterChange(filter: LowQualityFilterValue) {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (filter === "ALL") {
+    if (filter === "NEEDS_REVIEW") {
       params.delete(LOW_QUALITY_FILTER_SEARCH_PARAM);
     } else {
       params.set(LOW_QUALITY_FILTER_SEARCH_PARAM, filter);
@@ -69,7 +80,6 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
   const counts = data?.pages[0]?.counts;
   const filterCounts = counts
     ? {
-        ALL: counts.all,
         NEEDS_REVIEW: counts.needsReview,
         SELECTED: counts.selected,
       }
@@ -136,14 +146,14 @@ export function LowQualityPage({ collectionId }: LowQualityPageProps) {
       ) : images.length === 0 ? (
         <LowQualityState
           title={
-            activeFilter === "ALL"
-              ? "No low quality photos found"
-              : "No photos match this filter"
+            activeFilter === "NEEDS_REVIEW"
+              ? "No photos need review"
+              : "No selected photos"
           }
           description={
-            activeFilter === "ALL"
-              ? "Nothing in this collection has been flagged by the quality analysis."
-              : "Try another review filter to see more photos."
+            activeFilter === "NEEDS_REVIEW"
+              ? "Every low quality photo in this collection has already been reviewed."
+              : "Keep low quality exceptions to see them here."
           }
         />
       ) : (
