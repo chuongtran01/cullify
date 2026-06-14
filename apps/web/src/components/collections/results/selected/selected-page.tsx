@@ -1,12 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { notFound } from "next/navigation";
 
 import { SelectedGridSkeleton } from "@/components/collections/results/selected/selected-grid-skeleton";
 import { SelectedHeader } from "@/components/collections/results/selected/selected-header";
-import { SelectedImageCard } from "@/components/collections/results/selected/selected-image-card";
+import { SelectedReviewTray } from "@/components/collections/results/selected/selected-review-tray";
 import { SelectedState } from "@/components/collections/results/selected/selected-state";
-import { Button } from "@/components/ui/button";
 import { useCollectionSelectedImages } from "@/features/collections/hooks";
 import { CollectionsServiceError } from "@/services/collections";
 
@@ -17,6 +17,7 @@ type SelectedPageProps = {
 };
 
 export function SelectedPage({ collectionId }: SelectedPageProps) {
+  const [activeImageId, setActiveImageId] = useState<string | null>(null);
   const {
     data,
     error,
@@ -30,6 +31,8 @@ export function SelectedPage({ collectionId }: SelectedPageProps) {
   });
   const images = data?.pages.flatMap((page) => page.images) ?? [];
   const total = data?.pages[0]?.totalSelectedImages ?? 0;
+  const activeImage =
+    images.find((image) => image.id === activeImageId) ?? images[0] ?? null;
 
   if (error instanceof CollectionsServiceError && error.status === 404) {
     notFound();
@@ -54,25 +57,16 @@ export function SelectedPage({ collectionId }: SelectedPageProps) {
           description="Choose photos from similar groups or keep low-quality exceptions to build the final set."
         />
       ) : (
-        <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {images.map((image) => (
-              <SelectedImageCard key={image.id} image={image} />
-            ))}
-          </div>
-          {hasNextPage ? (
-            <div className="flex justify-center">
-              <Button
-                className="h-10 rounded-md border-hairline-strong bg-surface-card px-4.5 text-sm font-medium text-ink"
-                variant="outline"
-                disabled={isFetchingNextPage}
-                onClick={() => void fetchNextPage()}
-              >
-                {isFetchingNextPage ? "Loading..." : "Load More"}
-              </Button>
-            </div>
-          ) : null}
-        </>
+        activeImage ? (
+          <SelectedReviewTray
+            activeImage={activeImage}
+            images={images}
+            isFetchingNextPage={isFetchingNextPage}
+            hasNextPage={hasNextPage}
+            onActiveImageChange={setActiveImageId}
+            onLoadMore={() => void fetchNextPage()}
+          />
+        ) : null
       )}
     </div>
   );

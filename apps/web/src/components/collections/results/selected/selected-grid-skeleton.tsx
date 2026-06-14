@@ -2,16 +2,33 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function SelectedGridSkeleton() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, index) => (
-        <div key={index}>
-          <Skeleton className="aspect-[4/3] rounded-md" />
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            <Skeleton className="h-6 w-32 rounded-full" />
+    <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="min-w-0">
+        <Skeleton className="aspect-[4/3] rounded-md" />
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          <Skeleton className="h-6 w-32 rounded-full" />
+        </div>
+      </div>
+
+      <aside className="min-w-0 border-hairline-strong lg:border-l lg:pl-6">
+        <div className="grid gap-0 pr-1">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-[6rem_minmax(0,1fr)] items-center gap-3 border-b border-hairline py-3"
+            >
+              <Skeleton className="aspect-[4/3] rounded-md" />
+              <div className="min-w-0">
+                <Skeleton className="h-6 w-28 rounded-full" />
+              </div>
+            </div>
+          ))}
+          <div className="pt-4">
+            <Skeleton className="h-10 w-full rounded-md" />
           </div>
         </div>
-      ))}
-    </div>
+      </aside>
+    </section>
   );
 }
 
