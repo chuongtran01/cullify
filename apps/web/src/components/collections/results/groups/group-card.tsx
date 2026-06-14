@@ -5,14 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { CollectionGroupPreview } from "@/services/collections";
 
-const selectionStatusLabels = {
-  NEEDS_SELECTION: "Needs selection",
-  SELECTED: "Selected",
-} satisfies Record<CollectionGroupPreview["selectionStatus"], string>;
-
 export function GroupCard({ group }: { group: CollectionGroupPreview }) {
-  const isSelected = group.selectionStatus === "SELECTED";
-
   return (
     <article>
       <PhotoSurface
@@ -24,16 +17,6 @@ export function GroupCard({ group }: { group: CollectionGroupPreview }) {
         <div className="flex flex-wrap items-center gap-2">
           <Badge className="rounded-full border-0 bg-surface-strong px-2.5 text-sm font-medium text-body shadow-none">
             {group.imageCount} photos
-          </Badge>
-          <Badge
-            variant="outline"
-            className={
-              isSelected
-                ? "rounded-full border-semantic-success/20 bg-semantic-success/10 px-2.5 text-sm font-medium text-semantic-success"
-                : "rounded-full border-hairline-strong bg-surface-card px-2.5 text-sm font-medium text-body"
-            }
-          >
-            {selectionStatusLabels[group.selectionStatus]}
           </Badge>
         </div>
         <div className="border-t border-hairline pt-3">
